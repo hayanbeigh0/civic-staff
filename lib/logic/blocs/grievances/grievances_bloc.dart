@@ -17,6 +17,9 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
       emit(GrievancesLoadingState());
       try {
         grievanceList = await grievancesRepository.loadGrievancesJson();
+        emit(
+          GrievancesMarkersLoadedState(grievanceList: grievanceList),
+        );
         emit(GrievancesLoadedState(
           grievanceList: grievanceList,
         ));

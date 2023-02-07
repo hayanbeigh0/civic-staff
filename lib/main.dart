@@ -1,4 +1,6 @@
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
+import 'package:civic_staff/presentation/screens/home/home.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_map.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
@@ -61,7 +63,7 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
               primaryColor: AppColors.colorPrimary,
             ),
-            home: Login(),
+            home: GrievanceMap(),
             onGenerateRoute: (settings) => AppRouter.onGenrateRoute(settings),
           ),
         );

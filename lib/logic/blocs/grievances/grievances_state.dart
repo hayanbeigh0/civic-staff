@@ -16,7 +16,16 @@ class GrievancesLoadedState extends GrievancesState {
     required this.grievanceList,
   });
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [grievanceList];
+}
+
+class GrievancesMarkersLoadedState extends GrievancesState {
+  final List<Grievances> grievanceList;
+  const GrievancesMarkersLoadedState({
+    required this.grievanceList,
+  });
+  @override
+  List<Object?> get props => [grievanceList];
 }
 
 class GrievancesLoadingFailedState extends GrievancesState {
