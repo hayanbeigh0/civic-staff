@@ -1,5 +1,6 @@
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PrimaryTextField extends StatelessWidget {
@@ -11,12 +12,17 @@ class PrimaryTextField extends StatelessWidget {
     this.maxLines = 1,
     required this.textEditingController,
     this.fieldValidator,
+    this.focusNode,
+    this.inputFormatters,
   });
   final String title;
   final String hintText;
   final Widget suffixIcon;
   final int maxLines;
+
   final TextEditingController textEditingController;
+  final FocusNode? focusNode;
+  final List<TextInputFormatter>? inputFormatters;
   // final String fieldValidator;
   final String? Function(String?)? fieldValidator;
   @override
@@ -39,6 +45,18 @@ class PrimaryTextField extends StatelessWidget {
           height: 5.h,
         ),
         TextFormField(
+          focusNode: focusNode,
+          maxLines: maxLines,
+          style: TextStyle(
+            overflow: TextOverflow.fade,
+            color: AppColors.textColorDark,
+            fontFamily: 'LexendDeca',
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w300,
+            height: 1.1,
+          ),
+          inputFormatters: inputFormatters,
+          controller: textEditingController,
           enabled: true,
           validator: fieldValidator,
           decoration: InputDecoration(

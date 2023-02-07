@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "firstName": "Robert",
+    "lastName": "Waits",
+    "mobileNumber": "7051744660",
+    "email": "robert@gmail.com",
+    "latitude": "12.972442",
+    "longitude": "77.580643",
+    "streetName": "Residency Road",
+    "city": "Banglore",
+    "country": "India",
+    "wardNumber": "12",
+    "about": "Lorem ipsum dolor sit amet. Et iusto molestiae et enim maiores est praesentium assumenda. Et quasi perspiciatis et omnis natus eos necessitatibus delectus id dolorem pariatur At doloribus unde quo voluptas repellendus!"
+  },
+  {
+    "id": "2",
+    "firstName": "John",
+    "lastName": "Botts",
+    "mobileNumber": "7051744668",
+    "email": "john@gmail.com",
+    "latitude": "12.972442",
+    "longitude": "77.580643",
+    "streetName": "Midway",
+    "city": "Chicago",
+    "country": "US",
+    "wardNumber": "14",
+    "about": "Lorem ipsum dolor sit amet. Et iusto molestiae et enim maiores est praesentium assumenda. Et quasi perspiciatis et omnis natus eos necessitatibus delectus id dolorem pariatur At doloribus unde quo voluptas repellendus!"
+  },
+  {
+    "id": "3",
+    "firstName": "Patrick",
+    "lastName": "Lanza",
+    "mobileNumber": "7051744660",
+    "email": "patrick@gmail.com",
+    "latitude": "12.972442",
+    "longitude": "77.580643",
+    "streetName": "Residency Road",
+    "city": "Banglore",
+    "country": "India",
+    "wardNumber": "12",
+    "about": "Lorem ipsum dolor sit amet. Et iusto molestiae et enim maiores est praesentium assumenda. Et quasi perspiciatis et omnis natus eos necessitatibus delectus id dolorem pariatur At doloribus unde quo voluptas repellendus!"
+  }
+]

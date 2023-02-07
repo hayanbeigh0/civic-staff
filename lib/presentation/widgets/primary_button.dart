@@ -48,7 +48,18 @@ class PrimaryButton extends StatelessWidget {
           SizedBox(
             width: 10.w,
           ),
-          SvgPicture.asset('assets/icons/arrowright.svg'),
+          isLoading
+              ? Center(
+                  child: SizedBox(
+                    height: 20.sp,
+                    width: 20.sp,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.colorWhite,
+                    ),
+                  ),
+                )
+              : SvgPicture.asset('assets/icons/arrowright.svg'),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
+import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/search_user.dart';
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
@@ -25,6 +26,14 @@ class HomeScreen extends StatelessWidget {
       gridTileTitle: 'Enroll User',
     ),
     HomeGridTile(
+      routeName: GrievanceList.routeName,
+      gridIcon: AspectRatio(
+        aspectRatio: 3,
+        child: SvgPicture.asset('assets/svg/monitorgrievances.svg'),
+      ),
+      gridTileTitle: 'Monitor Grievances',
+    ),
+    HomeGridTile(
       routeName: SearchUser.routeName,
       gridIcon: AspectRatio(
         aspectRatio: 3.5,
@@ -33,20 +42,12 @@ class HomeScreen extends StatelessWidget {
       gridTileTitle: 'Search User',
     ),
     HomeGridTile(
-      routeName: '',
+      routeName: ProfileScreen.routeName,
       gridIcon: AspectRatio(
         aspectRatio: 3,
         child: SvgPicture.asset('assets/svg/profile.svg'),
       ),
       gridTileTitle: 'Profile',
-    ),
-    HomeGridTile(
-      routeName: GrievanceList.routeName,
-      gridIcon: AspectRatio(
-        aspectRatio: 3,
-        child: SvgPicture.asset('assets/svg/monitorgrievances.svg'),
-      ),
-      gridTileTitle: 'Monitor Grievances',
     ),
   ];
 

@@ -30,13 +30,13 @@ class LocationMapField extends StatelessWidget {
     return Column(
       children: [
         Container(
+          height: 180.h,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             color: AppColors.colorPrimaryLight,
           ),
           width: double.infinity,
-          height: 180.h,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.r),
             child: GoogleMap(

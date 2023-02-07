@@ -205,6 +205,9 @@ class Activation extends StatelessWidget {
                             },
                           ),
                         ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
                       ],
                     ),
                   ),

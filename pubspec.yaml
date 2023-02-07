@@ -49,6 +49,7 @@ dependencies:
   geocoding: ^2.0.5
   http: ^0.13.5
   audioplayers: ^3.0.1
+  url_launcher: ^6.1.8
 
 dev_dependencies:
   flutter_test:

@@ -7,7 +7,10 @@ import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievanc
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_my_comments.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_photo_video.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_reporter_comments.dart';
+import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart';
+import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/search_user.dart';
+import 'package:civic_staff/presentation/screens/home/search_user/user_details.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/presentation/screens/login/activation_screen.dart';
@@ -100,9 +103,22 @@ class AppRouter {
             );
           },
         );
-      // return MaterialPageRoute(
-      //   builder: (context) => SearchUser(),
-      // );
+      case UserDetails.routeName:
+        return MaterialPageRoute(
+          builder: (context) => UserDetails(
+            user: args['user'],
+          ),
+        );
+      case ProfileScreen.routeName:
+        return MaterialPageRoute(
+          builder: (context) => ProfileScreen(),
+        );
+      case EditProfileScreen.routeName:
+        return MaterialPageRoute(
+          builder: (context) => EditProfileScreen(
+            myProfile: args['my_profile'],
+          ),
+        );
       default:
         return null;
     }
