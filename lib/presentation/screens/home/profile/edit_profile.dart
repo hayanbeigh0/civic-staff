@@ -173,15 +173,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(
                         height: 5.h,
                       ),
-                      LocationMapField(
-                        zoomEnabled: true,
-                        mapController: _controller,
-                        latitude: double.parse(
-                          widget.myProfile.latitude.toString(),
-                        ),
-                        longitude: double.parse(
-                          widget.myProfile.longitude.toString(),
-                        ),
+                      Stack(
+                        children: [
+                          LocationMapField(
+                            zoomEnabled: true,
+                            mapController: _controller,
+                            latitude: double.parse(
+                              widget.myProfile.latitude.toString(),
+                            ),
+                            longitude: double.parse(
+                              widget.myProfile.longitude.toString(),
+                            ),
+                          ),
+                          Container(
+                            height: 180.h,
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: Transform.translate(
+                                offset: Offset(0, -10.h),
+                                child: SvgPicture.asset(
+                                  'assets/svg/marker.svg',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: 12.h,

@@ -7,6 +7,7 @@ import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cub
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/popups.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
@@ -18,32 +19,44 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class EnrollUser extends StatelessWidget {
+class EnrollUser extends StatefulWidget {
   static const routeName = '/enrollUser';
-  EnrollUser({super.key});
+  const EnrollUser({super.key});
 
+  @override
+  State<EnrollUser> createState() => _EnrollUserState();
+}
+
+class _EnrollUserState extends State<EnrollUser> {
   final TextEditingController firstNameController = TextEditingController();
+
   final TextEditingController lastNameController = TextEditingController();
+
   final TextEditingController contactNumberController = TextEditingController();
+
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController wardNumberController = TextEditingController();
+
   final Completer<GoogleMapController> _controller = Completer();
+
   final _formKey = GlobalKey<FormState>();
+
   final FocusNode firstNameNode = FocusNode();
 
-  void dispose() {
-    firstNameNode.dispose();
-  }
+  final List<String> wards = ['Ward 12', 'Ward 13', 'Ward 14', 'Ward 15'];
+
+  String? dropdownValue;
+
+  bool showDropdownError = false;
 
   @override
   Widget build(BuildContext context) {
-    // BlocProvider.of<UsersBloc>(context).add(const LoadUsersEvent(1));
     BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
     return Scaffold(
       body: Column(
         children: [
           PrimaryTopShape(
-            height: 150.h,
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
@@ -55,6 +68,7 @@ class EnrollUser extends StatelessWidget {
                     height: 20.h,
                   ),
                   SafeArea(
+                    bottom: false,
                     child: Row(
                       children: [
                         InkWell(
@@ -79,6 +93,9 @@ class EnrollUser extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+                  SizedBox(
+                    height: 60.h,
                   ),
                 ],
               ),
@@ -143,6 +160,98 @@ class EnrollUser extends StatelessWidget {
                         height: 12.h,
                       ),
                       Text(
+                        'Ward',
+                        style: TextStyle(
+                          color: AppColors.textColorDark,
+                          fontFamily: 'LexendDeca',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.colorPrimaryLight,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                        child: DropdownButtonFormField(
+                          isExpanded: true,
+                          iconSize: 24.sp,
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                          ),
+                          hint: Text(
+                            'Select Ward',
+                            style: TextStyle(
+                              overflow: TextOverflow.fade,
+                              color: AppColors.textColorDark,
+                              fontFamily: 'LexendDeca',
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w300,
+                              height: 1.1,
+                            ),
+                          ),
+                          decoration: InputDecoration(
+                            labelStyle: TextStyle(
+                              overflow: TextOverflow.fade,
+                              color: AppColors.textColorDark,
+                              fontFamily: 'LexendDeca',
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w300,
+                              height: 1.1,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          items: wards
+                              .map(
+                                (item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      overflow: TextOverflow.fade,
+                                      color: AppColors.textColorDark,
+                                      fontFamily: 'LexendDeca',
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w300,
+                                      height: 1.1,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) {
+                            dropdownValue = value.toString();
+                            setState(() {
+                              showDropdownError = false;
+                            });
+                          },
+                          validator: (value) => validateWardNumber(
+                            value.toString(),
+                          ),
+                        ),
+                      ),
+                      showDropdownError
+                          ? Column(
+                              children: [
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Text(
+                                  'Please select a value!',
+                                  style: AppStyles.errorTextStyle,
+                                )
+                              ],
+                            )
+                          : const SizedBox(),
+                      SizedBox(
+                        height: 12.h,
+                      ),
+                      Text(
                         'Location',
                         style: TextStyle(
                           color: AppColors.textColorDark,
@@ -157,28 +266,35 @@ class EnrollUser extends StatelessWidget {
                       BlocBuilder<CurrentLocationCubit, CurrentLocationState>(
                         builder: (context, state) {
                           if (state is CurrentLocationLoaded) {
-                            return LocationMapField(
-                              zoomEnabled: true,
-                              mapController: _controller,
-                              latitude: state.latitude,
-                              longitude: state.longitude,
+                            return Stack(
+                              children: [
+                                LocationMapField(
+                                  gesturesEnabled: true,
+                                  myLocationEnabled: true,
+                                  zoomEnabled: true,
+                                  mapController: _controller,
+                                  latitude: state.latitude,
+                                  longitude: state.longitude,
+                                ),
+                                Container(
+                                  height: 180.h,
+                                  alignment: Alignment.center,
+                                  child: Center(
+                                    child: Transform.translate(
+                                      offset: Offset(0, -10.h),
+                                      child: SvgPicture.asset(
+                                        'assets/svg/marker.svg',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             );
                           }
                           return SizedBox(
                             height: 180.h,
                           );
                         },
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      PrimaryTextField(
-                        fieldValidator: (p0) => validateWardNumber(
-                          p0.toString(),
-                        ),
-                        title: 'Ward number',
-                        hintText: 'Ex: 12',
-                        textEditingController: wardNumberController,
                       ),
                       SizedBox(
                         height: 50.h,
@@ -228,44 +344,53 @@ class EnrollUser extends StatelessWidget {
                                         return PrimaryButton(
                                           isLoading: false,
                                           onTap: () {
+                                            log('hello');
+                                            if (dropdownValue == null) {
+                                              setState(() {
+                                                showDropdownError = true;
+                                              });
+                                            }
                                             if (_formKey.currentState!
-                                                .validate()) {
-                                              FocusScope.of(context).unfocus();
-
-                                              log('Latitude: ${currentLocationState.latitude}');
-                                              BlocProvider.of<UsersBloc>(
-                                                      context)
-                                                  .add(
-                                                EnrollAUserEvent(
-                                                  user: User(
-                                                    id: '2',
-                                                    about: '',
-                                                    city: state.name,
-                                                    country: state.countryName,
-                                                    streetName: state.street,
-                                                    mobileNumber:
-                                                        contactNumberController
-                                                            .text,
-                                                    firstName:
-                                                        firstNameController
-                                                            .text,
-                                                    lastName:
-                                                        lastNameController.text,
-                                                    wardNumber:
-                                                        wardNumberController
-                                                            .text,
-                                                    email: emailController.text,
-                                                    latitude:
-                                                        currentLocationState
-                                                            .latitude
-                                                            .toString(),
-                                                    longitude:
-                                                        currentLocationState
-                                                            .longitude
-                                                            .toString(),
+                                                    .validate() &&
+                                                !showDropdownError) {
+                                              if (!showDropdownError) {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                BlocProvider.of<UsersBloc>(
+                                                        context)
+                                                    .add(
+                                                  EnrollAUserEvent(
+                                                    user: User(
+                                                      id: '2',
+                                                      about: '',
+                                                      city: state.name,
+                                                      country:
+                                                          state.countryName,
+                                                      streetName: state.street,
+                                                      mobileNumber:
+                                                          contactNumberController
+                                                              .text,
+                                                      firstName:
+                                                          firstNameController
+                                                              .text,
+                                                      lastName:
+                                                          lastNameController
+                                                              .text,
+                                                      wardNumber: dropdownValue,
+                                                      email:
+                                                          emailController.text,
+                                                      latitude:
+                                                          currentLocationState
+                                                              .latitude
+                                                              .toString(),
+                                                      longitude:
+                                                          currentLocationState
+                                                              .longitude
+                                                              .toString(),
+                                                    ),
                                                   ),
-                                                ),
-                                              );
+                                                );
+                                              }
                                             } else {}
                                           },
                                           buttonText: 'Submit',
@@ -313,7 +438,7 @@ class EnrollUser extends StatelessWidget {
 
   String? validateWardNumber(String value) {
     if (value.isEmpty) {
-      return 'Ward number is required';
+      return 'Please select a value';
     }
     return null;
   }

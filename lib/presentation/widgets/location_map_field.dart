@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
@@ -17,6 +18,9 @@ class LocationMapField extends StatelessWidget {
     required this.longitude,
     required this.mapController,
     this.zoomEnabled = false,
+    this.myLocationEnabled = true,
+    this.gesturesEnabled = true,
+    this.markerEnabled = false,
   });
 
   final double latitude;
@@ -24,6 +28,9 @@ class LocationMapField extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
   late LatLng pickedLoc;
   final bool zoomEnabled;
+  final bool myLocationEnabled;
+  final bool gesturesEnabled;
+  final bool markerEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +55,25 @@ class LocationMapField extends StatelessWidget {
                 zoom: 14.4746,
               ),
               zoomControlsEnabled: zoomEnabled,
-              scrollGesturesEnabled: true,
+              scrollGesturesEnabled: gesturesEnabled,
               gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
                 Factory<OneSequenceGestureRecognizer>(
                   () => EagerGestureRecognizer(),
                 ),
               },
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
+              markers: markerEnabled
+                  ? {
+                      Marker(
+                        markerId: const MarkerId('1'),
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueBlue,
+                        ),
+                        position: LatLng(latitude, longitude),
+                      ),
+                    }
+                  : {},
+              myLocationEnabled: myLocationEnabled,
+              myLocationButtonEnabled: myLocationEnabled,
               onMapCreated: (controller) async {
                 mapController.complete(controller);
                 BlocProvider.of<ReverseGeocodingCubit>(context)

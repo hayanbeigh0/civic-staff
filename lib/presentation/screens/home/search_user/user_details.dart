@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
@@ -28,7 +29,6 @@ class UserDetails extends StatelessWidget {
       body: Column(
         children: [
           PrimaryTopShape(
-            height: 280.h,
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
@@ -41,6 +41,7 @@ class UserDetails extends StatelessWidget {
                     height: 20.h,
                   ),
                   SafeArea(
+                    bottom: false,
                     child: Row(
                       children: [
                         InkWell(
@@ -126,14 +127,24 @@ class UserDetails extends StatelessWidget {
                       SizedBox(
                         width: 8.w,
                       ),
-                      Text(
-                        user.mobileNumber.toString(),
-                        style: TextStyle(
-                          color: AppColors.colorWhite,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w400,
-                          height: 1,
+                      InkWell(
+                        onTap: () async {
+                          final url = 'tel:${user.mobileNumber}';
+                          if (await canLaunchUrl(Uri.parse(url))) {
+                            await launchUrl(Uri.parse(url));
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        child: Text(
+                          user.mobileNumber.toString(),
+                          style: TextStyle(
+                            color: AppColors.colorWhite,
+                            fontFamily: 'LexendDeca',
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1,
+                          ),
                         ),
                       ),
                       const Spacer(),
@@ -183,6 +194,9 @@ class UserDetails extends StatelessWidget {
                         ),
                       )
                     ],
+                  ),
+                  SizedBox(
+                    height: 50.h,
                   ),
                 ],
               ),
@@ -260,8 +274,8 @@ class UserDetails extends StatelessWidget {
                       height: 12.h,
                     ),
                     PrimaryDisplayField(
-                      title: 'Ward Number',
-                      value: 'Ward ${user.wardNumber}',
+                      title: 'Ward',
+                      value: '${user.wardNumber}',
                     ),
                     SizedBox(
                       height: 40.h,

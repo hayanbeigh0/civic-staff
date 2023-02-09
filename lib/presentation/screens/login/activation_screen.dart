@@ -1,27 +1,57 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/otp_field_style.dart';
-import 'package:otp_text_field/style.dart';
 
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/utils/shapes/login_shape_bottom.dart';
 import 'package:civic_staff/presentation/utils/shapes/login_shape_top.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 
-class Activation extends StatelessWidget {
+class Activation extends StatefulWidget {
   final String mobileNumber;
   static const routeName = '/activation';
-  Activation({
+  const Activation({
     super.key,
     required this.mobileNumber,
   });
+
+  @override
+  State<Activation> createState() => _ActivationState();
+}
+
+class _ActivationState extends State<Activation> {
   final _formKey = GlobalKey<FormState>();
 
-  final OtpFieldController otpController = OtpFieldController();
+  final TextEditingController otpController1 = TextEditingController();
+
+  final TextEditingController otpController2 = TextEditingController();
+
+  final TextEditingController otpController3 = TextEditingController();
+
+  final TextEditingController otpController4 = TextEditingController();
+
+  FocusNode focusNode1 = FocusNode();
+
+  FocusNode focusNode2 = FocusNode();
+
+  FocusNode focusNode3 = FocusNode();
+
+  FocusNode focusNode4 = FocusNode();
+
+  final double otpFieldSpacing = 20.w;
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(focusNode1);
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,38 +154,232 @@ class Activation extends StatelessWidget {
                           height: 100.h,
                           child: Column(
                             children: [
-                              OTPTextField(
-                                controller: otpController,
-                                keyboardType: TextInputType.number,
-                                otpFieldStyle: OtpFieldStyle(
-                                  borderColor: Colors.transparent,
-                                  enabledBorderColor: Colors.transparent,
-                                  backgroundColor: AppColors.colorPrimaryLight,
+                              IntrinsicHeight(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 45.h,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.colorPrimaryLight,
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                        ),
+                                        child: Center(
+                                          child: TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            cursorColor: AppColors.colorPrimary,
+                                            textAlign: TextAlign.center,
+                                            focusNode: focusNode1,
+                                            style: TextStyle(
+                                              height: 1.5.h,
+                                            ),
+                                            onChanged: (value) {
+                                              if (value.length == 1) {
+                                                FocusScope.of(context)
+                                                    .requestFocus(focusNode2);
+                                              }
+                                              if (value.isEmpty) {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                              }
+                                            },
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(
+                                                  1),
+                                            ],
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor:
+                                                  AppColors.colorPrimaryLight,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                horizontal: 16.sp,
+                                                vertical: 0.sp,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.sp),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              hintMaxLines: 1,
+                                            ),
+                                            controller: otpController1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: otpFieldSpacing,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 45.h,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.colorPrimaryLight,
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                        ),
+                                        child: Center(
+                                          child: TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            cursorColor: AppColors.colorPrimary,
+                                            textAlign: TextAlign.center,
+                                            focusNode: focusNode2,
+                                            onChanged: (value) {
+                                              if (value.length == 1) {
+                                                FocusScope.of(context)
+                                                    .requestFocus(focusNode3);
+                                              }
+                                              if (value.isEmpty) {
+                                                FocusScope.of(context)
+                                                    .requestFocus(focusNode1);
+                                              }
+                                            },
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(
+                                                  1),
+                                            ],
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor:
+                                                  AppColors.colorPrimaryLight,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                horizontal: 16.sp,
+                                                vertical: 0.sp,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.sp),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              hintMaxLines: 1,
+                                            ),
+                                            controller: otpController2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: otpFieldSpacing,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 45.h,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.colorPrimaryLight,
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                        ),
+                                        child: Center(
+                                          child: TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            cursorColor: AppColors.colorPrimary,
+                                            textAlign: TextAlign.center,
+                                            focusNode: focusNode3,
+                                            onChanged: (value) {
+                                              log('Changed');
+                                              if (value.length == 1) {
+                                                FocusScope.of(context)
+                                                    .requestFocus(focusNode4);
+                                              }
+                                              if (value.isEmpty) {
+                                                FocusScope.of(context)
+                                                    .requestFocus(focusNode2);
+                                              }
+                                            },
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(
+                                                  1),
+                                            ],
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor:
+                                                  AppColors.colorPrimaryLight,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                horizontal: 16.sp,
+                                                vertical: 0.sp,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.sp),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              hintMaxLines: 1,
+                                            ),
+                                            controller: otpController3,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: otpFieldSpacing,
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        height: 45.h,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.colorPrimaryLight,
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                        ),
+                                        child: Center(
+                                          child: TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            cursorColor: AppColors.colorPrimary,
+                                            textAlign: TextAlign.center,
+                                            focusNode: focusNode4,
+                                            onChanged: (value) {
+                                              if (value.length == 1) {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                              }
+                                              if (value.isEmpty) {
+                                                FocusScope.of(context)
+                                                    .requestFocus(focusNode3);
+                                              }
+                                            },
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(
+                                                  1),
+                                            ],
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor:
+                                                  AppColors.colorPrimaryLight,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                horizontal: 16.sp,
+                                                vertical: 0.sp,
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.sp),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              hintMaxLines: 1,
+                                            ),
+                                            controller: otpController4,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                length: 4,
-                                width: double.infinity,
-                                textFieldAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                fieldWidth: 60.w,
-                                fieldStyle: FieldStyle.box,
-                                outlineBorderRadius: 8,
-                                spaceBetween: 24.w,
-                                inputFormatter: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(
-                                    4,
-                                  ),
-                                ],
-                                style: TextStyle(
-                                  fontSize: 17.sp,
-                                  height: 2.h,
-                                ),
-                                onChanged: (pin) {
-                                  // print("Changed: " + pin);
-                                },
-                                onCompleted: (pin) {
-                                  // print("Completed: " + pin);
-                                },
                               ),
                               SizedBox(
                                 height: 10.h,

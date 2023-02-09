@@ -7,10 +7,10 @@ class PrimaryTopShape extends StatelessWidget {
   const PrimaryTopShape({
     Key? key,
     required this.child,
-    required this.height,
+    this.height,
   }) : super(key: key);
   final Widget child;
-  final double height;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {

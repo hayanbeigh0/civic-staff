@@ -10,6 +10,11 @@ class LoadGrievancesEvent extends GrievancesEvent {
   List<Object> get props => [];
 }
 
+class GetGrievancesEvent extends GrievancesEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class CloseGrievanceEvent extends GrievancesEvent {
   final String grievanceId;
   const CloseGrievanceEvent({
@@ -17,6 +22,15 @@ class CloseGrievanceEvent extends GrievancesEvent {
   });
   @override
   List<Object> get props => [grievanceId];
+}
+
+class SearchGrievanceByTypeEvent extends GrievancesEvent {
+  final String grievanceType;
+  const SearchGrievanceByTypeEvent({
+    required this.grievanceType,
+  });
+  @override
+  List<Object> get props => [grievanceType];
 }
 
 class UpdateGrievanceStatusEvent extends GrievancesEvent {
@@ -28,4 +42,15 @@ class UpdateGrievanceStatusEvent extends GrievancesEvent {
   });
   @override
   List<Object> get props => [grievanceId, status];
+}
+
+class UpdateExpectedCompletionEvent extends GrievancesEvent {
+  final String expectedCompletion;
+  final String grievanceId;
+  const UpdateExpectedCompletionEvent({
+    required this.grievanceId,
+    required this.expectedCompletion,
+  });
+  @override
+  List<Object> get props => [grievanceId, expectedCompletion];
 }

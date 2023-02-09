@@ -10,7 +10,7 @@ class MyProfileCubit extends Cubit<MyProfileState> {
   MyProfileCubit(this.myProfileRerpository) : super(MyProfileLoading());
   loadMyProfile() async {
     emit(MyProfileLoaded(
-      myProfile: await myProfileRerpository.myProfile,
+      myProfile: myProfileRerpository.myProfile,
     ));
   }
 

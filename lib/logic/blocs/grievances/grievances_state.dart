@@ -12,11 +12,17 @@ class GrievancesLoadingState extends GrievancesState {
 
 class GrievancesLoadedState extends GrievancesState {
   final List<Grievances> grievanceList;
+  final int selectedFilterNumber;
   const GrievancesLoadedState({
     required this.grievanceList,
+    required this.selectedFilterNumber,
   });
+  // GrievancesLoadedState copyWith({required List<Grievances> grievanceList}) {
+  //   return GrievancesLoadedState(grievanceList: this.grievanceList, );
+  // }
+
   @override
-  List<Object?> get props => [grievanceList];
+  List<Object?> get props => [grievanceList, selectedFilterNumber];
 }
 
 class GrievancesMarkersLoadedState extends GrievancesState {
@@ -38,18 +44,32 @@ class UpdatingGrievanceStatusState extends GrievancesState {
   List<Object?> get props => [];
 }
 
+class UpdatingExpectedCompletionState extends GrievancesState {
+  @override
+  List<Object?> get props => [];
+}
+
 class UpdatingGrievanceStatusFailedState extends GrievancesState {
   @override
   List<Object?> get props => [];
 }
 
 class GrievanceUpdatedState extends GrievancesState {
-  final Grievances grievance;
+  final bool grievanceUpdated;
   const GrievanceUpdatedState({
-    required this.grievance,
+    required this.grievanceUpdated,
   });
   @override
-  List<Object?> get props => [grievance];
+  List<Object?> get props => [grievanceUpdated];
+}
+
+class ExpectedCompletionUpdatedState extends GrievancesState {
+  final bool expectedCompletionUpdated;
+  const ExpectedCompletionUpdatedState({
+    required this.expectedCompletionUpdated,
+  });
+  @override
+  List<Object?> get props => [expectedCompletionUpdated];
 }
 
 class ClosingGrievanceState extends GrievancesState {

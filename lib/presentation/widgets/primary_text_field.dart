@@ -1,4 +1,5 @@
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,6 +73,7 @@ class PrimaryTextField extends StatelessWidget {
             ),
             hintText: hintText,
             hintMaxLines: maxLines,
+            errorStyle: AppStyles.errorTextStyle,
             hintStyle: TextStyle(
               overflow: TextOverflow.fade,
               color: AppColors.textColorLight,

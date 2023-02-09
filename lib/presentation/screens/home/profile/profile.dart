@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart';
@@ -33,7 +34,6 @@ class ProfileScreen extends StatelessWidget {
             return Column(
               children: [
                 PrimaryTopShape(
-                  height: 280.h,
                   child: Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(
@@ -46,6 +46,7 @@ class ProfileScreen extends StatelessWidget {
                           height: 20.h,
                         ),
                         SafeArea(
+                          bottom: false,
                           child: Row(
                             children: [
                               InkWell(
@@ -192,6 +193,9 @@ class ProfileScreen extends StatelessWidget {
                             )
                           ],
                         ),
+                        SizedBox(
+                          height: 50.h,
+                        ),
                       ],
                     ),
                   ),
@@ -251,6 +255,9 @@ class ProfileScreen extends StatelessWidget {
                           Stack(
                             children: [
                               LocationMapField(
+                                gesturesEnabled: false,
+                                markerEnabled: true,
+                                myLocationEnabled: false,
                                 zoomEnabled: false,
                                 latitude: double.parse(
                                     state.myProfile.latitude.toString()),
@@ -280,90 +287,158 @@ class ProfileScreen extends StatelessWidget {
                           SizedBox(
                             height: 5.h,
                           ),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight: 200.h,
-                              maxWidth: double.infinity,
-                              minWidth: double.infinity,
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(12.sp),
+                            decoration: BoxDecoration(
+                              color: AppColors.colorPrimaryLight,
+                              borderRadius: BorderRadius.circular(10.r),
                             ),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: AppColors.colorPrimaryLight,
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                itemCount:
-                                    state.myProfile.allocatedWards!.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      IntrinsicHeight(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  state
-                                                      .myProfile
-                                                      .allocatedWards![index]
-                                                      .grievanceType
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color:
-                                                        AppColors.textColorDark,
-                                                    fontFamily: 'LexendDeca',
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const VerticalDivider(
-                                              color: AppColors.colorGreyLight,
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  [
-                                                    state
-                                                        .myProfile
-                                                        .allocatedWards![index]
-                                                        .wardNumber!
-                                                  ]
-                                                      .expand(
-                                                          (element) => element)
-                                                      .map((e) => e.toString())
-                                                      .join(", ")
-                                                      .toString(),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: state.myProfile.allocatedWards!
+                                  .map(
+                                    (e) => Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 8.0.sp,
                                       ),
-                                      index <
-                                              state.myProfile.allocatedWards!
-                                                      .length -
-                                                  1
-                                          ? Divider(
-                                              height: 1.1,
-                                              color: AppColors.colorGreyLight,
-                                            )
-                                          : SizedBox()
-                                    ],
-                                  );
-                                },
-                              ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          state.myProfile.allocatedWards!
+                                                      .indexOf(e) ==
+                                                  0
+                                              ? const SizedBox()
+                                              : const Divider(
+                                                  height: 1.1,
+                                                  color:
+                                                      AppColors.colorGreyLight,
+                                                ),
+                                          Text(
+                                            '${e.grievanceType}: ',
+                                            style: TextStyle(
+                                              color: AppColors.textColorDark,
+                                              fontFamily: 'LexendDeca',
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+
+                                          ...e.wardNumber!
+                                              .toList()
+                                              .map(
+                                                (e) => Column(
+                                                  children: [
+                                                    Text(
+                                                      'Ward $e',
+                                                      style: TextStyle(
+                                                        color: AppColors
+                                                            .textColorDark,
+                                                        fontFamily:
+                                                            'LexendDeca',
+                                                        fontSize: 12.sp,
+                                                        fontWeight:
+                                                            FontWeight.w300,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                              .toList(),
+                                          // e.indexOf(e) <
+                                          //               state
+                                          //                       .myProfile
+                                          //                       .allocatedWards!
+                                          //                       .length -
+                                          //                   1
+                                          //           ?
+                                          // Divider(
+                                          //   height: 1.1,
+                                          //   color: AppColors.colorGreyLight,
+                                          // )
+                                          // : SizedBox()
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
                             ),
                           ),
+                          // ConstrainedBox(
+                          //   constraints: BoxConstraints(
+                          //     maxHeight: 200.h,
+                          //     maxWidth: double.infinity,
+                          //     minWidth: double.infinity,
+                          //   ),
+                          //   child: DecoratedBox(
+                          // decoration: BoxDecoration(
+                          //   color: AppColors.colorPrimaryLight,
+                          //   borderRadius: BorderRadius.circular(10.r),
+                          // ),
+                          //     child: ListView.builder(
+                          //       shrinkWrap: true,
+                          //       padding: EdgeInsets.zero,
+                          //       itemCount:
+                          //           state.myProfile.allocatedWards!.length,
+                          //       itemBuilder: (context, index) {
+                          //         return Column(
+                          //           children: [
+                          //             IntrinsicHeight(
+                          //               child: Column(
+                          //                 mainAxisAlignment:
+                          //                     MainAxisAlignment.spaceBetween,
+                          //                 children: [
+                          //                   Expanded(
+                          //                     child: Padding(
+                          //                       padding:
+                          //                           const EdgeInsets.all(8.0),
+                          //                       child: Text(
+                          //                         state
+                          //                             .myProfile
+                          //                             .allocatedWards![index]
+                          //                             .grievanceType
+                          //                             .toString(),
+                          // style: TextStyle(
+                          //   color:
+                          //       AppColors.textColorDark,
+                          //   fontFamily: 'LexendDeca',
+                          //   fontSize: 12.sp,
+                          //   fontWeight: FontWeight.w300,
+                          // ),
+                          //                       ),
+                          //                     ),
+                          //                   ),
+                          //                   Column(
+                          //                     children: state
+                          //                         .myProfile
+                          //                         .allocatedWards![index]
+                          //                         .wardNumber!
+                          //                         .map(
+                          //                           (e) => Text(
+                          //                             e.toString(),
+                          //                           ),
+                          //                         )
+                          //                         .toList(),
+                          //                   ),
+                          //                 ],
+                          //               ),
+                          //             ),
+                          // index <
+                          //         state.myProfile.allocatedWards!
+                          //                 .length -
+                          //             1
+                          //     ? Divider(
+                          //         height: 1.1,
+                          //         color: AppColors.colorGreyLight,
+                          //       )
+                          //     : SizedBox()
+                          //           ],
+                          //         );
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
                           SizedBox(
                             height: 40.h,
                           ),

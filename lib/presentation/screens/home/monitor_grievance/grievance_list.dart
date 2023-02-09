@@ -27,7 +27,6 @@ class GrievanceList extends StatelessWidget {
       body: Column(
         children: [
           PrimaryTopShape(
-            height: 230.h,
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
@@ -40,6 +39,7 @@ class GrievanceList extends StatelessWidget {
                     height: 20.h,
                   ),
                   SafeArea(
+                    bottom: false,
                     child: Row(
                       children: [
                         InkWell(
@@ -98,7 +98,7 @@ class GrievanceList extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.sp),
                         borderSide: BorderSide.none,
                       ),
-                      hintText: 'Search',
+                      hintText: 'Search by grievance type',
                       hintStyle: TextStyle(
                         color: AppColors.textColorLight,
                         fontFamily: 'LexendDeca',
@@ -117,6 +117,20 @@ class GrievanceList extends StatelessWidget {
                         ),
                       ),
                     ),
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        BlocProvider.of<GrievancesBloc>(context).add(
+                          LoadGrievancesEvent(),
+                        );
+                      }
+                      if (value.isNotEmpty) {
+                        BlocProvider.of<GrievancesBloc>(context).add(
+                            SearchGrievanceByTypeEvent(grievanceType: value));
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 75.h,
                   ),
                 ],
               ),
@@ -133,7 +147,7 @@ class GrievanceList extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            'Results based on date',
+                            'Results ordered by date and time',
                             style: TextStyle(
                               color: AppColors.colorGreyLight,
                               fontFamily: 'LexendDeca',
@@ -142,18 +156,18 @@ class GrievanceList extends StatelessWidget {
                             ),
                           ),
                           const Spacer(),
-                          InkWell(
-                            onTap: () {},
-                            child: Text(
-                              'Change Filter',
-                              style: TextStyle(
-                                color: AppColors.textColorRed,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 9.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
+                          // InkWell(
+                          //   onTap: () {},
+                          //   child: Text(
+                          //     'Change Filter',
+                          //     style: TextStyle(
+                          //       color: AppColors.colorPrimary,
+                          //       fontFamily: 'LexendDeca',
+                          //       fontSize: 9.sp,
+                          //       fontWeight: FontWeight.w500,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       Divider(
@@ -313,7 +327,10 @@ class GrievanceList extends StatelessWidget {
 class GrievanceListWidget extends StatelessWidget {
   const GrievanceListWidget({
     Key? key,
-    this.state = const GrievancesLoadedState(grievanceList: []),
+    this.state = const GrievancesLoadedState(
+      grievanceList: [],
+      selectedFilterNumber: 1,
+    ),
   }) : super(key: key);
   final GrievancesLoadedState state;
   @override

@@ -1,4 +1,6 @@
-class Grievances {
+import 'package:equatable/equatable.dart';
+
+class Grievances extends Equatable {
   String? grievanceId;
   String? grievanceType;
   String? raisedBy;
@@ -6,6 +8,7 @@ class Grievances {
   String? priority;
   String? place;
   String? timeStamp;
+  String? expectedCompletion;
   List<String>? photos;
   List<String>? audios;
   List<String>? videos;
@@ -37,9 +40,11 @@ class Grievances {
     this.reporterComments,
     this.myComments,
     this.open,
+    this.expectedCompletion,
   });
 
   Grievances.fromJson(Map<String, dynamic> json) {
+    expectedCompletion = json['expectedCompletion'];
     grievanceId = json['grievanceId'];
     open = json['open'];
     grievanceType = json['grievanceType'];
@@ -72,6 +77,7 @@ class Grievances {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['expectedCompletion'] = expectedCompletion;
     data['grievanceId'] = grievanceId;
     data['open'] = open;
     data['grievanceType'] = grievanceType;
@@ -97,9 +103,12 @@ class Grievances {
     }
     return data;
   }
+
+  @override
+  List<Object?> get props => [status];
 }
 
-class ReporterComments {
+class ReporterComments extends Equatable {
   String? text;
   String? imageUrl;
   String? videoUrl;
@@ -131,9 +140,12 @@ class ReporterComments {
     data['timeStamp'] = timeStamp;
     return data;
   }
+
+  @override
+  List<Object?> get props => [];
 }
 
-class MyComments {
+class MyComments extends Equatable {
   String? text;
   String? imageUrl;
   String? videoUrl;
@@ -165,4 +177,7 @@ class MyComments {
     data['timeStamp'] = timeStamp;
     return data;
   }
+
+  @override
+  List<Object?> get props => [];
 }

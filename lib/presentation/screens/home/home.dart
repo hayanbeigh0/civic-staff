@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
+import 'package:civic_staff/logic/cubits/home_grid_items/home_grid_items_cubit.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
@@ -6,6 +8,7 @@ import 'package:civic_staff/presentation/screens/home/search_user/search_user.da
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -53,12 +56,13 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<HomeGridItemsCubit>(context).loadAllGridItems();
+    BlocProvider.of<GrievancesBloc>(context).add(GetGrievancesEvent());
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: Column(
         children: [
           PrimaryTopShape(
-            height: 230.h,
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
@@ -71,8 +75,9 @@ class HomeScreen extends StatelessWidget {
                     height: 20.h,
                   ),
                   SafeArea(
+                    bottom: false,
                     child: Text(
-                      'Dashboard',
+                      'NammaOor',
                       style: TextStyle(
                         color: AppColors.colorWhite,
                         fontFamily: 'LexendDeca',
@@ -118,6 +123,18 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        BlocProvider.of<HomeGridItemsCubit>(context)
+                            .loadAllGridItems();
+                      } else {
+                        BlocProvider.of<HomeGridItemsCubit>(context)
+                            .loadSearchedGridItems(value, true);
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 75.h,
                   ),
                 ],
               ),
@@ -131,76 +148,83 @@ class HomeScreen extends StatelessWidget {
                 horizontal: 20.0.w,
                 vertical: 12.0.h,
               ),
-              child: GridView.builder(
-                padding: EdgeInsets.zero,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.0,
-                  crossAxisSpacing: 30.w,
-                  mainAxisSpacing: 20.h,
-                ),
-                itemCount: gridItems.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    borderRadius: BorderRadius.circular(
-                      20.r,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        gridItems[index].routeName,
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.colorPrimaryExtraLight,
-                        borderRadius: BorderRadius.circular(
-                          20.r,
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            offset: Offset(1, 1),
-                            blurRadius: 2,
-                            color: Color.fromARGB(87, 40, 97, 204),
-                          ),
-                          BoxShadow(
-                            offset: Offset(-1, -1),
-                            blurRadius: 2,
-                            color: AppColors.colorWhite,
-                            blurStyle: BlurStyle.normal,
-                          ),
-                        ],
+              child: BlocBuilder<HomeGridItemsCubit, HomeGridItemsState>(
+                builder: (context, state) {
+                  if (state is HomeGridItemsLoaded) {
+                    return GridView.builder(
+                      padding: EdgeInsets.zero,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.0,
+                        crossAxisSpacing: 30.w,
+                        mainAxisSpacing: 20.h,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 30.h,
+                      itemCount: state.gridItems.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(
+                            20.r,
                           ),
-                          gridItems[index].gridIcon,
-                          Expanded(
-                            child: Container(
-                              width: 100.w,
-                              alignment: Alignment.center,
-                              child: Text(
-                                gridItems[index].gridTileTitle,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: AppColors.textColorDark,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.1,
-                                ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              state.gridItems[index].routeName,
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.colorPrimaryExtraLight,
+                              borderRadius: BorderRadius.circular(
+                                20.r,
                               ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  offset: Offset(1, 1),
+                                  blurRadius: 2,
+                                  color: Color.fromARGB(87, 40, 97, 204),
+                                ),
+                                BoxShadow(
+                                  offset: Offset(-1, -1),
+                                  blurRadius: 2,
+                                  color: AppColors.colorWhite,
+                                  blurStyle: BlurStyle.normal,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 30.h,
+                                ),
+                                state.gridItems[index].gridIcon,
+                                Expanded(
+                                  child: Container(
+                                    width: 100.w,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      state.gridItems[index].gridTileTitle,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: AppColors.textColorDark,
+                                        fontFamily: 'LexendDeca',
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.1,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 5.h,
+                                )
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            height: 5.h,
-                          )
-                        ],
-                      ),
-                    ),
-                  );
+                        );
+                      },
+                    );
+                  }
+                  return const SizedBox();
                 },
               ),
             ),

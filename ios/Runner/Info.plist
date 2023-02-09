@@ -23,7 +23,7 @@
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
-		<true />
+		<true/>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
@@ -42,15 +42,27 @@
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false />
+		<false/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true />
+		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true />
+		<true/>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
 			<string>sms</string>
 			<string>tel</string>
 		</array>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>This app needs access to location when open.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>This app needs access to location when in the background.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Need camera permissions</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Need camera permissions</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Need camera permissions</string>
+		<key>UIStatusBarHidden</key>
+		<false/>
 	</dict>
 </plist>

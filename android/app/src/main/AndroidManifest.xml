@@ -3,6 +3,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Optional, you'll have to check this permission by yourself. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>
         <!-- If your app checks for SMS support -->
@@ -47,6 +52,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDd6kOPzuxzShTba_H6Y47A4jcDwqsNcmg" />
+            android:value="AIzaSyB8MpOC2V2lUed4ZIJ-7gHieXsva-yiJUo" />
     </application>
 </manifest>

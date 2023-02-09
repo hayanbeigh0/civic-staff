@@ -1,24 +1,29 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-
-import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_add_comment.dart';
-import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_audio.dart';
-import 'package:civic_staff/presentation/widgets/location_map_field.dart';
-import 'package:civic_staff/presentation/widgets/secondary_button.dart';
-import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
-import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_my_comments.dart';
-import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_photo_video.dart';
-import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_reporter_comments.dart';
-import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
-import 'package:civic_staff/presentation/widgets/comment_list.dart';
-import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
-import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_add_comment.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_my_comments.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_reporter_comments.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_audio.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_photo_video.dart';
+import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
+import 'package:civic_staff/presentation/widgets/comment_list.dart';
+import 'package:civic_staff/presentation/widgets/location_map_field.dart';
+import 'package:civic_staff/presentation/widgets/photo_comment_widget.dart';
+import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
+import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:civic_staff/presentation/widgets/secondary_button.dart';
+import 'package:civic_staff/presentation/widgets/text_comment_widget.dart';
+import 'package:civic_staff/presentation/widgets/video_comment_widget.dart';
 
 class GrievanceDetail extends StatelessWidget {
   static const routeName = '/grievanceDetail';
@@ -30,12 +35,38 @@ class GrievanceDetail extends StatelessWidget {
   GrievancesLoadedState state;
   final int grievanceListIndex;
   final Completer<GoogleMapController> _controller = Completer();
+  List<String> statusList = ['Processing', 'Completed'];
+  List<String> expectedCompletionList = ['1 Day', '2 Days', '3 Days'];
+  late String statusDropdownValue;
+  late String expectedCompletionDropdownValue;
+  bool showDropdownError = false;
 
   @override
   Widget build(BuildContext context) {
+    statusDropdownValue =
+        state.grievanceList[grievanceListIndex].status.toString();
+    expectedCompletionDropdownValue =
+        state.grievanceList[grievanceListIndex].expectedCompletion.toString();
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
-      body: grievanceDetails(context),
+      body: BlocBuilder<GrievancesBloc, GrievancesState>(
+        builder: (context, state) {
+          if (state is UpdatingGrievanceStatusState) {
+            return Stack(
+              children: [
+                grievanceDetails(context),
+                const CircularProgressIndicator(
+                  color: AppColors.colorPrimary,
+                ),
+              ],
+            );
+          }
+          if (state is GrievanceUpdatedState) {
+            return grievanceDetails(context);
+          }
+          return grievanceDetails(context);
+        },
+      ),
     );
   }
 
@@ -114,21 +145,155 @@ class GrievanceDetail extends StatelessWidget {
                   SizedBox(
                     height: 12.h,
                   ),
-                  PrimaryDisplayField(
-                    title: 'Status',
-                    value: state.grievanceList[grievanceListIndex].status
-                        .toString(),
-                    suffixIcon: TextButton(
-                      child: Text(
+                  Text(
+                    'Status',
+                    style: TextStyle(
+                      color: AppColors.textColorDark,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.colorPrimaryLight,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                    child: DropdownButtonFormField(
+                      isExpanded: true,
+                      iconSize: 24.sp,
+                      icon: Text(
                         'Change Status',
                         style: TextStyle(
-                          color: AppColors.textColorRed,
+                          color: AppColors.colorPrimary,
                           fontFamily: 'LexendDeca',
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      onPressed: () {},
+                      value: statusDropdownValue,
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(
+                          overflow: TextOverflow.fade,
+                          color: AppColors.textColorDark,
+                          fontFamily: 'LexendDeca',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w300,
+                          height: 1.1,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      items: statusList
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  overflow: TextOverflow.fade,
+                                  color: AppColors.textColorDark,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w300,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        statusDropdownValue = value.toString();
+                        BlocProvider.of<GrievancesBloc>(context).add(
+                          UpdateGrievanceStatusEvent(
+                            grievanceId: state
+                                .grievanceList[grievanceListIndex].grievanceId
+                                .toString(),
+                            status: value.toString(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12.h,
+                  ),
+                  Text(
+                    'Expected completion in',
+                    style: TextStyle(
+                      color: AppColors.textColorDark,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.colorPrimaryLight,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                    child: DropdownButtonFormField(
+                      isExpanded: true,
+                      iconSize: 24.sp,
+                      icon: Text(
+                        'Change',
+                        style: TextStyle(
+                          color: AppColors.colorPrimary,
+                          fontFamily: 'LexendDeca',
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      value: expectedCompletionDropdownValue,
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(
+                          overflow: TextOverflow.fade,
+                          color: AppColors.textColorDark,
+                          fontFamily: 'LexendDeca',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w300,
+                          height: 1.1,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      items: expectedCompletionList
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  overflow: TextOverflow.fade,
+                                  color: AppColors.textColorDark,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w300,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        expectedCompletionDropdownValue = value.toString();
+                        BlocProvider.of<GrievancesBloc>(context).add(
+                          UpdateExpectedCompletionEvent(
+                            grievanceId: state
+                                .grievanceList[grievanceListIndex].grievanceId
+                                .toString(),
+                            expectedCompletion: value.toString(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(
@@ -381,6 +546,10 @@ class GrievanceDetail extends StatelessWidget {
                     height: 5.h,
                   ),
                   LocationMapField(
+                    markerEnabled: true,
+                    gesturesEnabled: false,
+                    myLocationEnabled: false,
+                    zoomEnabled: false,
                     mapController: _controller,
                     latitude: double.parse(
                       state.grievanceList[grievanceListIndex].latitude
@@ -505,13 +674,63 @@ class GrievanceDetail extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Column(
-                      children: [
-                        CommentList(
-                          commentList: state.grievanceList[grievanceListIndex]
-                              .reporterComments as List<dynamic>,
-                        ),
-                      ],
-                    ),
+                        children: state
+                            .grievanceList[grievanceListIndex].reporterComments!
+                            .mapIndexed((i, e) {
+                      if (i >= 6) {
+                        return const SizedBox();
+                      }
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          e.text == ''
+                              ? const SizedBox()
+                              : TextCommentWidget(
+                                  commentList: state
+                                      .grievanceList[grievanceListIndex]
+                                      .reporterComments as List<dynamic>,
+                                  commentListIndex: i,
+                                ),
+                          e.imageUrl == ''
+                              ? const SizedBox()
+                              : PhotoCommentWidget(
+                                  commentList: state
+                                      .grievanceList[grievanceListIndex]
+                                      .reporterComments as List<dynamic>,
+                                  commentListIndex: i,
+                                ),
+                          e.videoUrl == ''
+                              ? const SizedBox()
+                              : VideoCommentWidget(
+                                  commentList: state
+                                      .grievanceList[grievanceListIndex]
+                                      .reporterComments as List<dynamic>,
+                                  commentListIndex: i,
+                                ),
+                          e.audioUrl == ''
+                              ? const SizedBox()
+                              : AudioCommentWidget(
+                                  commentList: state
+                                      .grievanceList[grievanceListIndex]
+                                      .reporterComments as List<dynamic>,
+                                  commentListIndex: i,
+                                ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          i <
+                                  state.grievanceList[grievanceListIndex]
+                                          .reporterComments!.length -
+                                      1
+                              ? const Divider(
+                                  color: AppColors.colorGreyLight,
+                                )
+                              : const SizedBox(),
+                        ],
+                      );
+                    }).toList()),
                   ),
                   SizedBox(
                     height: 12.h,
@@ -530,8 +749,14 @@ class GrievanceDetail extends StatelessWidget {
                       const Spacer(),
                       InkWell(
                         onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(GrievanceAddComment.routeName);
+                          Navigator.of(context).pushNamed(
+                            GrievanceAddComment.routeName,
+                            arguments: {
+                              "grievanceId": state
+                                  .grievanceList[grievanceListIndex]
+                                  .grievanceId,
+                            },
+                          );
                         },
                         child: Text(
                           'Add comment',
@@ -582,10 +807,64 @@ class GrievanceDetail extends StatelessWidget {
                         SizedBox(
                           height: 5.h,
                         ),
-                        CommentList(
-                          commentList: state.grievanceList[grievanceListIndex]
-                              .myComments as List<dynamic>,
-                        ),
+                        Column(
+                            children: state
+                                .grievanceList[grievanceListIndex].myComments!
+                                .mapIndexed((i, e) {
+                          if (i >= 6) {
+                            return const SizedBox();
+                          }
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              e.text == ''
+                                  ? const SizedBox()
+                                  : TextCommentWidget(
+                                      commentList: state
+                                          .grievanceList[grievanceListIndex]
+                                          .myComments as List<dynamic>,
+                                      commentListIndex: i,
+                                    ),
+                              e.imageUrl == ''
+                                  ? const SizedBox()
+                                  : PhotoCommentWidget(
+                                      commentList: state
+                                          .grievanceList[grievanceListIndex]
+                                          .myComments as List<dynamic>,
+                                      commentListIndex: i,
+                                    ),
+                              e.videoUrl == ''
+                                  ? const SizedBox()
+                                  : VideoCommentWidget(
+                                      commentList: state
+                                          .grievanceList[grievanceListIndex]
+                                          .myComments as List<dynamic>,
+                                      commentListIndex: i,
+                                    ),
+                              e.audioUrl == ''
+                                  ? const SizedBox()
+                                  : AudioCommentWidget(
+                                      commentList: state
+                                          .grievanceList[grievanceListIndex]
+                                          .myComments as List<dynamic>,
+                                      commentListIndex: i,
+                                    ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              i <
+                                      state.grievanceList[grievanceListIndex]
+                                              .myComments!.length -
+                                          1
+                                  ? const Divider(
+                                      color: AppColors.colorGreyLight,
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          );
+                        }).toList()),
                       ],
                     ),
                   ),

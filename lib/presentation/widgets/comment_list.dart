@@ -22,7 +22,6 @@ class CommentList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300.h,
       child: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: commentList.length,

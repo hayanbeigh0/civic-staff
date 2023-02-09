@@ -80,11 +80,13 @@ class AppRouter {
         );
       case GrievanceAddComment.routeName:
         return MaterialPageRoute(
-          builder: (context) => const GrievanceAddComment(),
+          builder: (context) => GrievanceAddComment(
+            grievanceId: args['grievanceId'],
+          ),
         );
       case EnrollUser.routeName:
         return MaterialPageRoute(
-          builder: (context) => EnrollUser(),
+          builder: (context) => const EnrollUser(),
         );
       case SearchUser.routeName:
         return PageRouteBuilder(

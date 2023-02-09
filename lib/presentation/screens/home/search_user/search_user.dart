@@ -23,10 +23,14 @@ class _SearchUserState extends State<SearchUser> {
   int? _selectedRadio;
   late String selectedFilter;
   int? selectedFilterNumber = 1;
+  FocusNode searchNode = FocusNode();
 
   @override
   void initState() {
     _selectedRadio = 1;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(searchNode);
+    });
     super.initState();
   }
 
@@ -68,7 +72,6 @@ class _SearchUserState extends State<SearchUser> {
       body: Column(
         children: [
           PrimaryTopShape(
-            height: 230.h,
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
@@ -81,6 +84,7 @@ class _SearchUserState extends State<SearchUser> {
                     height: 20.h,
                   ),
                   SafeArea(
+                    bottom: false,
                     child: Row(
                       children: [
                         Text(
@@ -108,6 +112,7 @@ class _SearchUserState extends State<SearchUser> {
                     height: 30.h,
                   ),
                   TextField(
+                    focusNode: searchNode,
                     onChanged: (value) {
                       if (selectedFilterNumber == 1) {
                         BlocProvider.of<UsersBloc>(context).add(
@@ -167,6 +172,9 @@ class _SearchUserState extends State<SearchUser> {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 75.h,
+                  ),
                 ],
               ),
             ),
@@ -208,7 +216,56 @@ class _SearchUserState extends State<SearchUser> {
                       ],
                     );
                   }
-                  return const SizedBox();
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Results based on ${getFilterName(
+                              int.parse(
+                                selectedFilterNumber.toString(),
+                              ),
+                            )}',
+                            style: TextStyle(
+                              color: AppColors.colorGreyLight,
+                              fontFamily: 'LexendDeca',
+                              fontSize: 9.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                      const Divider(
+                        color: AppColors.colorGreyLight,
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Start by\n typing a ${getFilterName(
+                                  int.parse(
+                                    selectedFilterNumber.toString(),
+                                  ),
+                                )}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 80.h,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                  ;
                 },
               ),
             ),
