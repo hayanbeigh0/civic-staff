@@ -147,9 +147,9 @@ class AudioCommentState extends State<AudioComment> {
           ),
         if (!_isPlaying)
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.play_arrow,
-              size: 34,
+              size: 34.sp,
             ),
             onPressed: play,
           ),

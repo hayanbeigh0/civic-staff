@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
@@ -61,7 +64,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: 18.0.w,
+                horizontal: AppConstants.screenPadding,
               ),
               child: Column(
                 children: [
@@ -74,22 +77,27 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: SvgPicture.asset(
-                            'assets/icons/arrowleft.svg',
-                            color: AppColors.colorWhite,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Text(
-                          'Add Comment',
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/arrowleft.svg',
+                                color: AppColors.colorWhite,
+                                height: 18.sp,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                LocaleKeys.addComment_screenTitle.tr(),
+                                style: TextStyle(
+                                  color: AppColors.colorWhite,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -105,12 +113,12 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
+                padding: EdgeInsets.symmetric(horizontal: 28.0.sp),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Comment',
+                      LocaleKeys.addComment_comment.tr(),
                       style: TextStyle(
                         color: AppColors.textColorDark,
                         fontFamily: 'LexendDeca',
@@ -154,7 +162,8 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                 borderRadius: BorderRadius.circular(10.sp),
                                 borderSide: BorderSide.none,
                               ),
-                              hintText: "Your text goes here...",
+                              hintText:
+                                  LocaleKeys.addComment_commentTexthint.tr(),
                               hintMaxLines: 1,
                               errorStyle: AppStyles.errorTextStyle,
                               hintStyle: TextStyle(
@@ -200,8 +209,10 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                                                 .pop();
                                                           });
                                                         },
-                                                        child: const Text(
-                                                          'Use camera',
+                                                        child: Text(
+                                                          LocaleKeys
+                                                              .addComment_useCamera
+                                                              .tr(),
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -216,8 +227,10 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                                                 .pop(),
                                                           );
                                                         },
-                                                        child: const Text(
-                                                          'Upload from gallery',
+                                                        child: Text(
+                                                          LocaleKeys
+                                                              .addComment_uploadFromGallery
+                                                              .tr(),
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -257,8 +270,10 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                                         onTap: () async {
                                                           getCameraVideo();
                                                         },
-                                                        child: const Text(
-                                                          'Use camera',
+                                                        child: Text(
+                                                          LocaleKeys
+                                                              .addComment_useCamera
+                                                              .tr(),
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -273,8 +288,10 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                                                 .pop(),
                                                           );
                                                         },
-                                                        child: const Text(
-                                                          'Upload from gallery',
+                                                        child: Text(
+                                                          LocaleKeys
+                                                              .addComment_uploadFromGallery
+                                                              .tr(),
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -335,8 +352,12 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                                   ),
                                                   Text(
                                                     recordingAudio
-                                                        ? 'Stop'
-                                                        : 'Record',
+                                                        ? LocaleKeys
+                                                            .addComment_stop
+                                                            .tr()
+                                                        : LocaleKeys
+                                                            .addComment_record
+                                                            .tr(),
                                                   ),
                                                   SizedBox(
                                                     height: 20.h,
@@ -370,7 +391,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                     Row(
                       children: [
                         Text(
-                          'Attchments',
+                          LocaleKeys.addComment_attachments.tr(),
                           style: TextStyle(
                             color: AppColors.textColorDark,
                             fontFamily: 'LexendDeca',
@@ -398,10 +419,13 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                               scrollDirection: Axis.horizontal,
                               children: attachments,
                             )
-                          : const Center(
+                          : Center(
                               child: Text(
-                                'No attchments!',
-                                style: TextStyle(color: AppColors.colorPrimary),
+                                LocaleKeys.addComment_noAttachments.tr(),
+                                style: TextStyle(
+                                  color: AppColors.colorPrimary,
+                                  fontSize: 14.sp,
+                                ),
                               ),
                             ),
                     ),
@@ -411,8 +435,10 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: PrimaryButton(
-                        onTap: () {},
-                        buttonText: 'Add Comment',
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        buttonText: LocaleKeys.addComment_addCommentButton.tr(),
                         isLoading: false,
                       ),
                     ),

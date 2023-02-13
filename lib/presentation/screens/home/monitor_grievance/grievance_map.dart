@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_detail.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:collection/collection.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
@@ -14,24 +18,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class GrievanceMap extends StatefulWidget {
+class GrievanceMap extends StatelessWidget {
   static const routeName = 'grievanceMap';
-  const GrievanceMap({super.key});
+  GrievanceMap({super.key});
 
-  @override
-  State<GrievanceMap> createState() => _GrievanceMapState();
-}
-
-class _GrievanceMapState extends State<GrievanceMap> {
   final Completer<GoogleMapController> _mapController = Completer();
 
   BitmapDescriptor busLocationMarker = BitmapDescriptor.defaultMarker;
 
   Set<Marker> grievanceMarkers = {};
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,19 +38,21 @@ class _GrievanceMapState extends State<GrievanceMap> {
             listener: (context, state) {
               if (state is GrievancesLoadedState) {
                 grievanceMarkers = state.grievanceList
-                    .map(
-                      (e) => Marker(
+                    .mapIndexed(
+                      (i, e) => Marker(
                         markerId: MarkerId(e.grievanceId.toString()),
                         infoWindow: InfoWindow(
                           snippet: 'Status: ${e.status}',
                           title: e.grievanceType,
-                          onTap: () => Navigator.of(context).pushNamed(
-                            GrievanceDetail.routeName,
-                            arguments: {
-                              "state": state,
-                              "index": state.grievanceList.indexOf(e),
-                            },
-                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              GrievanceDetail.routeName,
+                              arguments: {
+                                "state": state,
+                                "index": i,
+                              },
+                            );
+                          },
                         ),
                         icon: e.grievanceType.toString().toLowerCase().replaceAll(' ', '') ==
                                 'garbagecollection'
@@ -154,14 +151,16 @@ class _GrievanceMapState extends State<GrievanceMap> {
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   onMapCreated: (controller) async {
-                    if (mounted) {
-                      _mapController.complete(controller);
-                    }
+                    // if (mounted) {
+                    _mapController.complete(controller);
+                    // }
                   },
                   mapType: MapType.terrain,
                 );
               }
-              return const SizedBox();
+              return const CircularProgressIndicator(
+                color: AppColors.colorPrimary,
+              );
             },
           ),
           Align(
@@ -172,7 +171,7 @@ class _GrievanceMapState extends State<GrievanceMap> {
                 height: 141.h,
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(
-                  horizontal: 18.0.w,
+                  horizontal: AppConstants.screenPadding,
                   vertical: 0,
                 ),
                 child: Column(
@@ -185,23 +184,30 @@ class _GrievanceMapState extends State<GrievanceMap> {
                       child: Row(
                         children: [
                           InkWell(
+                            radius: 30,
                             onTap: () => Navigator.of(context).pop(),
-                            child: SvgPicture.asset(
-                              'assets/icons/arrowleft.svg',
-                              color: AppColors.colorWhite,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Text(
-                            'Map',
-                            style: TextStyle(
-                              color: AppColors.colorWhite,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w400,
-                              height: 1.1,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/arrowleft.svg',
+                                  color: AppColors.colorWhite,
+                                  height: 18.sp,
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  LocaleKeys.map_screenTitle.tr(),
+                                  style: TextStyle(
+                                    color: AppColors.colorWhite,
+                                    fontFamily: 'LexendDeca',
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.1,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

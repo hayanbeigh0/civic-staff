@@ -1,7 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
 
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:collection/collection.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +18,6 @@ import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievanc
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_photo_video.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
-import 'package:civic_staff/presentation/widgets/comment_list.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/photo_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
@@ -78,7 +79,7 @@ class GrievanceDetail extends StatelessWidget {
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
-              horizontal: 18.0.w,
+              horizontal: AppConstants.screenPadding,
             ),
             child: Column(
               children: [
@@ -90,22 +91,27 @@ class GrievanceDetail extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () => Navigator.of(context).pop(),
-                        child: SvgPicture.asset(
-                          'assets/icons/arrowleft.svg',
-                          color: AppColors.colorWhite,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Text(
-                        'Grievance Detail',
-                        style: TextStyle(
-                          color: AppColors.colorWhite,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w400,
-                          height: 1.1,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icons/arrowleft.svg',
+                              color: AppColors.colorWhite,
+                              height: 18.sp,
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              LocaleKeys.grievanceDetail_screenTitle.tr(),
+                              style: TextStyle(
+                                color: AppColors.colorWhite,
+                                fontFamily: 'LexendDeca',
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w400,
+                                height: 1.1,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -118,12 +124,13 @@ class GrievanceDetail extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppConstants.screenPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   PrimaryDisplayField(
-                    title: 'Grievance type',
+                    title: LocaleKeys.grievanceDetail_type.tr(),
                     value: state.grievanceList[grievanceListIndex].grievanceType
                         .toString(),
                   ),
@@ -138,7 +145,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 10.h,
                   ),
                   PrimaryDisplayField(
-                    title: 'Raised by',
+                    title: LocaleKeys.grievanceDetail_reporter.tr(),
                     value: state.grievanceList[grievanceListIndex].raisedBy
                         .toString(),
                   ),
@@ -146,7 +153,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 12.h,
                   ),
                   Text(
-                    'Status',
+                    LocaleKeys.grievanceDetail_status.tr(),
                     style: TextStyle(
                       color: AppColors.textColorDark,
                       fontFamily: 'LexendDeca',
@@ -167,7 +174,7 @@ class GrievanceDetail extends StatelessWidget {
                       isExpanded: true,
                       iconSize: 24.sp,
                       icon: Text(
-                        'Change Status',
+                        LocaleKeys.grievanceDetail_changeStatus.tr(),
                         style: TextStyle(
                           color: AppColors.colorPrimary,
                           fontFamily: 'LexendDeca',
@@ -223,7 +230,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 12.h,
                   ),
                   Text(
-                    'Expected completion in',
+                    LocaleKeys.grievanceDetail_expectedCompletionIn.tr(),
                     style: TextStyle(
                       color: AppColors.textColorDark,
                       fontFamily: 'LexendDeca',
@@ -244,7 +251,7 @@ class GrievanceDetail extends StatelessWidget {
                       isExpanded: true,
                       iconSize: 24.sp,
                       icon: Text(
-                        'Change',
+                        LocaleKeys.grievanceDetail_change.tr(),
                         style: TextStyle(
                           color: AppColors.colorPrimary,
                           fontFamily: 'LexendDeca',
@@ -300,7 +307,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 12.h,
                   ),
                   PrimaryDisplayField(
-                    title: 'Priority',
+                    title: LocaleKeys.grievanceDetail_priority.tr(),
                     value: state.grievanceList[grievanceListIndex].priority
                         .toString(),
                   ),
@@ -308,7 +315,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 12.h,
                   ),
                   Text(
-                    'Photos / Videos',
+                    LocaleKeys.grievanceDetail_photosAndVideos.tr(),
                     style: TextStyle(
                       color: AppColors.textColorDark,
                       fontFamily: 'LexendDeca',
@@ -399,7 +406,7 @@ class GrievanceDetail extends StatelessWidget {
                                   );
                                 },
                                 child: Text(
-                                  'View all',
+                                  LocaleKeys.grievanceDetail_viewAll.tr(),
                                   style: TextStyle(
                                     color: const Color.fromARGB(
                                         255, 255, 255, 255),
@@ -419,7 +426,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 12.h,
                   ),
                   Text(
-                    'Voice / Audio',
+                    LocaleKeys.grievanceDetail_voiceAndAudio.tr(),
                     style: TextStyle(
                       color: AppColors.textColorDark,
                       fontFamily: 'LexendDeca',
@@ -465,7 +472,7 @@ class GrievanceDetail extends StatelessWidget {
                                   height: 5.h,
                                 ),
                                 Text(
-                                  'Audio - ${index + 1}',
+                                  '${LocaleKeys.grievanceDetail_audio.tr()} - ${index + 1}',
                                   style: TextStyle(
                                     color: AppColors.textColorDark,
                                     fontFamily: 'LexendDeca',
@@ -513,7 +520,7 @@ class GrievanceDetail extends StatelessWidget {
                                     );
                                   },
                                   child: Text(
-                                    'View all',
+                                    LocaleKeys.grievanceDetail_viewAll.tr(),
                                     style: TextStyle(
                                       color: const Color.fromARGB(
                                           255, 255, 255, 255),
@@ -534,7 +541,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 12.h,
                   ),
                   Text(
-                    'Location',
+                    LocaleKeys.grievanceDetail_locaiton.tr(),
                     style: TextStyle(
                       color: AppColors.textColorDark,
                       fontFamily: 'LexendDeca',
@@ -564,7 +571,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 12.h,
                   ),
                   Text(
-                    'Description',
+                    LocaleKeys.grievanceDetail_description.tr(),
                     style: TextStyle(
                       color: AppColors.textColorDark,
                       fontFamily: 'LexendDeca',
@@ -601,7 +608,7 @@ class GrievanceDetail extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Contact by phone enabled?',
+                        LocaleKeys.grievanceDetail_contactByPhoneEnabled.tr(),
                         style: TextStyle(
                           color: AppColors.textColorDark,
                           fontFamily: 'LexendDeca',
@@ -631,7 +638,7 @@ class GrievanceDetail extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Comments by the reporter',
+                        LocaleKeys.grievanceDetail_commentsByReporter.tr(),
                         style: TextStyle(
                           color: AppColors.textColorDark,
                           fontFamily: 'LexendDeca',
@@ -652,7 +659,7 @@ class GrievanceDetail extends StatelessWidget {
                           );
                         },
                         child: Text(
-                          'View all',
+                          LocaleKeys.grievanceDetail_viewAll.tr(),
                           style: TextStyle(
                             color: AppColors.textColorDark,
                             fontFamily: 'LexendDeca',
@@ -668,7 +675,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.all(10.sp),
+                    padding: EdgeInsets.all(20.w),
                     decoration: BoxDecoration(
                       color: AppColors.colorPrimaryLight,
                       borderRadius: BorderRadius.circular(10.r),
@@ -738,7 +745,7 @@ class GrievanceDetail extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'My Comments',
+                        LocaleKeys.grievanceDetail_myComments.tr(),
                         style: TextStyle(
                           color: AppColors.textColorDark,
                           fontFamily: 'LexendDeca',
@@ -759,7 +766,7 @@ class GrievanceDetail extends StatelessWidget {
                           );
                         },
                         child: Text(
-                          'Add comment',
+                          LocaleKeys.grievanceDetail_addComment.tr(),
                           style: TextStyle(
                             color: AppColors.textColorDark,
                             fontFamily: 'LexendDeca',
@@ -794,7 +801,7 @@ class GrievanceDetail extends StatelessWidget {
                               },
                             ),
                             child: Text(
-                              'View all',
+                              LocaleKeys.grievanceDetail_viewAll.tr(),
                               style: TextStyle(
                                 color: AppColors.textColorDark,
                                 fontFamily: 'LexendDeca',
@@ -882,14 +889,16 @@ class GrievanceDetail extends StatelessWidget {
                       builder: (context, grievanceClosing) {
                         if (grievanceClosing is ClosingGrievanceState) {
                           return SecondaryButton(
-                            buttonText: 'Close grievance',
+                            buttonText:
+                                LocaleKeys.grievanceDetail_closeGrievance.tr(),
                             isLoading: true,
                             onTap: () {},
                           );
                         }
                         if (grievanceClosing is ClosingGrievanceFailedState) {
                           return SecondaryButton(
-                            buttonText: 'Close grievance',
+                            buttonText:
+                                LocaleKeys.grievanceDetail_closeGrievance.tr(),
                             isLoading: false,
                             onTap: () {
                               BlocProvider.of<GrievancesBloc>(context).add(
@@ -904,7 +913,8 @@ class GrievanceDetail extends StatelessWidget {
                           );
                         }
                         return SecondaryButton(
-                          buttonText: 'Close grievance',
+                          buttonText:
+                              LocaleKeys.grievanceDetail_closeGrievance.tr(),
                           isLoading: false,
                           onTap: () {
                             BlocProvider.of<GrievancesBloc>(context).add(

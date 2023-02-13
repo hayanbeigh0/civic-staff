@@ -1,12 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,7 +56,7 @@ class UserDetails extends StatelessWidget {
                           width: 10.w,
                         ),
                         Text(
-                          'User Details',
+                          LocaleKeys.userDetails_screenTitle.tr(),
                           style: TextStyle(
                             color: AppColors.colorWhite,
                             fontFamily: 'LexendDeca',
@@ -158,7 +159,7 @@ class UserDetails extends StatelessWidget {
                           }
                         },
                         child: Text(
-                          'Call',
+                          LocaleKeys.userDetails_call.tr(),
                           style: TextStyle(
                             color: AppColors.colorTextGreen,
                             fontFamily: 'LexendDeca',
@@ -210,7 +211,7 @@ class UserDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'About',
+                      LocaleKeys.userDetails_about.tr(),
                       style: TextStyle(
                         color: AppColors.textColorDark,
                         fontFamily: 'LexendDeca',
@@ -244,7 +245,7 @@ class UserDetails extends StatelessWidget {
                       height: 12.h,
                     ),
                     Text(
-                      'Location',
+                      LocaleKeys.userDetails_location.tr(),
                       style: TextStyle(
                         color: AppColors.textColorDark,
                         fontFamily: 'LexendDeca',
@@ -258,6 +259,8 @@ class UserDetails extends StatelessWidget {
                     Stack(
                       children: [
                         LocationMapField(
+                          markerEnabled: true,
+                          myLocationEnabled: false,
                           zoomEnabled: false,
                           latitude: double.parse(user.latitude.toString()),
                           longitude: double.parse(user.latitude.toString()),
@@ -274,7 +277,7 @@ class UserDetails extends StatelessWidget {
                       height: 12.h,
                     ),
                     PrimaryDisplayField(
-                      title: 'Ward',
+                      title: LocaleKeys.userDetails_ward.tr(),
                       value: '${user.wardNumber}',
                     ),
                     SizedBox(
@@ -283,7 +286,7 @@ class UserDetails extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: PrimaryButton(
-                        buttonText: 'Contact',
+                        buttonText: LocaleKeys.userDetails_contact.tr(),
                         isLoading: false,
                         onTap: () {},
                         enabled: true,

@@ -1,7 +1,10 @@
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/comment_list.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,7 +27,7 @@ class GrievanceMyComments extends StatelessWidget {
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: 18.0.w,
+                horizontal: AppConstants.screenPadding,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,22 +41,27 @@ class GrievanceMyComments extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: SvgPicture.asset(
-                            'assets/icons/arrowleft.svg',
-                            color: AppColors.colorWhite,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Text(
-                          'My Comments',
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/arrowleft.svg',
+                                color: AppColors.colorWhite,
+                                height: 18.sp,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                LocaleKeys.myComments_screenTitle.tr(),
+                                style: TextStyle(
+                                  color: AppColors.colorWhite,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const Spacer(),
@@ -71,9 +79,10 @@ class GrievanceMyComments extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 28.0.w),
+            padding:
+                EdgeInsets.symmetric(horizontal: AppConstants.screenPadding),
             child: Text(
-              'All comments',
+              LocaleKeys.reporterComments_allComments.tr(),
               style: TextStyle(
                 color: AppColors.textColorDark,
                 fontFamily: 'LexendDeca',

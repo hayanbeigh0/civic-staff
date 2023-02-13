@@ -22,7 +22,6 @@ class CurrentLocationCubit extends Cubit<CurrentLocationState> {
           accuracy: LocationAccuracy.best,
         ),
       ).listen((event) {
-        log(event.latitude.toString());
         emit(
           CurrentLocationLoaded(
             latitude: event.latitude,

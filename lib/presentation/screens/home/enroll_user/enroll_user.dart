@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:developer';
 
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
@@ -12,6 +12,7 @@ import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,22 +74,28 @@ class _EnrollUserState extends State<EnrollUser> {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: SvgPicture.asset(
-                            'assets/icons/arrowleft.svg',
-                            color: AppColors.colorWhite,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Text(
-                          'Enroll User',
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/arrowleft.svg',
+                                color: AppColors.colorWhite,
+                                height: 18.sp,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                LocaleKeys.enrollUsers_screenTitle.tr(),
+                                style: TextStyle(
+                                  color: AppColors.colorWhite,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.1,
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       ],
@@ -115,8 +122,8 @@ class _EnrollUserState extends State<EnrollUser> {
                         fieldValidator: (p0) {
                           return validateFirstName(p0.toString());
                         },
-                        title: 'First Name',
-                        hintText: 'First Name',
+                        title: LocaleKeys.enrollUsers_firstName.tr(),
+                        hintText: LocaleKeys.enrollUsers_firstName.tr(),
                         textEditingController: firstNameController,
                       ),
                       SizedBox(
@@ -126,8 +133,8 @@ class _EnrollUserState extends State<EnrollUser> {
                         fieldValidator: (p0) {
                           return validateLastName(p0.toString());
                         },
-                        title: 'Last Name',
-                        hintText: 'Last Name',
+                        title: LocaleKeys.enrollUsers_lastName.tr(),
+                        hintText: LocaleKeys.enrollUsers_lastName.tr(),
                         textEditingController: lastNameController,
                       ),
                       SizedBox(
@@ -141,8 +148,8 @@ class _EnrollUserState extends State<EnrollUser> {
                         fieldValidator: (p0) => validateMobileNumber(
                           p0.toString(),
                         ),
-                        title: 'Contact Number',
-                        hintText: '123-7281-927',
+                        title: LocaleKeys.enrollUsers_contactNumber.tr(),
+                        hintText: LocaleKeys.enrollUsers_contactNumberHint.tr(),
                         textEditingController: contactNumberController,
                       ),
                       SizedBox(
@@ -152,15 +159,15 @@ class _EnrollUserState extends State<EnrollUser> {
                         fieldValidator: (p0) => validateEmailAddress(
                           p0.toString(),
                         ),
-                        title: 'Email',
-                        hintText: 'you@example.com',
+                        title: LocaleKeys.enrollUsers_email.tr(),
+                        hintText: LocaleKeys.enrollUsers_emailHint.tr(),
                         textEditingController: emailController,
                       ),
                       SizedBox(
                         height: 12.h,
                       ),
                       Text(
-                        'Ward',
+                        LocaleKeys.enrollUsers_ward.tr(),
                         style: TextStyle(
                           color: AppColors.textColorDark,
                           fontFamily: 'LexendDeca',
@@ -184,7 +191,8 @@ class _EnrollUserState extends State<EnrollUser> {
                             Icons.keyboard_arrow_down,
                           ),
                           hint: Text(
-                            'Select Ward',
+                            LocaleKeys.enrollUsers_wardDropdownInitialValue
+                                .tr(),
                             style: TextStyle(
                               overflow: TextOverflow.fade,
                               color: AppColors.textColorDark,
@@ -242,7 +250,7 @@ class _EnrollUserState extends State<EnrollUser> {
                                   height: 5.h,
                                 ),
                                 Text(
-                                  'Please select a value!',
+                                  LocaleKeys.enrollUsers_wardDropdownError.tr(),
                                   style: AppStyles.errorTextStyle,
                                 )
                               ],
@@ -291,8 +299,18 @@ class _EnrollUserState extends State<EnrollUser> {
                               ],
                             );
                           }
-                          return SizedBox(
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.colorPrimaryExtraLight,
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
                             height: 180.h,
+                            width: double.infinity,
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.colorPrimary,
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -315,9 +333,14 @@ class _EnrollUserState extends State<EnrollUser> {
                                         if (userState is UserEnrolledState) {
                                           primaryPopupDialog(
                                             context: context,
-                                            title: 'Success',
-                                            buttonText: 'Ok',
-                                            content: 'User has been added!',
+                                            title: LocaleKeys
+                                                .enrollUsers_dialogSuccessMessage
+                                                .tr(),
+                                            buttonText: LocaleKeys
+                                                .enrollUsers_dialogOk
+                                                .tr(),
+                                            content: LocaleKeys
+                                                .enrollUsers_dialogSuccessMessage,
                                             ontap: () =>
                                                 Navigator.of(context).pop(),
                                           ).then(
@@ -338,13 +361,14 @@ class _EnrollUserState extends State<EnrollUser> {
                                             enabled: true,
                                             isLoading: true,
                                             onTap: () {},
-                                            buttonText: 'Submit',
+                                            buttonText: LocaleKeys
+                                                .enrollUsers_submit
+                                                .tr(),
                                           );
                                         }
                                         return PrimaryButton(
                                           isLoading: false,
                                           onTap: () {
-                                            log('hello');
                                             if (dropdownValue == null) {
                                               setState(() {
                                                 showDropdownError = true;
@@ -404,7 +428,8 @@ class _EnrollUserState extends State<EnrollUser> {
                                       enabled: false,
                                       isLoading: false,
                                       onTap: () {},
-                                      buttonText: 'Submit',
+                                      buttonText:
+                                          LocaleKeys.enrollUsers_submit.tr(),
                                     ),
                                   );
                                 },
@@ -417,7 +442,7 @@ class _EnrollUserState extends State<EnrollUser> {
                               enabled: false,
                               isLoading: false,
                               onTap: () {},
-                              buttonText: 'Submit',
+                              buttonText: LocaleKeys.enrollUsers_submit.tr(),
                             ),
                           );
                         },
@@ -438,34 +463,34 @@ class _EnrollUserState extends State<EnrollUser> {
 
   String? validateWardNumber(String value) {
     if (value.isEmpty) {
-      return 'Please select a value';
+      return LocaleKeys.enrollUsers_wardDropdownError.tr();
     }
     return null;
   }
 
   String? validateFirstName(String value) {
     if (value.isEmpty) {
-      return 'First name is required';
+      return LocaleKeys.enrollUsers_firstNameValidationErrorMessage.tr();
     }
     return null;
   }
 
   String? validateLastName(String value) {
     if (value.isEmpty) {
-      return 'Last name is required';
+      return LocaleKeys.enrollUsers_lastNameValidaitonErrorMessage.tr();
     }
     return null;
   }
 
   String? validateMobileNumber(String value) {
     if (value.isEmpty) {
-      return 'Mobile number is required';
+      return LocaleKeys.enrollUsers_mobileNumberRequiredErrorMessage.tr();
     }
     if (value.length != 10) {
-      return 'Mobile number must be 10 digits long';
+      return LocaleKeys.enrollUsers_mobileNumberLengthErrorMessage.tr();
     }
     if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-      return 'Mobile number can only contain digits';
+      return LocaleKeys.enrollUsers_mobileNumberTypeErrorMessage.tr();
     }
     return null;
   }

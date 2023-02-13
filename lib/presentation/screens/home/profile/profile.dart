@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart';
 import 'package:civic_staff/presentation/screens/login/login.dart';
@@ -8,6 +9,7 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:civic_staff/presentation/widgets/secondary_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,7 +39,7 @@ class ProfileScreen extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(
-                      horizontal: 18.0.w,
+                      horizontal: AppConstants.screenPadding,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,22 +53,27 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               InkWell(
                                 onTap: () => Navigator.of(context).pop(),
-                                child: SvgPicture.asset(
-                                  'assets/icons/arrowleft.svg',
-                                  color: AppColors.colorWhite,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                'Profile',
-                                style: TextStyle(
-                                  color: AppColors.colorWhite,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.1,
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/icons/arrowleft.svg',
+                                      color: AppColors.colorWhite,
+                                      height: 18.sp,
+                                    ),
+                                    SizedBox(
+                                      width: 10.w,
+                                    ),
+                                    Text(
+                                      LocaleKeys.profile_screenTitle.tr(),
+                                      style: TextStyle(
+                                        color: AppColors.colorWhite,
+                                        fontFamily: 'LexendDeca',
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.1,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const Spacer(),
@@ -82,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                                       .loadMyProfile();
                                 },
                                 child: Text(
-                                  'Edit',
+                                  LocaleKeys.profile_edit.tr(),
                                   style: TextStyle(
                                     color: AppColors.colorWhite,
                                     fontFamily: 'LexendDeca',
@@ -203,12 +210,13 @@ class ProfileScreen extends StatelessWidget {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.0.w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConstants.screenPadding),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'About',
+                            LocaleKeys.profile_about.tr(),
                             style: TextStyle(
                               color: AppColors.textColorDark,
                               fontFamily: 'LexendDeca',
@@ -241,7 +249,7 @@ class ProfileScreen extends StatelessWidget {
                             height: 12.h,
                           ),
                           Text(
-                            'Location',
+                            LocaleKeys.profile_location.tr(),
                             style: TextStyle(
                               color: AppColors.textColorDark,
                               fontFamily: 'LexendDeca',
@@ -276,7 +284,7 @@ class ProfileScreen extends StatelessWidget {
                             height: 12.h,
                           ),
                           Text(
-                            'Allocated grievances and wards',
+                            LocaleKeys.profile_allocatedGrievancesAndWards.tr(),
                             style: TextStyle(
                               color: AppColors.textColorDark,
                               fontFamily: 'LexendDeca',
@@ -445,7 +453,7 @@ class ProfileScreen extends StatelessWidget {
                           Align(
                             alignment: Alignment.bottomRight,
                             child: SecondaryButton(
-                              buttonText: 'Logout',
+                              buttonText: LocaleKeys.profile_logout.tr(),
                               isLoading: false,
                               onTap: () {
                                 Navigator.of(context).pushNamedAndRemoveUntil(

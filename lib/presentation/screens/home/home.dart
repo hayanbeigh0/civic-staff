@@ -1,12 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
+import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/home_grid_items/home_grid_items_cubit.dart';
+import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/search_user.dart';
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +31,7 @@ class HomeScreen extends StatelessWidget {
         aspectRatio: 3.5,
         child: SvgPicture.asset('assets/svg/enrolluser.svg'),
       ),
-      gridTileTitle: 'Enroll User',
+      gridTileTitle: LocaleKeys.homeScreen_enrollUser.tr(),
     ),
     HomeGridTile(
       routeName: GrievanceList.routeName,
@@ -34,7 +39,7 @@ class HomeScreen extends StatelessWidget {
         aspectRatio: 3,
         child: SvgPicture.asset('assets/svg/monitorgrievances.svg'),
       ),
-      gridTileTitle: 'Monitor Grievances',
+      gridTileTitle: LocaleKeys.homeScreen_monitorGrievances.tr(),
     ),
     HomeGridTile(
       routeName: SearchUser.routeName,
@@ -42,7 +47,7 @@ class HomeScreen extends StatelessWidget {
         aspectRatio: 3.5,
         child: SvgPicture.asset('assets/svg/search.svg'),
       ),
-      gridTileTitle: 'Search User',
+      gridTileTitle: LocaleKeys.homeScreen_searchUser.tr(),
     ),
     HomeGridTile(
       routeName: ProfileScreen.routeName,
@@ -50,13 +55,15 @@ class HomeScreen extends StatelessWidget {
         aspectRatio: 3,
         child: SvgPicture.asset('assets/svg/profile.svg'),
       ),
-      gridTileTitle: 'Profile',
+      gridTileTitle: LocaleKeys.homeScreen_profile.tr(),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
     BlocProvider.of<HomeGridItemsCubit>(context).loadAllGridItems();
+    BlocProvider.of<MyProfileCubit>(context).getMyProfile();
     BlocProvider.of<GrievancesBloc>(context).add(GetGrievancesEvent());
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
@@ -66,7 +73,7 @@ class HomeScreen extends StatelessWidget {
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: 18.0.w,
+                horizontal: AppConstants.screenPadding,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                   SafeArea(
                     bottom: false,
                     child: Text(
-                      'NammaOor',
+                      LocaleKeys.appName.tr(),
                       style: TextStyle(
                         color: AppColors.colorWhite,
                         fontFamily: 'LexendDeca',
@@ -98,13 +105,13 @@ class HomeScreen extends StatelessWidget {
                       fillColor: AppColors.colorPrimaryExtraLight,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 16.sp,
-                        vertical: 0.sp,
+                        vertical: 10.sp,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.sp),
                         borderSide: BorderSide.none,
                       ),
-                      hintText: 'Search',
+                      hintText: LocaleKeys.homeScreen_search.tr(),
                       hintStyle: TextStyle(
                         color: AppColors.textColorLight,
                         fontFamily: 'LexendDeca',
@@ -120,6 +127,7 @@ class HomeScreen extends StatelessWidget {
                         child: SvgPicture.asset(
                           'assets/svg/searchfieldsuffix.svg',
                           fit: BoxFit.contain,
+                          width: 20.w,
                         ),
                       ),
                     ),
@@ -145,7 +153,7 @@ class HomeScreen extends StatelessWidget {
               alignment: Alignment.topCenter,
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: 20.0.w,
+                horizontal: AppConstants.screenPadding,
                 vertical: 12.0.h,
               ),
               child: BlocBuilder<HomeGridItemsCubit, HomeGridItemsState>(
@@ -157,7 +165,7 @@ class HomeScreen extends StatelessWidget {
                         crossAxisCount: 2,
                         childAspectRatio: 1.0,
                         crossAxisSpacing: 30.w,
-                        mainAxisSpacing: 20.h,
+                        mainAxisSpacing: 30.w,
                       ),
                       itemCount: state.gridItems.length,
                       itemBuilder: (BuildContext context, int index) {

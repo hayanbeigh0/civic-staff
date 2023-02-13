@@ -1,7 +1,9 @@
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
@@ -42,22 +44,27 @@ class GrievanceAudio extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: SvgPicture.asset(
-                            'assets/icons/arrowleft.svg',
-                            color: AppColors.colorWhite,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Text(
-                          'Audio',
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/arrowleft.svg',
+                                color: AppColors.colorWhite,
+                                height: 18.sp,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                LocaleKeys.grievanceDetail_audio.tr(),
+                                style: TextStyle(
+                                  color: AppColors.colorWhite,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const Spacer(),
@@ -136,7 +143,7 @@ class GrievanceAudio extends StatelessWidget {
                         height: 5.h,
                       ),
                       Text(
-                        'Audio - ${index + 1}',
+                        '${LocaleKeys.grievanceDetail_audio.tr()} - ${index + 1}',
                         style: TextStyle(
                           color: AppColors.textColorDark,
                           fontFamily: 'LexendDeca',

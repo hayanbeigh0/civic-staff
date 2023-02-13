@@ -1,3 +1,6 @@
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
@@ -75,7 +78,7 @@ class _SearchUserState extends State<SearchUser> {
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: 18.0.w,
+                horizontal: AppConstants.screenPadding,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +91,7 @@ class _SearchUserState extends State<SearchUser> {
                     child: Row(
                       children: [
                         Text(
-                          'Search Users',
+                          LocaleKeys.searchUsers_screenTitle.tr(),
                           style: TextStyle(
                             color: AppColors.colorWhite,
                             fontFamily: 'LexendDeca',
@@ -98,12 +101,13 @@ class _SearchUserState extends State<SearchUser> {
                           ),
                         ),
                         const Spacer(),
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: const Icon(
+                        IconButton(
+                          icon: Icon(
                             Icons.close,
                             color: AppColors.colorWhite,
+                            size: 28.sp,
                           ),
+                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],
                     ),
@@ -143,13 +147,13 @@ class _SearchUserState extends State<SearchUser> {
                       fillColor: AppColors.colorPrimaryExtraLight,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 16.sp,
-                        vertical: 0.sp,
+                        vertical: 10.sp,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.sp),
                         borderSide: BorderSide.none,
                       ),
-                      hintText: 'Search',
+                      hintText: LocaleKeys.searchUsers_searchFieldHint.tr(),
                       hintStyle: TextStyle(
                         color: AppColors.textColorLight,
                         fontFamily: 'LexendDeca',
@@ -181,7 +185,8 @@ class _SearchUserState extends State<SearchUser> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18.w),
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppConstants.screenPadding),
               child: BlocBuilder<UsersBloc, SearchUsersState>(
                 builder: (context, state) {
                   if (state is LoadedUsersState) {
@@ -190,7 +195,7 @@ class _SearchUserState extends State<SearchUser> {
                         Row(
                           children: [
                             Text(
-                              'Results based on ${getFilterName(state.selectedFilterNumber)}',
+                              '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(state.selectedFilterNumber)}',
                               style: TextStyle(
                                 color: AppColors.colorGreyLight,
                                 fontFamily: 'LexendDeca',
@@ -221,7 +226,7 @@ class _SearchUserState extends State<SearchUser> {
                       Row(
                         children: [
                           Text(
-                            'Results based on ${getFilterName(
+                            '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(
                               int.parse(
                                 selectedFilterNumber.toString(),
                               ),
@@ -246,7 +251,7 @@ class _SearchUserState extends State<SearchUser> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Start by\n typing a ${getFilterName(
+                                '${LocaleKeys.searchUsers_startByTypingA.tr()} ${getFilterName(
                                   int.parse(
                                     selectedFilterNumber.toString(),
                                   ),
@@ -265,7 +270,6 @@ class _SearchUserState extends State<SearchUser> {
                       ),
                     ],
                   );
-                  ;
                 },
               ),
             ),
@@ -333,7 +337,7 @@ class _SearchUserState extends State<SearchUser> {
                   ),
                 ),
                 Text(
-                  'Location - ${state.userList[index].city}',
+                  '${LocaleKeys.userDetails_location.tr()} - ${state.userList[index].city}',
                   maxLines: 1,
                   style: TextStyle(
                     color: AppColors.cardTextColor,
@@ -343,7 +347,7 @@ class _SearchUserState extends State<SearchUser> {
                   ),
                 ),
                 Text(
-                  'Mobile - ${state.userList[index].mobileNumber}',
+                  '${LocaleKeys.userDetails_mobile.tr()} - ${state.userList[index].mobileNumber}',
                   maxLines: 1,
                   style: TextStyle(
                     color: AppColors.cardTextColor,
@@ -427,7 +431,7 @@ class _SearchUserState extends State<SearchUser> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Filter by:',
+                        '${LocaleKeys.searchUsers_filterBy.tr()}:',
                         style: TextStyle(
                           color: AppColors.colorPrimaryDark,
                           fontFamily: 'LexendDeca',
@@ -451,7 +455,7 @@ class _SearchUserState extends State<SearchUser> {
                                 });
                               }),
                           Text(
-                            "Name",
+                            LocaleKeys.searchUsers_name.tr(),
                             style: TextStyle(
                               color: AppColors.colorPrimaryDark,
                               fontFamily: 'LexendDeca',
@@ -474,7 +478,7 @@ class _SearchUserState extends State<SearchUser> {
                                 });
                               }),
                           Text(
-                            "Mobile number",
+                            LocaleKeys.searchUsers_mobileNumber.tr(),
                             style: TextStyle(
                               color: AppColors.colorPrimaryDark,
                               fontFamily: 'LexendDeca',
@@ -497,7 +501,7 @@ class _SearchUserState extends State<SearchUser> {
                                 });
                               }),
                           Text(
-                            "Street name",
+                            LocaleKeys.searchUsers_streetName.tr(),
                             style: TextStyle(
                               color: AppColors.colorPrimaryDark,
                               fontFamily: 'LexendDeca',
@@ -536,7 +540,7 @@ class _SearchUserState extends State<SearchUser> {
                             }
                             Navigator.of(context).pop();
                           },
-                          buttonText: 'Apply',
+                          buttonText: LocaleKeys.searchUsers_apply.tr(),
                           isLoading: false,
                         ),
                       ),

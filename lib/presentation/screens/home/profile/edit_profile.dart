@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/models/my_profile.dart';
@@ -8,6 +9,7 @@ import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -80,7 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           width: 10.w,
                         ),
                         Text(
-                          'Edit Profile',
+                          LocaleKeys.profile_screenTitle.tr(),
                           style: TextStyle(
                             color: AppColors.colorWhite,
                             fontFamily: 'LexendDeca',
@@ -109,8 +111,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fieldValidator: (p0) {
                           return validateFirstName(p0.toString());
                         },
-                        title: 'First Name',
-                        hintText: 'First Name',
+                        title: LocaleKeys.editProfile_firstName.tr(),
+                        hintText: LocaleKeys.editProfile_firstName.tr(),
                         textEditingController: firstNameController,
                       ),
                       SizedBox(
@@ -120,8 +122,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fieldValidator: (p0) {
                           return validateLastName(p0.toString());
                         },
-                        title: 'Last Name',
-                        hintText: 'Last Name',
+                        title: LocaleKeys.editProfile_lastName.tr(),
+                        hintText: LocaleKeys.editProfile_lastName.tr(),
                         textEditingController: lastNameController,
                       ),
                       SizedBox(
@@ -131,7 +133,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fieldValidator: (p0) => validateEmailAddress(
                           p0.toString(),
                         ),
-                        title: 'Email',
+                        title: LocaleKeys.editProfile_email.tr(),
                         hintText: 'you@example.com',
                         textEditingController: emailController,
                       ),
@@ -142,7 +144,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fieldValidator: (p0) => validateMobileNumber(
                           p0.toString(),
                         ),
-                        title: 'Contact Number',
+                        title: LocaleKeys.editProfile_contactNumber.tr(),
                         hintText: '123-7281-927',
                         textEditingController: contactNumberController,
                       ),
@@ -154,15 +156,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fieldValidator: (p0) => validateAbout(
                           p0.toString(),
                         ),
-                        title: 'About',
-                        hintText: 'Something about you',
+                        title: LocaleKeys.editProfile_about.tr(),
+                        hintText: LocaleKeys.editProfile_aboutHint.tr(),
                         textEditingController: aboutController,
                       ),
                       SizedBox(
                         height: 12.h,
                       ),
                       Text(
-                        'Location',
+                        LocaleKeys.editProfile_location.tr(),
                         style: TextStyle(
                           color: AppColors.textColorDark,
                           fontFamily: 'LexendDeca',
@@ -236,7 +238,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     Navigator.of(context).pop();
                                   } else {}
                                 },
-                                buttonText: 'Submit',
+                                buttonText: LocaleKeys.editProfile_submit.tr(),
                               ),
                             );
                           }
@@ -246,7 +248,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               enabled: false,
                               isLoading: false,
                               onTap: () {},
-                              buttonText: 'Submit',
+                              buttonText: LocaleKeys.editProfile_submit.tr(),
                             ),
                           );
                         },
@@ -267,48 +269,48 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   String? validateWardNumber(String value) {
     if (value.isEmpty) {
-      return 'Ward number is required';
+      return LocaleKeys.editProfile_wardError.tr();
     }
     return null;
   }
 
   String? validateFirstName(String value) {
     if (value.isEmpty) {
-      return 'First name is required';
+      return LocaleKeys.editProfile_firstNameError.tr();
     }
     return null;
   }
 
   String? validateAbout(String value) {
     if (value.isEmpty) {
-      return 'About is required';
+      return LocaleKeys.editProfile_aboutError.tr();
     }
     return null;
   }
 
   String? validateLastName(String value) {
     if (value.isEmpty) {
-      return 'Last name is required';
+      return LocaleKeys.editProfile_lastNameError.tr();
     }
     return null;
   }
 
   String? validateEmailAddress(String value) {
     if (value.isEmpty) {
-      return 'Email is required';
+      return LocaleKeys.editProfile_emailError.tr();
     }
     return null;
   }
 
   String? validateMobileNumber(String value) {
     if (value.isEmpty) {
-      return 'Mobile number is required';
+      return LocaleKeys.editProfile_mobileNumberRequiredErrorMessage.tr();
     }
     if (value.length != 10) {
-      return 'Mobile number must be 10 digits long';
+      return LocaleKeys.editProfile_mobileNumberLengthErrorMessage.tr();
     }
     if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-      return 'Mobile number can only contain digits';
+      return LocaleKeys.editProfile_mobileNumberInputTypeError.tr();
     }
     return null;
   }

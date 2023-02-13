@@ -1,5 +1,8 @@
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_detail.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_map.dart';
@@ -16,7 +19,11 @@ class GrievanceList extends StatelessWidget {
   static const routeName = '/grievanceList';
   GrievanceList({super.key});
   final TextEditingController _searchController = TextEditingController();
-
+  GlobalKey roadmaintainance = GlobalKey();
+  GlobalKey streetlighting = GlobalKey();
+  GlobalKey watersupplyanddrainage = GlobalKey();
+  GlobalKey garbagecollection = GlobalKey();
+  GlobalKey certificaterequest = GlobalKey();
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<GrievancesBloc>(context).add(
@@ -30,7 +37,7 @@ class GrievanceList extends StatelessWidget {
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: 18.0.w,
+                horizontal: AppConstants.screenPadding,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,31 +51,36 @@ class GrievanceList extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: SvgPicture.asset(
-                            'assets/icons/arrowleft.svg',
-                            color: AppColors.colorWhite,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Text(
-                          'Grievances',
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/arrowleft.svg',
+                                color: AppColors.colorWhite,
+                                height: 18.sp,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                LocaleKeys.grievancesScreen_screenTitle.tr(),
+                                style: TextStyle(
+                                  color: AppColors.colorWhite,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.1,
+                                ),
+                              )
+                            ],
                           ),
                         ),
                         const Spacer(),
-                        InkWell(
-                          onTap: () => Navigator.of(context).pushNamed(
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pushNamed(
                             GrievanceMap.routeName,
                           ),
                           child: Text(
-                            'View Map',
+                            LocaleKeys.grievancesScreen_viewMap.tr(),
                             style: TextStyle(
                               color: AppColors.colorWhite,
                               fontFamily: 'LexendDeca',
@@ -92,13 +104,14 @@ class GrievanceList extends StatelessWidget {
                       fillColor: AppColors.colorPrimaryExtraLight,
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 16.sp,
-                        vertical: 0.sp,
+                        vertical: 10.sp,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.sp),
                         borderSide: BorderSide.none,
                       ),
-                      hintText: 'Search by grievance type',
+                      hintText:
+                          LocaleKeys.grievancesScreen_grievanceSearchHint.tr(),
                       hintStyle: TextStyle(
                         color: AppColors.textColorLight,
                         fontFamily: 'LexendDeca',
@@ -114,6 +127,7 @@ class GrievanceList extends StatelessWidget {
                         child: SvgPicture.asset(
                           'assets/svg/searchfieldsuffix.svg',
                           fit: BoxFit.contain,
+                          width: 20.sp,
                         ),
                       ),
                     ),
@@ -140,14 +154,15 @@ class GrievanceList extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18.0.w),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConstants.screenPadding),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Row(
                         children: [
                           Text(
-                            'Results ordered by date and time',
+                            LocaleKeys.grievancesScreen_resultsOrderedBy.tr(),
                             style: TextStyle(
                               color: AppColors.colorGreyLight,
                               fontFamily: 'LexendDeca',
@@ -189,11 +204,11 @@ class GrievanceList extends StatelessWidget {
                             itemCount: 8,
                             itemBuilder: (context, index) => Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: 10.w,
+                                horizontal: AppConstants.screenPadding,
                                 vertical: 15.h,
                               ),
                               margin: EdgeInsets.symmetric(
-                                horizontal: 18.w,
+                                horizontal: AppConstants.screenPadding,
                                 vertical: 10.h,
                               ),
                               decoration: BoxDecoration(
@@ -276,7 +291,7 @@ class GrievanceList extends StatelessWidget {
                                           BorderRadius.circular(100.r),
                                       onTap: () {},
                                       child: Container(
-                                        padding: EdgeInsets.all(14.sp),
+                                        padding: EdgeInsets.all(18.w),
                                         decoration: const BoxDecoration(
                                           color: AppColors.colorPrimaryLight,
                                           shape: BoxShape.circle,
@@ -325,7 +340,7 @@ class GrievanceList extends StatelessWidget {
 }
 
 class GrievanceListWidget extends StatelessWidget {
-  const GrievanceListWidget({
+  GrievanceListWidget({
     Key? key,
     this.state = const GrievancesLoadedState(
       grievanceList: [],
@@ -333,6 +348,14 @@ class GrievanceListWidget extends StatelessWidget {
     ),
   }) : super(key: key);
   final GrievancesLoadedState state;
+  final Map<String, String> svgList = {
+    "roadmaintainance": 'assets/svg/roadmaintainance.svg',
+    "streetlighting": 'assets/svg/streetlighting.svg',
+    "watersupplyanddrainage": 'assets/svg/watersupplyanddrainage.svg',
+    "garbagecollection": 'assets/svg/garbagecollection.svg',
+    "certificaterequest": 'assets/svg/certificaterequest.svg',
+  };
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -344,100 +367,111 @@ class GrievanceListWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 5.h),
         itemCount: state.grievanceList.isEmpty ? 8 : state.grievanceList.length,
         itemBuilder: (context, index) {
-          return Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10.w,
-              vertical: 15.h,
-            ),
-            margin: EdgeInsets.symmetric(
-              horizontal: 18.w,
-              vertical: 10.h,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.colorPrimaryLight,
-              borderRadius: BorderRadius.circular(20.r),
-              boxShadow: const [
-                BoxShadow(
-                  offset: Offset(5, 5),
-                  blurRadius: 10,
-                  color: AppColors.cardShadowColor,
-                ),
-                BoxShadow(
-                  offset: Offset(-5, -5),
-                  blurRadius: 10,
-                  color: AppColors.colorWhite,
-                ),
-              ],
-            ),
-            width: double.infinity,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 10.w,
-                ),
-                SvgPicture.asset('assets/svg/complaint.svg'),
-                SizedBox(
-                  width: 15.w,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        state.grievanceList[index].grievanceType.toString(),
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: AppColors.cardTextColor,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        'Location - ${state.grievanceList[index].place}',
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: AppColors.cardTextColor,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        'Raised by - ${state.grievanceList[index].raisedBy}',
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: AppColors.cardTextColor,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        'Date - ${DateFormatter.formatDate(
-                          state.grievanceList[index].timeStamp.toString(),
-                        )}',
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: AppColors.cardTextColor,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
+          return GestureDetector(
+            // borderRadius: BorderRadius.circular(20.r),
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(GrievanceDetail.routeName, arguments: {
+                "state": state,
+                "index": index,
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 10.w,
+                vertical: 15.h,
+              ),
+              margin: EdgeInsets.symmetric(
+                horizontal: AppConstants.screenPadding,
+                vertical: 10.h,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.colorPrimaryLight,
+                borderRadius: BorderRadius.circular(20.r),
+                boxShadow: const [
+                  BoxShadow(
+                    offset: Offset(5, 5),
+                    blurRadius: 10,
+                    color: AppColors.cardShadowColor,
                   ),
-                ),
-                SizedBox(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(100.r),
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(GrievanceDetail.routeName, arguments: {
-                        "state": state,
-                        "index": index,
-                      });
-                    },
+                  BoxShadow(
+                    offset: Offset(-5, -5),
+                    blurRadius: 10,
+                    color: AppColors.colorWhite,
+                  ),
+                ],
+              ),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                  SvgPicture.asset(
+                    svgList[state.grievanceList[index].grievanceType!
+                            .replaceAll(' ', '')
+                            .toString()
+                            .toLowerCase()]
+                        .toString(),
+                    width: 60.w,
+                  ),
+                  SizedBox(
+                    width: 15.w,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          state.grievanceList[index].grievanceType.toString(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.cardTextColor,
+                            fontFamily: 'LexendDeca',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '${LocaleKeys.grievancesScreen_locaiton.tr()} - ${state.grievanceList[index].place}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.cardTextColor,
+                            fontFamily: 'LexendDeca',
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          '${LocaleKeys.grievancesScreen_reporter.tr()} - ${state.grievanceList[index].raisedBy}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.cardTextColor,
+                            fontFamily: 'LexendDeca',
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          '${LocaleKeys.grievancesScreen_date.tr()} - ${DateFormatter.formatDate(
+                            state.grievanceList[index].timeStamp.toString(),
+                          )}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.cardTextColor,
+                            fontFamily: 'LexendDeca',
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
                     child: Container(
                       padding: EdgeInsets.all(14.sp),
                       decoration: const BoxDecoration(
@@ -459,11 +493,12 @@ class GrievanceListWidget extends StatelessWidget {
                       child: SvgPicture.asset(
                         'assets/icons/arrowright.svg',
                         color: AppColors.colorPrimary,
+                        width: 20.sp,
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

@@ -33,35 +33,40 @@ class PrimaryButton extends StatelessWidget {
         ),
         backgroundColor: AppColors.colorPrimary,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            buttonText,
-            style: TextStyle(
-              color: AppColors.colorWhite,
-              fontFamily: 'LexendDeca',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
+      child: LayoutBuilder(builder: (context, constraints) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              buttonText,
+              style: TextStyle(
+                color: AppColors.colorWhite,
+                fontFamily: 'LexendDeca',
+                fontSize: constraints.maxWidth > 600 ? 10.sp : 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-          SizedBox(
-            width: 10.w,
-          ),
-          isLoading
-              ? Center(
-                  child: SizedBox(
-                    height: 20.sp,
-                    width: 20.sp,
-                    child: const CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.colorWhite,
+            SizedBox(
+              width: 10.w,
+            ),
+            isLoading
+                ? Center(
+                    child: SizedBox(
+                      height: 20.sp,
+                      width: 20.sp,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.colorWhite,
+                      ),
                     ),
+                  )
+                : SvgPicture.asset(
+                    'assets/icons/arrowright.svg',
+                    width: constraints.maxWidth > 600 ? 16.w : 20.w,
                   ),
-                )
-              : SvgPicture.asset('assets/icons/arrowright.svg'),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }

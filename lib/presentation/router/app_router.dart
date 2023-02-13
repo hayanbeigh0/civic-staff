@@ -1,3 +1,7 @@
+import 'package:civic_staff/presentation/screens/login/activation_screen.dart';
+import 'package:civic_staff/presentation/screens/login/login.dart';
+import 'package:flutter/material.dart';
+
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_add_comment.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_audio.dart';
@@ -11,11 +15,7 @@ import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart'
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/search_user.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/user_details.dart';
-import 'package:flutter/material.dart';
-
-import 'package:civic_staff/presentation/screens/login/activation_screen.dart';
 import 'package:civic_staff/presentation/screens/home/home.dart';
-import 'package:civic_staff/presentation/screens/login/login.dart';
 
 class AppRouter {
   static Route? onGenrateRoute(RouteSettings routeSettings) {
@@ -43,7 +43,7 @@ class AppRouter {
         );
       case GrievanceMap.routeName:
         return MaterialPageRoute(
-          builder: (context) => const GrievanceMap(),
+          builder: (context) => GrievanceMap(),
         );
       case GrievanceDetail.routeName:
         return MaterialPageRoute(

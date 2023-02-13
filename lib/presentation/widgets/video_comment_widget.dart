@@ -57,7 +57,7 @@ class _VideoCommentWidgetState extends State<VideoCommentWidget> {
     return Column(
       children: [
         Container(
-          height: 150.h,
+          // height: 150.h,
           width: double.infinity,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
@@ -68,7 +68,7 @@ class _VideoCommentWidgetState extends State<VideoCommentWidget> {
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 150.h,
+                // height: 150.h,
                 child: _controller.value.isInitialized
                     ? AspectRatio(
                         aspectRatio: _controller.value.aspectRatio,
@@ -76,23 +76,27 @@ class _VideoCommentWidgetState extends State<VideoCommentWidget> {
                       )
                     : Container(),
               ),
-              Center(
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      // _controller.value.isPlaying
-                      //     ? isPlaying = true
-                      //     : isPlaying = false;
-                      isPlaying ? _controller.pause() : _controller.play();
-                    });
-                  },
-                  icon: isPlaying
-                      ? const SizedBox()
-                      : Icon(
-                          Icons.play_arrow,
-                          color: AppColors.colorWhite,
-                          size: 50.sp,
-                        ),
+              Positioned(
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isPlaying ? _controller.pause() : _controller.play();
+                      });
+                    },
+                    icon: isPlaying
+                        ? const SizedBox()
+                        : Icon(
+                            Icons.play_arrow,
+                            color: AppColors.colorWhite,
+                            size: 50.sp,
+                          ),
+                  ),
                 ),
               ),
               Positioned(

@@ -1,5 +1,9 @@
 import 'dart:developer';
 
+import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/presentation/screens/home/home.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -62,7 +66,8 @@ class _ActivationState extends State<Activation> {
             LoginShapeTop(
               child: SafeArea(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18.0.w),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConstants.screenPadding),
                   child: Stack(
                     children: [
                       Column(
@@ -70,7 +75,7 @@ class _ActivationState extends State<Activation> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Civic',
+                            LocaleKeys.appName.tr(),
                             style: TextStyle(
                               color: AppColors.colorPrimaryDark,
                               fontFamily: 'LexendDeca',
@@ -82,7 +87,7 @@ class _ActivationState extends State<Activation> {
                             height: 30.h,
                           ),
                           Text(
-                            'Welcome\nBack',
+                            LocaleKeys.loginAndActivationScreen_welcome.tr(),
                             style: TextStyle(
                               color: AppColors.colorSecondaryDark,
                               fontFamily: 'LexendDeca',
@@ -113,7 +118,8 @@ class _ActivationState extends State<Activation> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppConstants.screenPadding),
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +128,7 @@ class _ActivationState extends State<Activation> {
                     height: 20.h,
                   ),
                   Text(
-                    'Login',
+                    LocaleKeys.loginAndActivationScreen_login.tr(),
                     style: TextStyle(
                       color: AppColors.colorPrimary,
                       fontFamily: 'LexendDeca',
@@ -139,7 +145,7 @@ class _ActivationState extends State<Activation> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Enter OTP',
+                          LocaleKeys.loginAndActivationScreen_enterOtp.tr(),
                           style: TextStyle(
                             color: AppColors.textColorDark,
                             fontFamily: 'LexendDeca',
@@ -285,7 +291,6 @@ class _ActivationState extends State<Activation> {
                                             textAlign: TextAlign.center,
                                             focusNode: focusNode3,
                                             onChanged: (value) {
-                                              log('Changed');
                                               if (value.length == 1) {
                                                 FocusScope.of(context)
                                                     .requestFocus(focusNode4);
@@ -344,6 +349,18 @@ class _ActivationState extends State<Activation> {
                                               if (value.length == 1) {
                                                 FocusScope.of(context)
                                                     .unfocus();
+                                                if (otpController1.text.isNotEmpty &&
+                                                    otpController2
+                                                        .text.isNotEmpty &&
+                                                    otpController3
+                                                        .text.isNotEmpty &&
+                                                    otpController4
+                                                        .text.isNotEmpty) {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                    HomeScreen.routeName,
+                                                  );
+                                                }
                                               }
                                               if (value.isEmpty) {
                                                 FocusScope.of(context)
@@ -387,7 +404,9 @@ class _ActivationState extends State<Activation> {
                               Row(
                                 children: [
                                   Text(
-                                    'Didn’t receive the OTP yet?',
+                                    LocaleKeys
+                                        .loginAndActivationScreen_otpNotRecieved
+                                        .tr(),
                                     style: TextStyle(
                                       color: AppColors.textColorDark,
                                       fontFamily: 'LexendDeca',
@@ -399,7 +418,9 @@ class _ActivationState extends State<Activation> {
                                     width: 5.w,
                                   ),
                                   Text(
-                                    'Resend OTP',
+                                    LocaleKeys
+                                        .loginAndActivationScreen_resendOtp
+                                        .tr(),
                                     style: TextStyle(
                                       color: AppColors.textColorRed,
                                       fontFamily: 'LexendDeca',
@@ -419,7 +440,9 @@ class _ActivationState extends State<Activation> {
                           alignment: Alignment.centerRight,
                           child: PrimaryButton(
                             isLoading: false,
-                            buttonText: 'Continue',
+                            buttonText: LocaleKeys
+                                .loginAndActivationScreen_continue
+                                .tr(),
                             onTap: () {
                               if (_formKey.currentState!.validate()) {
                                 Navigator.of(context).pushNamed(

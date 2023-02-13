@@ -11,36 +11,38 @@ class LoginShapeBottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipPath(
-          clipper: ShapeClipper(
-            leftHorizontallOffset: 60.w,
-            rightVerticalOffset: 10.h,
-            curvatureHeight: 5.h,
-            curvatureWidth: 1.5.w,
+    return LayoutBuilder(builder: (context, constraints) {
+      return Stack(
+        children: [
+          ClipPath(
+            clipper: ShapeClipper(
+              leftHorizontallOffset: constraints.maxWidth > 600 ? 0.w : 60.w,
+              rightVerticalOffset: 10.h,
+              curvatureHeight: 5.h,
+              curvatureWidth: constraints.maxWidth > 600 ? 0.5.w : 1.5.w,
+            ),
+            child: Container(
+              color: AppColors.colorPrimary,
+              height: 70.h,
+              width: double.infinity,
+            ),
           ),
-          child: Container(
-            color: AppColors.colorPrimary,
-            height: 70.h,
-            width: double.infinity,
+          ClipPath(
+            clipper: ShapeClipper(
+              leftHorizontallOffset: constraints.maxWidth > 600 ? -50.w : 0.w,
+              rightVerticalOffset: constraints.maxWidth > 600 ? 20.h : 18.h,
+              curvatureHeight: 25.h,
+              curvatureWidth: constraints.maxWidth > 600 ? 0.45.w : 1.4.w,
+            ),
+            child: Container(
+              color: AppColors.colorPrimaryExtraLight,
+              height: 70.h,
+              width: double.infinity,
+            ),
           ),
-        ),
-        ClipPath(
-          clipper: ShapeClipper(
-            leftHorizontallOffset: 0.w,
-            rightVerticalOffset: 18.h,
-            curvatureHeight: 25.h,
-            curvatureWidth: 1.4.w,
-          ),
-          child: Container(
-            color: AppColors.colorPrimaryExtraLight,
-            height: 70.h,
-            width: double.infinity,
-          ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }
 
@@ -61,7 +63,7 @@ class ShapeClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path path = Path();
     path.moveTo(
-      (size.width / 2) - leftHorizontallOffset,
+      (size.width / 2),
       size.height,
     );
     path.lineTo(

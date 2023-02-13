@@ -65,7 +65,7 @@ class PrimaryTextField extends StatelessWidget {
             fillColor: AppColors.colorPrimaryLight,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16.sp,
-              vertical: 0.sp,
+              vertical: 10.sp,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.sp),

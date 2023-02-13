@@ -18,7 +18,7 @@ class PhotoCommentWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: 150.h,
+          // height: 150.h,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
@@ -26,10 +26,13 @@ class PhotoCommentWidget extends StatelessWidget {
           child: Stack(
             children: [
               SizedBox(
-                height: double.infinity,
-                child: Image.network(
-                  commentList[commentListIndex].imageUrl.toString(),
-                  fit: BoxFit.cover,
+                // height: double.infinity,
+                child: AspectRatio(
+                  aspectRatio: 1.8,
+                  child: Image.network(
+                    commentList[commentListIndex].imageUrl.toString(),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               Positioned(
