@@ -9,6 +9,7 @@ import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.da
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/search_user.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -85,13 +86,7 @@ class HomeScreen extends StatelessWidget {
                     bottom: false,
                     child: Text(
                       LocaleKeys.appName.tr(),
-                      style: TextStyle(
-                        color: AppColors.colorWhite,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w400,
-                        height: 1.1,
-                      ),
+                      style: AppStyles.dashboardAppNameStyle,
                     ),
                   ),
                   SizedBox(
@@ -112,13 +107,7 @@ class HomeScreen extends StatelessWidget {
                         borderSide: BorderSide.none,
                       ),
                       hintText: LocaleKeys.homeScreen_search.tr(),
-                      hintStyle: TextStyle(
-                        color: AppColors.textColorLight,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        height: 1.1,
-                      ),
+                      hintStyle: AppStyles.searchHintStyle,
                       suffixIcon: Padding(
                         padding: EdgeInsets.symmetric(
                           vertical: 10.sp,
@@ -212,13 +201,7 @@ class HomeScreen extends StatelessWidget {
                                     child: Text(
                                       state.gridItems[index].gridTileTitle,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: AppColors.textColorDark,
-                                        fontFamily: 'LexendDeca',
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.1,
-                                      ),
+                                      style: AppStyles.gridTileTitle,
                                     ),
                                   ),
                                 ),

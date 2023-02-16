@@ -30,12 +30,7 @@ class _PrimaryDropdownState extends State<PrimaryDropdown> {
       children: [
         Text(
           'Ward',
-          style: TextStyle(
-            color: AppColors.textColorDark,
-            fontFamily: 'LexendDeca',
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
-          ),
+          style: AppStyles.inputAndDisplayTitleStyle,
         ),
         SizedBox(
           height: 5.h,
@@ -54,24 +49,10 @@ class _PrimaryDropdownState extends State<PrimaryDropdown> {
             ),
             hint: Text(
               widget.dropdownValue.toString(),
-              style: TextStyle(
-                overflow: TextOverflow.fade,
-                color: AppColors.textColorDark,
-                fontFamily: 'LexendDeca',
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w300,
-                height: 1.1,
-              ),
+              style: AppStyles.dropdownTextStyle,
             ),
             decoration: InputDecoration(
-              labelStyle: TextStyle(
-                overflow: TextOverflow.fade,
-                color: AppColors.textColorDark,
-                fontFamily: 'LexendDeca',
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w300,
-                height: 1.1,
-              ),
+              labelStyle: AppStyles.dropdownTextStyle,
               border: InputBorder.none,
             ),
             items: widget.dropdownList
@@ -81,14 +62,7 @@ class _PrimaryDropdownState extends State<PrimaryDropdown> {
                     child: Text(
                       item,
                       maxLines: 1,
-                      style: TextStyle(
-                        overflow: TextOverflow.fade,
-                        color: AppColors.textColorDark,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w300,
-                        height: 1.1,
-                      ),
+                      style: AppStyles.dropdownTextStyle,
                     ),
                   ),
                 )

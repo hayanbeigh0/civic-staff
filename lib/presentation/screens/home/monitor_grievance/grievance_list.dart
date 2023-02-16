@@ -2,6 +2,7 @@ import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_detail.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -63,13 +64,7 @@ class GrievanceList extends StatelessWidget {
                               ),
                               Text(
                                 LocaleKeys.grievancesScreen_screenTitle.tr(),
-                                style: TextStyle(
-                                  color: AppColors.colorWhite,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.1,
-                                ),
+                                style: AppStyles.screenTitleStyle,
                               )
                             ],
                           ),
@@ -81,13 +76,7 @@ class GrievanceList extends StatelessWidget {
                           ),
                           child: Text(
                             LocaleKeys.grievancesScreen_viewMap.tr(),
-                            style: TextStyle(
-                              color: AppColors.colorWhite,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              height: 1.1,
-                            ),
+                            style: AppStyles.appBarActionsTextStyle,
                           ),
                         ),
                       ],
@@ -112,13 +101,7 @@ class GrievanceList extends StatelessWidget {
                       ),
                       hintText:
                           LocaleKeys.grievancesScreen_grievanceSearchHint.tr(),
-                      hintStyle: TextStyle(
-                        color: AppColors.textColorLight,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        height: 1.1,
-                      ),
+                      hintStyle: AppStyles.searchHintStyle,
                       suffixIcon: Padding(
                         padding: EdgeInsets.symmetric(
                           vertical: 10.sp,
@@ -163,26 +146,9 @@ class GrievanceList extends StatelessWidget {
                         children: [
                           Text(
                             LocaleKeys.grievancesScreen_resultsOrderedBy.tr(),
-                            style: TextStyle(
-                              color: AppColors.colorGreyLight,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
+                            style: AppStyles.listOrderedByTextStyle,
                           ),
                           const Spacer(),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: Text(
-                          //     'Change Filter',
-                          //     style: TextStyle(
-                          //       color: AppColors.colorPrimary,
-                          //       fontFamily: 'LexendDeca',
-                          //       fontSize: 9.sp,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       ),
                       Divider(
@@ -245,42 +211,22 @@ class GrievanceList extends StatelessWidget {
                                         Text(
                                           '',
                                           maxLines: 1,
-                                          style: TextStyle(
-                                            color: AppColors.cardTextColor,
-                                            fontFamily: 'LexendDeca',
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                          style: AppStyles.cardTextStyle,
                                         ),
                                         Text(
                                           '',
                                           maxLines: 1,
-                                          style: TextStyle(
-                                            color: AppColors.cardTextColor,
-                                            fontFamily: 'LexendDeca',
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          style: AppStyles.cardTextStyle,
                                         ),
                                         Text(
                                           '',
                                           maxLines: 1,
-                                          style: TextStyle(
-                                            color: AppColors.cardTextColor,
-                                            fontFamily: 'LexendDeca',
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          style: AppStyles.cardTextStyle,
                                         ),
                                         Text(
                                           '',
                                           maxLines: 1,
-                                          style: TextStyle(
-                                            color: AppColors.cardTextColor,
-                                            fontFamily: 'LexendDeca',
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          style: AppStyles.cardTextStyle,
                                         ),
                                       ],
                                     ),
@@ -426,20 +372,13 @@ class GrievanceListWidget extends StatelessWidget {
                           state.grievanceList[index].grievanceType.toString(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: AppColors.cardTextColor,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppStyles.cardTextStyle,
                         ),
                         Text(
                           '${LocaleKeys.grievancesScreen_locaiton.tr()} - ${state.grievanceList[index].place}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: AppColors.cardTextColor,
-                            fontFamily: 'LexendDeca',
+                          style: AppStyles.cardTextStyle.copyWith(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
                           ),
@@ -448,9 +387,7 @@ class GrievanceListWidget extends StatelessWidget {
                           '${LocaleKeys.grievancesScreen_reporter.tr()} - ${state.grievanceList[index].raisedBy}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: AppColors.cardTextColor,
-                            fontFamily: 'LexendDeca',
+                          style: AppStyles.cardTextStyle.copyWith(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
                           ),
@@ -461,9 +398,7 @@ class GrievanceListWidget extends StatelessWidget {
                           )}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: AppColors.cardTextColor,
-                            fontFamily: 'LexendDeca',
+                          style: AppStyles.cardTextStyle.copyWith(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w400,
                           ),

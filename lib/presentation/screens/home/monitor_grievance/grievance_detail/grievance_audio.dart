@@ -1,5 +1,6 @@
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
@@ -56,13 +57,7 @@ class GrievanceAudio extends StatelessWidget {
                               ),
                               Text(
                                 LocaleKeys.grievanceDetail_audio.tr(),
-                                style: TextStyle(
-                                  color: AppColors.colorWhite,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.1,
-                                ),
+                                style: AppStyles.screenTitleStyle,
                               ),
                             ],
                           ),
@@ -144,12 +139,7 @@ class GrievanceAudio extends StatelessWidget {
                       ),
                       Text(
                         '${LocaleKeys.grievanceDetail_audio.tr()} - ${index + 1}',
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.audioTitleTextStyle,
                       ),
                     ],
                   );

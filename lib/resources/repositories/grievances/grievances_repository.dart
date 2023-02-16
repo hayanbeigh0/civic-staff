@@ -37,6 +37,7 @@ class GrievancesRepository {
     final grievanceIndex = grievanceList
         .indexWhere((element) => element.grievanceId == grievanceId);
     grievanceList[grievanceIndex] = newGrievance;
+    log('new expected completion: ${grievanceList[grievanceIndex].expectedCompletion}');
   }
 
   updateExpectedCompletion(

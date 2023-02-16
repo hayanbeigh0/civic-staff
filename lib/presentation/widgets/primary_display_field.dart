@@ -1,4 +1,5 @@
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -24,12 +25,7 @@ class PrimaryDisplayField extends StatelessWidget {
             ? const SizedBox()
             : Text(
                 title,
-                style: TextStyle(
-                  color: AppColors.textColorDark,
-                  fontFamily: 'LexendDeca',
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: AppStyles.inputAndDisplayTitleStyle,
               ),
         SizedBox(
           height: 5.h,

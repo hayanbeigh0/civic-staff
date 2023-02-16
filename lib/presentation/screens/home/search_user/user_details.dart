@@ -61,13 +61,7 @@ class UserDetails extends StatelessWidget {
                         ),
                         Text(
                           LocaleKeys.userDetails_screenTitle.tr(),
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
-                          ),
+                          style: AppStyles.screenTitleStyle,
                         ),
                         const Spacer(),
                         BlocListener<UsersBloc, SearchUsersState>(
@@ -94,13 +88,7 @@ class UserDetails extends StatelessWidget {
                             },
                             child: Text(
                               LocaleKeys.profile_edit.tr(),
-                              style: TextStyle(
-                                color: AppColors.colorWhite,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                                height: 1.1,
-                              ),
+                              style: AppStyles.appBarActionsTextStyle,
                             ),
                           ),
                         ),
@@ -128,26 +116,14 @@ class UserDetails extends StatelessWidget {
                         children: [
                           Text(
                             user.firstName.toString(),
-                            style: TextStyle(
-                              color: AppColors.colorWhite,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
-                              height: 1,
-                            ),
+                            style: AppStyles.userDisplayNameTextStyle,
                           ),
                           SizedBox(
                             height: 5.h,
                           ),
                           Text(
                             user.city.toString(),
-                            style: TextStyle(
-                              color: AppColors.colorWhite,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w600,
-                              height: 1,
-                            ),
+                            style: AppStyles.userDisplayCityTextStyle,
                           ),
                         ],
                       ),
@@ -177,13 +153,7 @@ class UserDetails extends StatelessWidget {
                         },
                         child: Text(
                           user.mobileNumber.toString(),
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1,
-                          ),
+                          style: AppStyles.userContactDetailsMobileNumberStyle,
                         ),
                       ),
                       const Spacer(),
@@ -198,13 +168,7 @@ class UserDetails extends StatelessWidget {
                         },
                         child: Text(
                           LocaleKeys.userDetails_call.tr(),
-                          style: TextStyle(
-                            color: AppColors.colorTextGreen,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w500,
-                            height: 1,
-                          ),
+                          style: AppStyles.userDetailsCallTextStyle,
                         ),
                       ),
                     ],
@@ -224,13 +188,7 @@ class UserDetails extends StatelessWidget {
                       ),
                       Text(
                         user.email.toString(),
-                        style: TextStyle(
-                          color: AppColors.colorWhite,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w400,
-                          height: 1,
-                        ),
+                        style: AppStyles.userContactDetailsMobileNumberStyle,
                       )
                     ],
                   ),
@@ -250,12 +208,7 @@ class UserDetails extends StatelessWidget {
                   children: [
                     Text(
                       LocaleKeys.userDetails_about.tr(),
-                      style: TextStyle(
-                        color: AppColors.textColorDark,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: AppStyles.inputAndDisplayTitleStyle,
                     ),
                     SizedBox(
                       height: 5.h,
@@ -269,14 +222,7 @@ class UserDetails extends StatelessWidget {
                       padding: EdgeInsets.all(10.sp),
                       child: Text(
                         user.about.toString(),
-                        style: TextStyle(
-                          overflow: TextOverflow.fade,
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w300,
-                          height: 1.1,
-                        ),
+                        style: AppStyles.primaryTextFieldStyle,
                       ),
                     ),
                     SizedBox(
@@ -298,12 +244,7 @@ class UserDetails extends StatelessWidget {
                     ),
                     Text(
                       LocaleKeys.userDetails_location.tr(),
-                      style: TextStyle(
-                        color: AppColors.textColorDark,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: AppStyles.inputAndDisplayTitleStyle,
                     ),
                     SizedBox(
                       height: 5.h,

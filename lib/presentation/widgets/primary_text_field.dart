@@ -15,7 +15,7 @@ class PrimaryTextField extends StatelessWidget {
     this.fieldValidator,
     this.focusNode,
     this.inputFormatters,
-    this.onEditingComplete,
+    this.onFieldSubmitted,
   });
   final String title;
   final String hintText;
@@ -27,7 +27,7 @@ class PrimaryTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   // final String fieldValidator;
   final String? Function(String?)? fieldValidator;
-  final void Function()? onEditingComplete;
+  final void Function(String?)? onFieldSubmitted;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,28 +37,16 @@ class PrimaryTextField extends StatelessWidget {
             ? const SizedBox()
             : Text(
                 title,
-                style: TextStyle(
-                  color: AppColors.textColorDark,
-                  fontFamily: 'LexendDeca',
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: AppStyles.inputAndDisplayTitleStyle,
               ),
         SizedBox(
           height: 5.h,
         ),
         TextFormField(
-          onEditingComplete: onEditingComplete,
+          onFieldSubmitted: onFieldSubmitted,
           focusNode: focusNode,
           maxLines: maxLines,
-          style: TextStyle(
-            overflow: TextOverflow.fade,
-            color: AppColors.textColorDark,
-            fontFamily: 'LexendDeca',
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w300,
-            height: 1.1,
-          ),
+          style: AppStyles.primaryTextFieldStyle,
           inputFormatters: inputFormatters,
           controller: textEditingController,
           enabled: true,
@@ -77,14 +65,7 @@ class PrimaryTextField extends StatelessWidget {
             hintText: hintText,
             hintMaxLines: maxLines,
             errorStyle: AppStyles.errorTextStyle,
-            hintStyle: TextStyle(
-              overflow: TextOverflow.fade,
-              color: AppColors.textColorLight,
-              fontFamily: 'LexendDeca',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w300,
-              height: 1.1,
-            ),
+            hintStyle: AppStyles.primaryTextFieldHintStyle,
             suffixIcon: suffixIcon,
           ),
         ),

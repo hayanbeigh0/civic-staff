@@ -105,13 +105,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                         ),
                         Text(
                           'Edit User',
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
-                          ),
+                          style: AppStyles.screenTitleStyle,
                         ),
                       ],
                     ),
@@ -187,12 +181,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       ),
                       Text(
                         'Muncipality',
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                       SizedBox(
                         height: 5.h,
@@ -212,24 +201,10 @@ class _EditUserScreenState extends State<EditUserScreen> {
                           ),
                           hint: Text(
                             'Select muncipality',
-                            style: TextStyle(
-                              overflow: TextOverflow.fade,
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                              height: 1.1,
-                            ),
+                            style: AppStyles.dropdownTextStyle,
                           ),
                           decoration: InputDecoration(
-                            labelStyle: TextStyle(
-                              overflow: TextOverflow.fade,
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                              height: 1.1,
-                            ),
+                            labelStyle: AppStyles.dropdownTextStyle,
                             border: InputBorder.none,
                           ),
                           items: muncipality
@@ -239,14 +214,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                   child: Text(
                                     item,
                                     maxLines: 1,
-                                    style: TextStyle(
-                                      overflow: TextOverflow.fade,
-                                      color: AppColors.textColorDark,
-                                      fontFamily: 'LexendDeca',
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w300,
-                                      height: 1.1,
-                                    ),
+                                    style: AppStyles.dropdownTextStyle,
                                   ),
                                 ),
                               )
@@ -282,12 +250,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       ),
                       Text(
                         LocaleKeys.enrollUsers_ward.tr(),
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                       SizedBox(
                         height: 5.h,
@@ -308,24 +271,10 @@ class _EditUserScreenState extends State<EditUserScreen> {
                           hint: Text(
                             LocaleKeys.enrollUsers_wardDropdownInitialValue
                                 .tr(),
-                            style: TextStyle(
-                              overflow: TextOverflow.fade,
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                              height: 1.1,
-                            ),
+                            style: AppStyles.dropdownTextStyle,
                           ),
                           decoration: InputDecoration(
-                            labelStyle: TextStyle(
-                              overflow: TextOverflow.fade,
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                              height: 1.1,
-                            ),
+                            labelStyle: AppStyles.dropdownTextStyle,
                             border: InputBorder.none,
                           ),
                           items: wards
@@ -335,14 +284,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                   child: Text(
                                     item,
                                     maxLines: 1,
-                                    style: TextStyle(
-                                      overflow: TextOverflow.fade,
-                                      color: AppColors.textColorDark,
-                                      fontFamily: 'LexendDeca',
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w300,
-                                      height: 1.1,
-                                    ),
+                                    style: AppStyles.dropdownTextStyle,
                                   ),
                                 ),
                               )
@@ -376,12 +318,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       ),
                       Text(
                         LocaleKeys.editProfile_location.tr(),
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                       SizedBox(
                         height: 5.h,

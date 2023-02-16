@@ -5,6 +5,7 @@ import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/models/my_profile.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
@@ -83,13 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         Text(
                           LocaleKeys.profile_screenTitle.tr(),
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
-                          ),
+                          style: AppStyles.screenTitleStyle,
                         ),
                       ],
                     ),
@@ -160,50 +155,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         hintText: LocaleKeys.editProfile_aboutHint.tr(),
                         textEditingController: aboutController,
                       ),
-                      // SizedBox(
-                      //   height: 12.h,
-                      // ),
-                      // Text(
-                      //   LocaleKeys.editProfile_location.tr(),
-                      //   style: TextStyle(
-                      //     color: AppColors.textColorDark,
-                      //     fontFamily: 'LexendDeca',
-                      //     fontSize: 12.sp,
-                      //     fontWeight: FontWeight.w500,
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 5.h,
-                      // ),
-                      // Stack(
-                      //   children: [
-                      //     LocationMapField(
-                      //       zoomEnabled: true,
-                      //       mapController: _controller,
-                      //       latitude: double.parse(
-                      //         widget.myProfile.latitude.toString(),
-                      //       ),
-                      //       longitude: double.parse(
-                      //         widget.myProfile.longitude.toString(),
-                      //       ),
-                      //     ),
-                      //     Container(
-                      //       height: 180.h,
-                      //       alignment: Alignment.center,
-                      //       child: Center(
-                      //         child: Transform.translate(
-                      //           offset: Offset(0, -10.h),
-                      //           child: SvgPicture.asset(
-                      //             'assets/svg/marker.svg',
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                      // SizedBox(
-                      //   height: 12.h,
-                      // ),
                       SizedBox(
                         height: 50.h,
                       ),

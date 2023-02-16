@@ -1,3 +1,4 @@
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
@@ -50,12 +51,7 @@ class PhotoCommentWidget extends StatelessWidget {
                     DateFormatter.formatDateTime(
                       commentList[commentListIndex].timeStamp.toString(),
                     ),
-                    style: TextStyle(
-                      color: AppColors.colorWhite,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: AppStyles.dateTextWhiteStyle,
                   ),
                 ),
               ),

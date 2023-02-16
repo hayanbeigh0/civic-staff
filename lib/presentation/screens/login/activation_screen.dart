@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/screens/home/home.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,24 +77,14 @@ class _ActivationState extends State<Activation> {
                         children: [
                           Text(
                             LocaleKeys.appName.tr(),
-                            style: TextStyle(
-                              color: AppColors.colorPrimaryDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 34.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: AppStyles.loginScreensAppNameTextStyle,
                           ),
                           SizedBox(
                             height: 30.h,
                           ),
                           Text(
                             LocaleKeys.loginAndActivationScreen_welcome.tr(),
-                            style: TextStyle(
-                              color: AppColors.colorSecondaryDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: AppStyles.loginScreensWelcomeTextStyle,
                           ),
                         ],
                       ),
@@ -129,12 +120,7 @@ class _ActivationState extends State<Activation> {
                   ),
                   Text(
                     LocaleKeys.loginAndActivationScreen_login.tr(),
-                    style: TextStyle(
-                      color: AppColors.colorPrimary,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppStyles.loginScreensHeadingTextStyle,
                   ),
                   SizedBox(
                     height: 30.h,
@@ -146,12 +132,7 @@ class _ActivationState extends State<Activation> {
                       children: [
                         Text(
                           LocaleKeys.loginAndActivationScreen_enterOtp.tr(),
-                          style: TextStyle(
-                            color: AppColors.textColorDark,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: AppStyles.loginScreensInputFieldTitleTextStyle,
                         ),
                         SizedBox(
                           height: 5.h,
@@ -407,12 +388,8 @@ class _ActivationState extends State<Activation> {
                                     LocaleKeys
                                         .loginAndActivationScreen_otpNotRecieved
                                         .tr(),
-                                    style: TextStyle(
-                                      color: AppColors.textColorDark,
-                                      fontFamily: 'LexendDeca',
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    style: AppStyles.inputAndDisplayTitleStyle
+                                        .copyWith(fontSize: 400),
                                   ),
                                   SizedBox(
                                     width: 5.w,
@@ -421,12 +398,8 @@ class _ActivationState extends State<Activation> {
                                     LocaleKeys
                                         .loginAndActivationScreen_resendOtp
                                         .tr(),
-                                    style: TextStyle(
-                                      color: AppColors.textColorRed,
-                                      fontFamily: 'LexendDeca',
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                    style: AppStyles
+                                        .loginScreensResendOtpTextStyle,
                                   ),
                                 ],
                               )

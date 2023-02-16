@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/date_formatter.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,7 +49,6 @@ class AudioCommentWidget extends StatelessWidget {
                   audioUrl: commentList[commentListIndex].audioUrl.toString(),
                 ),
               ),
-              // SizedBox(height: 2.h),
               Container(
                 width: double.infinity,
                 alignment: Alignment.bottomRight,
@@ -56,14 +56,7 @@ class AudioCommentWidget extends StatelessWidget {
                   DateFormatter.formatDateTime(
                     commentList[commentListIndex].timeStamp.toString(),
                   ),
-                  style: TextStyle(
-                    overflow: TextOverflow.fade,
-                    color: AppColors.textColorDark,
-                    fontFamily: 'LexendDeca',
-                    fontSize: 8.sp,
-                    fontWeight: FontWeight.w300,
-                    height: 1.1,
-                  ),
+                  style: AppStyles.dateTextDarkStyle,
                 ),
               ),
             ],

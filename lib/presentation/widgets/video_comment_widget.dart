@@ -2,6 +2,7 @@ import 'package:chewie/chewie.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/date_formatter.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/comment_list.dart';
 import 'package:civic_staff/presentation/widgets/video_widget.dart';
 import 'package:flutter/material.dart';
@@ -162,12 +163,7 @@ class _VideoCommentWidgetState extends State<VideoCommentWidget> {
                       widget.commentList[widget.commentListIndex].timeStamp
                           .toString(),
                     ),
-                    style: TextStyle(
-                      color: AppColors.colorWhite,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: AppStyles.dateTextWhiteStyle,
                   ),
                 ),
               ),

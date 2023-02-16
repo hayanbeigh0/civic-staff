@@ -1,5 +1,6 @@
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -92,13 +93,7 @@ class _SearchUserState extends State<SearchUser> {
                       children: [
                         Text(
                           LocaleKeys.searchUsers_screenTitle.tr(),
-                          style: TextStyle(
-                            color: AppColors.colorWhite,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
-                          ),
+                          style: AppStyles.screenTitleStyle,
                         ),
                         const Spacer(),
                         IconButton(
@@ -154,13 +149,7 @@ class _SearchUserState extends State<SearchUser> {
                         borderSide: BorderSide.none,
                       ),
                       hintText: LocaleKeys.searchUsers_searchFieldHint.tr(),
-                      hintStyle: TextStyle(
-                        color: AppColors.textColorLight,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        height: 1.1,
-                      ),
+                      hintStyle: AppStyles.searchHintStyle,
                       suffixIcon: Padding(
                         padding: EdgeInsets.symmetric(
                           vertical: 10.sp,
@@ -196,12 +185,7 @@ class _SearchUserState extends State<SearchUser> {
                           children: [
                             Text(
                               '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(state.selectedFilterNumber)}',
-                              style: TextStyle(
-                                color: AppColors.colorGreyLight,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 9.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
+                              style: AppStyles.listOrderedByTextStyle,
                             ),
                             const Spacer(),
                           ],
@@ -231,12 +215,7 @@ class _SearchUserState extends State<SearchUser> {
                                 selectedFilterNumber.toString(),
                               ),
                             )}',
-                            style: TextStyle(
-                              color: AppColors.colorGreyLight,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.w400,
-                            ),
+                            style: AppStyles.listOrderedByTextStyle,
                           ),
                           const Spacer(),
                         ],
@@ -335,32 +314,17 @@ class _SearchUserState extends State<SearchUser> {
                   Text(
                     state.userList[index].firstName.toString(),
                     maxLines: 1,
-                    style: TextStyle(
-                      color: AppColors.cardTextColor,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.userCardTitleTextStyle,
                   ),
                   Text(
                     '${LocaleKeys.userDetails_location.tr()} - ${state.userList[index].city}',
                     maxLines: 1,
-                    style: TextStyle(
-                      color: AppColors.cardTextColor,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    style: AppStyles.userCardTextStyle,
                   ),
                   Text(
                     '${LocaleKeys.userDetails_mobile.tr()} - ${state.userList[index].mobileNumber}',
                     maxLines: 1,
-                    style: TextStyle(
-                      color: AppColors.cardTextColor,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    style: AppStyles.userCardTextStyle,
                   ),
                 ],
               ),
@@ -430,12 +394,8 @@ class _SearchUserState extends State<SearchUser> {
                     children: [
                       Text(
                         '${LocaleKeys.searchUsers_filterBy.tr()}:',
-                        style: TextStyle(
-                          color: AppColors.colorPrimaryDark,
-                          fontFamily: 'LexendDeca',
+                        style: AppStyles.screenTitleStyle.copyWith(
                           fontSize: 16.sp,
-                          fontWeight: FontWeight.w400,
-                          height: 1.1,
                         ),
                       ),
                       SizedBox(
@@ -477,14 +437,10 @@ class _SearchUserState extends State<SearchUser> {
                               }),
                           Text(
                             LocaleKeys.searchUsers_mobileNumber.tr(),
-                            style: TextStyle(
+                            style: AppStyles.searchHintStyle.copyWith(
                               color: AppColors.colorPrimaryDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              height: 1.1,
                             ),
-                          )
+                          ),
                         ],
                       ),
                       Row(

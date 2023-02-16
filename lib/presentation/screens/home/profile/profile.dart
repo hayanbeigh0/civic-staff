@@ -6,6 +6,7 @@ import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart';
 import 'package:civic_staff/presentation/screens/login/login.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:civic_staff/presentation/widgets/secondary_button.dart';
@@ -65,13 +66,7 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     Text(
                                       LocaleKeys.profile_screenTitle.tr(),
-                                      style: TextStyle(
-                                        color: AppColors.colorWhite,
-                                        fontFamily: 'LexendDeca',
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.w400,
-                                        height: 1.1,
-                                      ),
+                                      style: AppStyles.screenTitleStyle,
                                     ),
                                   ],
                                 ),
@@ -90,13 +85,7 @@ class ProfileScreen extends StatelessWidget {
                                 },
                                 child: Text(
                                   LocaleKeys.profile_edit.tr(),
-                                  style: TextStyle(
-                                    color: AppColors.colorWhite,
-                                    fontFamily: 'LexendDeca',
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.1,
-                                  ),
+                                  style: AppStyles.appBarActionsTextStyle,
                                 ),
                               ),
                             ],
@@ -124,26 +113,14 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   state.myProfile.firstName.toString(),
-                                  style: TextStyle(
-                                    color: AppColors.colorWhite,
-                                    fontFamily: 'LexendDeca',
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w700,
-                                    height: 1,
-                                  ),
+                                  style: AppStyles.userDisplayNameTextStyle,
                                 ),
                                 SizedBox(
                                   height: 5.h,
                                 ),
                                 Text(
                                   state.myProfile.city.toString(),
-                                  style: TextStyle(
-                                    color: AppColors.colorWhite,
-                                    fontFamily: 'LexendDeca',
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1,
-                                  ),
+                                  style: AppStyles.userDisplayCityTextStyle,
                                 ),
                               ],
                             ),
@@ -164,12 +141,9 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             Text(
                               state.myProfile.mobileNumber.toString(),
-                              style: TextStyle(
-                                color: AppColors.colorWhite,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 10.sp,
+                              style:
+                                  AppStyles.userDisplayCityTextStyle.copyWith(
                                 fontWeight: FontWeight.w400,
-                                height: 1,
                               ),
                             ),
                             const Spacer(),
@@ -190,12 +164,9 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             Text(
                               state.myProfile.email.toString(),
-                              style: TextStyle(
-                                color: AppColors.colorWhite,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 10.sp,
+                              style:
+                                  AppStyles.userDisplayCityTextStyle.copyWith(
                                 fontWeight: FontWeight.w400,
-                                height: 1,
                               ),
                             )
                           ],
@@ -217,12 +188,7 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           Text(
                             LocaleKeys.profile_about.tr(),
-                            style: TextStyle(
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: AppStyles.inputAndDisplayTitleStyle,
                           ),
                           SizedBox(
                             height: 5.h,
@@ -235,62 +201,15 @@ class ProfileScreen extends StatelessWidget {
                             padding: EdgeInsets.all(10.sp),
                             child: Text(
                               state.myProfile.about.toString(),
-                              style: TextStyle(
-                                overflow: TextOverflow.fade,
-                                color: AppColors.textColorDark,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w300,
-                                height: 1.1,
-                              ),
+                              style: AppStyles.primaryTextFieldStyle,
                             ),
                           ),
-                          // SizedBox(
-                          //   height: 12.h,
-                          // ),
-                          // Text(
-                          //   LocaleKeys.profile_location.tr(),
-                          //   style: TextStyle(
-                          //     color: AppColors.textColorDark,
-                          //     fontFamily: 'LexendDeca',
-                          //     fontSize: 12.sp,
-                          //     fontWeight: FontWeight.w500,
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   height: 5.h,
-                          // ),
-                          // Stack(
-                          //   children: [
-                          //     LocationMapField(
-                          //       gesturesEnabled: false,
-                          //       markerEnabled: true,
-                          //       myLocationEnabled: false,
-                          //       zoomEnabled: false,
-                          //       latitude: double.parse(
-                          //           state.myProfile.latitude.toString()),
-                          //       longitude: double.parse(
-                          //           state.myProfile.latitude.toString()),
-                          //       mapController: _controller,
-                          //     ),
-                          //     Container(
-                          //       height: 180.h,
-                          //       width: double.infinity,
-                          //       color: Colors.transparent,
-                          //     ),
-                          //   ],
-                          // ),
                           SizedBox(
                             height: 12.h,
                           ),
                           Text(
                             LocaleKeys.profile_allocatedGrievancesAndWards.tr(),
-                            style: TextStyle(
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: AppStyles.inputAndDisplayTitleStyle,
                           ),
                           SizedBox(
                             height: 5.h,
@@ -325,12 +244,8 @@ class ProfileScreen extends StatelessWidget {
                                                 ),
                                           Text(
                                             '${e.grievanceType}: ',
-                                            style: TextStyle(
-                                              color: AppColors.textColorDark,
-                                              fontFamily: 'LexendDeca',
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                            style: AppStyles
+                                                .inputAndDisplayTitleStyle,
                                           ),
 
                                           ...e.wardNumber!
@@ -340,14 +255,10 @@ class ProfileScreen extends StatelessWidget {
                                                   children: [
                                                     Text(
                                                       e,
-                                                      style: TextStyle(
-                                                        color: AppColors
-                                                            .textColorDark,
-                                                        fontFamily:
-                                                            'LexendDeca',
-                                                        fontSize: 12.sp,
-                                                        fontWeight:
-                                                            FontWeight.w300,
+                                                      style: AppStyles
+                                                          .descriptiveTextStyle
+                                                          .copyWith(
+                                                        height: null,
                                                       ),
                                                     ),
                                                   ],
@@ -373,80 +284,6 @@ class ProfileScreen extends StatelessWidget {
                                   .toList(),
                             ),
                           ),
-                          // ConstrainedBox(
-                          //   constraints: BoxConstraints(
-                          //     maxHeight: 200.h,
-                          //     maxWidth: double.infinity,
-                          //     minWidth: double.infinity,
-                          //   ),
-                          //   child: DecoratedBox(
-                          // decoration: BoxDecoration(
-                          //   color: AppColors.colorPrimaryLight,
-                          //   borderRadius: BorderRadius.circular(10.r),
-                          // ),
-                          //     child: ListView.builder(
-                          //       shrinkWrap: true,
-                          //       padding: EdgeInsets.zero,
-                          //       itemCount:
-                          //           state.myProfile.allocatedWards!.length,
-                          //       itemBuilder: (context, index) {
-                          //         return Column(
-                          //           children: [
-                          //             IntrinsicHeight(
-                          //               child: Column(
-                          //                 mainAxisAlignment:
-                          //                     MainAxisAlignment.spaceBetween,
-                          //                 children: [
-                          //                   Expanded(
-                          //                     child: Padding(
-                          //                       padding:
-                          //                           const EdgeInsets.all(8.0),
-                          //                       child: Text(
-                          //                         state
-                          //                             .myProfile
-                          //                             .allocatedWards![index]
-                          //                             .grievanceType
-                          //                             .toString(),
-                          // style: TextStyle(
-                          //   color:
-                          //       AppColors.textColorDark,
-                          //   fontFamily: 'LexendDeca',
-                          //   fontSize: 12.sp,
-                          //   fontWeight: FontWeight.w300,
-                          // ),
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //                   Column(
-                          //                     children: state
-                          //                         .myProfile
-                          //                         .allocatedWards![index]
-                          //                         .wardNumber!
-                          //                         .map(
-                          //                           (e) => Text(
-                          //                             e.toString(),
-                          //                           ),
-                          //                         )
-                          //                         .toList(),
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //             ),
-                          // index <
-                          //         state.myProfile.allocatedWards!
-                          //                 .length -
-                          //             1
-                          //     ? Divider(
-                          //         height: 1.1,
-                          //         color: AppColors.colorGreyLight,
-                          //       )
-                          //     : SizedBox()
-                          //           ],
-                          //         );
-                          //       },
-                          //     ),
-                          //   ),
-                          // ),
                           SizedBox(
                             height: 40.h,
                           ),

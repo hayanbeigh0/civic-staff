@@ -92,13 +92,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                               ),
                               Text(
                                 LocaleKeys.addComment_screenTitle.tr(),
-                                style: TextStyle(
-                                  color: AppColors.colorWhite,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.1,
-                                ),
+                                style: AppStyles.screenTitleStyle,
                               ),
                             ],
                           ),
@@ -122,12 +116,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                   children: [
                     Text(
                       LocaleKeys.addComment_comment.tr(),
-                      style: TextStyle(
-                        color: AppColors.textColorDark,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: AppStyles.inputAndDisplayTitleStyle,
                     ),
                     SizedBox(
                       height: 5.h,
@@ -143,14 +132,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                           child: TextFormField(
                             textInputAction: TextInputAction.done,
                             maxLines: 6,
-                            style: TextStyle(
-                              overflow: TextOverflow.fade,
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                              height: 1.1,
-                            ),
+                            style: AppStyles.dropdownTextStyle,
                             maxLength: 300,
                             controller: commentTextController,
                             enabled: true,
@@ -169,14 +151,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                   LocaleKeys.addComment_commentTexthint.tr(),
                               hintMaxLines: 1,
                               errorStyle: AppStyles.errorTextStyle,
-                              hintStyle: TextStyle(
-                                overflow: TextOverflow.fade,
-                                color: AppColors.textColorLight,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w300,
-                                height: 1.1,
-                              ),
+                              hintStyle: AppStyles.primaryTextFieldHintStyle,
                             ),
                           ),
                         ),
@@ -462,12 +437,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                       children: [
                         Text(
                           LocaleKeys.addComment_attachments.tr(),
-                          style: TextStyle(
-                            color: AppColors.textColorDark,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppStyles.inputAndDisplayTitleStyle,
                         ),
                         const Spacer(),
                       ],

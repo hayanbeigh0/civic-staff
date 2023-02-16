@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -41,9 +42,16 @@ class GrievanceDetail extends StatelessWidget {
   List<String> statusList = ['Processing', 'Completed'];
   List<String> expectedCompletionList = ['1 Day', '2 Days', '3 Days'];
   List<String> priorityList = ['Immediate', 'Low', 'High'];
+  List<String> grievanceTypes = [
+    'Road Maintainance',
+    'Garbage Collection',
+    'Street Lighting'
+  ];
   late String statusDropdownValue;
   late String expectedCompletionDropdownValue;
   late String priorityDropdownValue;
+  late String grievanceTypeDropdownValue;
+
   bool showDropdownError = false;
   TextEditingController reporterController = TextEditingController();
 
@@ -57,6 +65,8 @@ class GrievanceDetail extends StatelessWidget {
         state.grievanceList[grievanceListIndex].expectedCompletion.toString();
     priorityDropdownValue =
         state.grievanceList[grievanceListIndex].priority.toString();
+    grievanceTypeDropdownValue =
+        state.grievanceList[grievanceListIndex].grievanceType.toString();
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: BlocBuilder<GrievancesBloc, GrievancesState>(
@@ -112,13 +122,7 @@ class GrievanceDetail extends StatelessWidget {
                             ),
                             Text(
                               LocaleKeys.grievanceDetail_screenTitle.tr(),
-                              style: TextStyle(
-                                color: AppColors.colorWhite,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w400,
-                                height: 1.1,
-                              ),
+                              style: AppStyles.screenTitleStyle,
                             ),
                           ],
                         ),
@@ -138,10 +142,74 @@ class GrievanceDetail extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  PrimaryDisplayField(
-                    title: LocaleKeys.grievanceDetail_type.tr(),
-                    value: state.grievanceList[grievanceListIndex].grievanceType
-                        .toString(),
+                  Text(
+                    LocaleKeys.grievanceDetail_type.tr(),
+                    style: AppStyles.inputAndDisplayTitleStyle,
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.colorPrimaryLight,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                    child: DropdownButtonFormField(
+                      isExpanded: true,
+                      iconSize: 24.sp,
+                      value: grievanceTypeDropdownValue,
+                      decoration: InputDecoration(
+                        labelStyle: AppStyles.dropdownTextStyle,
+                        border: InputBorder.none,
+                      ),
+                      items: grievanceTypes
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                maxLines: 1,
+                                style: AppStyles.dropdownTextStyle,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        final grievance =
+                            state.grievanceList[grievanceListIndex];
+                        grievanceTypeDropdownValue = value.toString();
+                        BlocProvider.of<GrievancesBloc>(context).add(
+                          UpdateGrievanceEvent(
+                            grievanceId: state
+                                .grievanceList[grievanceListIndex].grievanceId
+                                .toString(),
+                            newGrievance: Grievances(
+                              grievanceId: grievance.grievanceId,
+                              audios: grievance.audios,
+                              contactByPhoneEnabled:
+                                  grievance.contactByPhoneEnabled,
+                              description: grievance.description,
+                              expectedCompletion: grievance.expectedCompletion,
+                              grievanceType: grievanceTypeDropdownValue,
+                              latitude: grievance.latitude,
+                              longitude: grievance.longitude,
+                              myComments: grievance.myComments,
+                              open: grievance.open,
+                              photos: grievance.photos,
+                              place: grievance.place,
+                              priority: grievance.priority,
+                              raisedBy: grievance.raisedBy,
+                              reporterComments: grievance.reporterComments,
+                              status: statusDropdownValue,
+                              timeStamp: grievance.timeStamp,
+                              videos: grievance.videos,
+                              wardNumber: grievance.wardNumber,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   SizedBox(
                     height: 7.h,
@@ -154,7 +222,7 @@ class GrievanceDetail extends StatelessWidget {
                     height: 10.h,
                   ),
                   PrimaryTextField(
-                    onEditingComplete: () {
+                    onFieldSubmitted: (value) {
                       final grievance = state.grievanceList[grievanceListIndex];
 
                       BlocProvider.of<GrievancesBloc>(context).add(
@@ -177,7 +245,7 @@ class GrievanceDetail extends StatelessWidget {
                             photos: grievance.photos,
                             place: grievance.place,
                             priority: grievance.priority,
-                            raisedBy: grievance.raisedBy,
+                            raisedBy: value,
                             reporterComments: grievance.reporterComments,
                             status: grievance.status,
                             timeStamp: grievance.timeStamp,
@@ -196,12 +264,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Text(
                     LocaleKeys.grievanceDetail_status.tr(),
-                    style: TextStyle(
-                      color: AppColors.textColorDark,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     height: 5.h,
@@ -215,25 +278,9 @@ class GrievanceDetail extends StatelessWidget {
                     child: DropdownButtonFormField(
                       isExpanded: true,
                       iconSize: 24.sp,
-                      icon: Text(
-                        LocaleKeys.grievanceDetail_changeStatus.tr(),
-                        style: TextStyle(
-                          color: AppColors.colorPrimary,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
                       value: statusDropdownValue,
                       decoration: InputDecoration(
-                        labelStyle: TextStyle(
-                          overflow: TextOverflow.fade,
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w300,
-                          height: 1.1,
-                        ),
+                        labelStyle: AppStyles.dropdownTextStyle,
                         border: InputBorder.none,
                       ),
                       items: statusList
@@ -243,14 +290,7 @@ class GrievanceDetail extends StatelessWidget {
                               child: Text(
                                 item,
                                 maxLines: 1,
-                                style: TextStyle(
-                                  overflow: TextOverflow.fade,
-                                  color: AppColors.textColorDark,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.1,
-                                ),
+                                style: AppStyles.dropdownTextStyle,
                               ),
                             ),
                           )
@@ -281,7 +321,7 @@ class GrievanceDetail extends StatelessWidget {
                               priority: grievance.priority,
                               raisedBy: grievance.raisedBy,
                               reporterComments: grievance.reporterComments,
-                              status: grievance.status,
+                              status: statusDropdownValue,
                               timeStamp: grievance.timeStamp,
                               videos: grievance.videos,
                               wardNumber: grievance.wardNumber,
@@ -296,12 +336,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Text(
                     LocaleKeys.grievanceDetail_expectedCompletionIn.tr(),
-                    style: TextStyle(
-                      color: AppColors.textColorDark,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     height: 5.h,
@@ -315,25 +350,9 @@ class GrievanceDetail extends StatelessWidget {
                     child: DropdownButtonFormField(
                       isExpanded: true,
                       iconSize: 24.sp,
-                      icon: Text(
-                        LocaleKeys.grievanceDetail_change.tr(),
-                        style: TextStyle(
-                          color: AppColors.colorPrimary,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
                       value: expectedCompletionDropdownValue,
                       decoration: InputDecoration(
-                        labelStyle: TextStyle(
-                          overflow: TextOverflow.fade,
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w300,
-                          height: 1.1,
-                        ),
+                        labelStyle: AppStyles.dropdownTextStyle,
                         border: InputBorder.none,
                       ),
                       items: expectedCompletionList
@@ -343,14 +362,7 @@ class GrievanceDetail extends StatelessWidget {
                               child: Text(
                                 item,
                                 maxLines: 1,
-                                style: TextStyle(
-                                  overflow: TextOverflow.fade,
-                                  color: AppColors.textColorDark,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.1,
-                                ),
+                                style: AppStyles.dropdownTextStyle,
                               ),
                             ),
                           )
@@ -371,7 +383,8 @@ class GrievanceDetail extends StatelessWidget {
                               contactByPhoneEnabled:
                                   grievance.contactByPhoneEnabled,
                               description: grievance.description,
-                              expectedCompletion: grievance.expectedCompletion,
+                              expectedCompletion:
+                                  expectedCompletionDropdownValue,
                               grievanceType: grievance.grievanceType,
                               latitude: grievance.latitude,
                               longitude: grievance.longitude,
@@ -397,12 +410,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Text(
                     LocaleKeys.grievanceDetail_priority.tr(),
-                    style: TextStyle(
-                      color: AppColors.textColorDark,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     height: 5.h,
@@ -416,25 +424,9 @@ class GrievanceDetail extends StatelessWidget {
                     child: DropdownButtonFormField(
                       isExpanded: true,
                       iconSize: 24.sp,
-                      icon: Text(
-                        LocaleKeys.grievanceDetail_change.tr(),
-                        style: TextStyle(
-                          color: AppColors.colorPrimary,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
                       value: priorityDropdownValue,
                       decoration: InputDecoration(
-                        labelStyle: TextStyle(
-                          overflow: TextOverflow.fade,
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w300,
-                          height: 1.1,
-                        ),
+                        labelStyle: AppStyles.dropdownTextStyle,
                         border: InputBorder.none,
                       ),
                       items: priorityList
@@ -444,14 +436,7 @@ class GrievanceDetail extends StatelessWidget {
                               child: Text(
                                 item,
                                 maxLines: 1,
-                                style: TextStyle(
-                                  overflow: TextOverflow.fade,
-                                  color: AppColors.textColorDark,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w300,
-                                  height: 1.1,
-                                ),
+                                style: AppStyles.dropdownTextStyle,
                               ),
                             ),
                           )
@@ -460,7 +445,6 @@ class GrievanceDetail extends StatelessWidget {
                         priorityDropdownValue = value.toString();
                         final grievance =
                             state.grievanceList[grievanceListIndex];
-                        statusDropdownValue = value.toString();
                         BlocProvider.of<GrievancesBloc>(context).add(
                           UpdateGrievanceEvent(
                             grievanceId: state
@@ -480,7 +464,7 @@ class GrievanceDetail extends StatelessWidget {
                               open: grievance.open,
                               photos: grievance.photos,
                               place: grievance.place,
-                              priority: grievance.priority,
+                              priority: priorityDropdownValue,
                               raisedBy: grievance.raisedBy,
                               reporterComments: grievance.reporterComments,
                               status: grievance.status,
@@ -498,12 +482,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Text(
                     LocaleKeys.grievanceDetail_photosAndVideos.tr(),
-                    style: TextStyle(
-                      color: AppColors.textColorDark,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     height: 5.h,
@@ -589,13 +568,7 @@ class GrievanceDetail extends StatelessWidget {
                                 },
                                 child: Text(
                                   LocaleKeys.grievanceDetail_viewAll.tr(),
-                                  style: TextStyle(
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255),
-                                    fontFamily: 'LexendDeca',
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  style: AppStyles.viewAllWhiteTextStyle,
                                 ),
                               ),
                             ),
@@ -609,12 +582,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Text(
                     LocaleKeys.grievanceDetail_voiceAndAudio.tr(),
-                    style: TextStyle(
-                      color: AppColors.textColorDark,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     height: 5.h,
@@ -655,12 +623,7 @@ class GrievanceDetail extends StatelessWidget {
                                 ),
                                 Text(
                                   '${LocaleKeys.grievanceDetail_audio.tr()} - ${index + 1}',
-                                  style: TextStyle(
-                                    color: AppColors.textColorDark,
-                                    fontFamily: 'LexendDeca',
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  style: AppStyles.audioTitleTextStyle,
                                 ),
                               ],
                             );
@@ -703,13 +666,7 @@ class GrievanceDetail extends StatelessWidget {
                                   },
                                   child: Text(
                                     LocaleKeys.grievanceDetail_viewAll.tr(),
-                                    style: TextStyle(
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                      fontFamily: 'LexendDeca',
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    style: AppStyles.viewAllWhiteTextStyle,
                                   ),
                                 ),
                               ),
@@ -724,12 +681,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Text(
                     LocaleKeys.grievanceDetail_locaiton.tr(),
-                    style: TextStyle(
-                      color: AppColors.textColorDark,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     height: 5.h,
@@ -754,12 +706,7 @@ class GrievanceDetail extends StatelessWidget {
                   ),
                   Text(
                     LocaleKeys.grievanceDetail_description.tr(),
-                    style: TextStyle(
-                      color: AppColors.textColorDark,
-                      fontFamily: 'LexendDeca',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     height: 5.h,
@@ -774,14 +721,7 @@ class GrievanceDetail extends StatelessWidget {
                     child: Text(
                       state.grievanceList[grievanceListIndex].description
                           .toString(),
-                      style: TextStyle(
-                        overflow: TextOverflow.fade,
-                        color: AppColors.textColorDark,
-                        fontFamily: 'LexendDeca',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w300,
-                        height: 1.1,
-                      ),
+                      style: AppStyles.descriptiveTextStyle,
                     ),
                   ),
                   SizedBox(
@@ -791,12 +731,7 @@ class GrievanceDetail extends StatelessWidget {
                     children: [
                       Text(
                         LocaleKeys.grievanceDetail_contactByPhoneEnabled.tr(),
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                       const Spacer(),
                       Text(
@@ -805,12 +740,7 @@ class GrievanceDetail extends StatelessWidget {
                                 true
                             ? 'Yes'
                             : 'No',
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                     ],
                   ),
@@ -821,12 +751,7 @@ class GrievanceDetail extends StatelessWidget {
                     children: [
                       Text(
                         LocaleKeys.grievanceDetail_commentsByReporter.tr(),
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                       const Spacer(),
                       InkWell(
@@ -842,12 +767,7 @@ class GrievanceDetail extends StatelessWidget {
                         },
                         child: Text(
                           LocaleKeys.grievanceDetail_viewAll.tr(),
-                          style: TextStyle(
-                            color: AppColors.textColorDark,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppStyles.inputAndDisplayTitleStyle,
                         ),
                       ),
                     ],
@@ -928,12 +848,7 @@ class GrievanceDetail extends StatelessWidget {
                     children: [
                       Text(
                         LocaleKeys.grievanceDetail_myComments.tr(),
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                       const Spacer(),
                       InkWell(
@@ -949,12 +864,7 @@ class GrievanceDetail extends StatelessWidget {
                         },
                         child: Text(
                           LocaleKeys.grievanceDetail_addComment.tr(),
-                          style: TextStyle(
-                            color: AppColors.textColorDark,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: AppStyles.inputAndDisplayTitleStyle,
                         ),
                       ),
                     ],
@@ -984,12 +894,7 @@ class GrievanceDetail extends StatelessWidget {
                             ),
                             child: Text(
                               LocaleKeys.grievanceDetail_viewAll.tr(),
-                              style: TextStyle(
-                                color: AppColors.textColorDark,
-                                fontFamily: 'LexendDeca',
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: AppStyles.inputAndDisplayTitleStyle,
                             ),
                           ),
                         ),

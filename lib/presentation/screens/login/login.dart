@@ -1,5 +1,6 @@
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +38,10 @@ class Login extends StatelessWidget {
                       children: [
                         Text(
                           LocaleKeys.appName.tr(),
-                          style: TextStyle(
-                            color: AppColors.colorPrimaryDark,
-                            fontFamily: 'LexendDeca',
+                          style:
+                              AppStyles.loginScreensAppNameTextStyle.copyWith(
                             fontSize:
                                 constraints.maxWidth > 600 ? 28.sp : 34.sp,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         SizedBox(
@@ -50,12 +49,10 @@ class Login extends StatelessWidget {
                         ),
                         Text(
                           LocaleKeys.loginAndActivationScreen_welcome.tr(),
-                          style: TextStyle(
-                            color: AppColors.colorSecondaryDark,
-                            fontFamily: 'LexendDeca',
+                          style:
+                              AppStyles.loginScreensWelcomeTextStyle.copyWith(
                             fontSize:
                                 constraints.maxWidth > 600 ? 16.sp : 20.sp,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
@@ -75,11 +72,8 @@ class Login extends StatelessWidget {
                     ),
                     Text(
                       LocaleKeys.loginAndActivationScreen_login.tr(),
-                      style: TextStyle(
-                        color: AppColors.colorPrimary,
-                        fontFamily: 'LexendDeca',
+                      style: AppStyles.loginScreensHeadingTextStyle.copyWith(
                         fontSize: constraints.maxWidth > 600 ? 18.sp : 24.sp,
-                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     SizedBox(
@@ -93,12 +87,11 @@ class Login extends StatelessWidget {
                           Text(
                             LocaleKeys.loginAndActivationScreen_mobileNumber
                                 .tr(),
-                            style: TextStyle(
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
+                            style: AppStyles
+                                .loginScreensInputFieldTitleTextStyle
+                                .copyWith(
                               fontSize:
                                   constraints.maxWidth > 600 ? 10.sp : 12.sp,
-                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           SizedBox(

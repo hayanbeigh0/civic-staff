@@ -2,6 +2,7 @@ import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/comment_list.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -53,13 +54,7 @@ class GrievanceReporterComments extends StatelessWidget {
                               ),
                               Text(
                                 LocaleKeys.reporterComments_screenTitle.tr(),
-                                style: TextStyle(
-                                  color: AppColors.colorWhite,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.1,
-                                ),
+                                style: AppStyles.screenTitleStyle,
                               ),
                             ],
                           ),
@@ -83,12 +78,7 @@ class GrievanceReporterComments extends StatelessWidget {
                 EdgeInsets.symmetric(horizontal: AppConstants.screenPadding),
             child: Text(
               LocaleKeys.reporterComments_allComments.tr(),
-              style: TextStyle(
-                color: AppColors.textColorDark,
-                fontFamily: 'LexendDeca',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppStyles.inputAndDisplayTitleStyle,
             ),
           ),
           SizedBox(
