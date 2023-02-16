@@ -10,6 +10,7 @@
     "streetName": "Residency Road",
     "city": "Banglore",
     "country": "India",
+    "muncipality": "1",
     "wardNumber": "12",
     "about": "Lorem ipsum dolor sit amet. Et iusto molestiae et enim maiores est praesentium assumenda. Et quasi perspiciatis et omnis natus eos necessitatibus delectus id dolorem pariatur At doloribus unde quo voluptas repellendus!"
   },
@@ -24,7 +25,8 @@
     "streetName": "Midway",
     "city": "Chicago",
     "country": "US",
-    "wardNumber": "14",
+    "muncipality": "2",
+    "wardNumber": "18",
     "about": "Lorem ipsum dolor sit amet. Et iusto molestiae et enim maiores est praesentium assumenda. Et quasi perspiciatis et omnis natus eos necessitatibus delectus id dolorem pariatur At doloribus unde quo voluptas repellendus!"
   },
   {
@@ -38,7 +40,8 @@
     "streetName": "Residency Road",
     "city": "Banglore",
     "country": "India",
-    "wardNumber": "12",
+    "muncipality": "3",
+    "wardNumber": "22",
     "about": "Lorem ipsum dolor sit amet. Et iusto molestiae et enim maiores est praesentium assumenda. Et quasi perspiciatis et omnis natus eos necessitatibus delectus id dolorem pariatur At doloribus unde quo voluptas repellendus!"
   }
 ]

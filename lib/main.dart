@@ -1,14 +1,7 @@
-import 'dart:developer';
+import 'package:civic_staff/presentation/screens/home/home.dart';
+import 'package:flutter/material.dart';
 
 import 'package:civic_staff/presentation/screens/login/login.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
@@ -20,6 +13,12 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/resources/repositories/Users/user_repository.dart';
 import 'package:civic_staff/resources/repositories/grievances/grievances_repository.dart';
 import 'package:civic_staff/resources/repositories/my_profile/my_profile.dart';
+
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 late Locale locale;
 void main() async {
@@ -116,7 +115,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               useMaterial3: true,
               primaryColor: AppColors.colorPrimary,
             ),
-            home: Login(),
+            home: HomeScreen(),
             onGenerateRoute: (settings) => AppRouter.onGenrateRoute(settings),
           ),
         );

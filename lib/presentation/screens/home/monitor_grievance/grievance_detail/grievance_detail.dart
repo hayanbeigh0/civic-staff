@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/models/grievances/grievances_model.dart';
+import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -38,16 +40,23 @@ class GrievanceDetail extends StatelessWidget {
   final Completer<GoogleMapController> _controller = Completer();
   List<String> statusList = ['Processing', 'Completed'];
   List<String> expectedCompletionList = ['1 Day', '2 Days', '3 Days'];
+  List<String> priorityList = ['Immediate', 'Low', 'High'];
   late String statusDropdownValue;
   late String expectedCompletionDropdownValue;
+  late String priorityDropdownValue;
   bool showDropdownError = false;
+  TextEditingController reporterController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    reporterController.text =
+        state.grievanceList[grievanceListIndex].raisedBy.toString();
     statusDropdownValue =
         state.grievanceList[grievanceListIndex].status.toString();
     expectedCompletionDropdownValue =
         state.grievanceList[grievanceListIndex].expectedCompletion.toString();
+    priorityDropdownValue =
+        state.grievanceList[grievanceListIndex].priority.toString();
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: BlocBuilder<GrievancesBloc, GrievancesState>(
@@ -144,10 +153,43 @@ class GrievanceDetail extends StatelessWidget {
                   SizedBox(
                     height: 10.h,
                   ),
-                  PrimaryDisplayField(
+                  PrimaryTextField(
+                    onEditingComplete: () {
+                      final grievance = state.grievanceList[grievanceListIndex];
+
+                      BlocProvider.of<GrievancesBloc>(context).add(
+                        UpdateGrievanceEvent(
+                          grievanceId: state
+                              .grievanceList[grievanceListIndex].grievanceId
+                              .toString(),
+                          newGrievance: Grievances(
+                            grievanceId: grievance.grievanceId,
+                            audios: grievance.audios,
+                            contactByPhoneEnabled:
+                                grievance.contactByPhoneEnabled,
+                            description: grievance.description,
+                            expectedCompletion: grievance.expectedCompletion,
+                            grievanceType: grievance.grievanceType,
+                            latitude: grievance.latitude,
+                            longitude: grievance.longitude,
+                            myComments: grievance.myComments,
+                            open: grievance.open,
+                            photos: grievance.photos,
+                            place: grievance.place,
+                            priority: grievance.priority,
+                            raisedBy: grievance.raisedBy,
+                            reporterComments: grievance.reporterComments,
+                            status: grievance.status,
+                            timeStamp: grievance.timeStamp,
+                            videos: grievance.videos,
+                            wardNumber: grievance.wardNumber,
+                          ),
+                        ),
+                      );
+                    },
                     title: LocaleKeys.grievanceDetail_reporter.tr(),
-                    value: state.grievanceList[grievanceListIndex].raisedBy
-                        .toString(),
+                    textEditingController: reporterController,
+                    hintText: 'Reporter name',
                   ),
                   SizedBox(
                     height: 12.h,
@@ -214,13 +256,36 @@ class GrievanceDetail extends StatelessWidget {
                           )
                           .toList(),
                       onChanged: (value) {
+                        final grievance =
+                            state.grievanceList[grievanceListIndex];
                         statusDropdownValue = value.toString();
                         BlocProvider.of<GrievancesBloc>(context).add(
-                          UpdateGrievanceStatusEvent(
+                          UpdateGrievanceEvent(
                             grievanceId: state
                                 .grievanceList[grievanceListIndex].grievanceId
                                 .toString(),
-                            status: value.toString(),
+                            newGrievance: Grievances(
+                              grievanceId: grievance.grievanceId,
+                              audios: grievance.audios,
+                              contactByPhoneEnabled:
+                                  grievance.contactByPhoneEnabled,
+                              description: grievance.description,
+                              expectedCompletion: grievance.expectedCompletion,
+                              grievanceType: grievance.grievanceType,
+                              latitude: grievance.latitude,
+                              longitude: grievance.longitude,
+                              myComments: grievance.myComments,
+                              open: grievance.open,
+                              photos: grievance.photos,
+                              place: grievance.place,
+                              priority: grievance.priority,
+                              raisedBy: grievance.raisedBy,
+                              reporterComments: grievance.reporterComments,
+                              status: grievance.status,
+                              timeStamp: grievance.timeStamp,
+                              videos: grievance.videos,
+                              wardNumber: grievance.wardNumber,
+                            ),
                           ),
                         );
                       },
@@ -292,12 +357,36 @@ class GrievanceDetail extends StatelessWidget {
                           .toList(),
                       onChanged: (value) {
                         expectedCompletionDropdownValue = value.toString();
+                        final grievance =
+                            state.grievanceList[grievanceListIndex];
+                        expectedCompletionDropdownValue = value.toString();
                         BlocProvider.of<GrievancesBloc>(context).add(
-                          UpdateExpectedCompletionEvent(
+                          UpdateGrievanceEvent(
                             grievanceId: state
                                 .grievanceList[grievanceListIndex].grievanceId
                                 .toString(),
-                            expectedCompletion: value.toString(),
+                            newGrievance: Grievances(
+                              grievanceId: grievance.grievanceId,
+                              audios: grievance.audios,
+                              contactByPhoneEnabled:
+                                  grievance.contactByPhoneEnabled,
+                              description: grievance.description,
+                              expectedCompletion: grievance.expectedCompletion,
+                              grievanceType: grievance.grievanceType,
+                              latitude: grievance.latitude,
+                              longitude: grievance.longitude,
+                              myComments: grievance.myComments,
+                              open: grievance.open,
+                              photos: grievance.photos,
+                              place: grievance.place,
+                              priority: grievance.priority,
+                              raisedBy: grievance.raisedBy,
+                              reporterComments: grievance.reporterComments,
+                              status: grievance.status,
+                              timeStamp: grievance.timeStamp,
+                              videos: grievance.videos,
+                              wardNumber: grievance.wardNumber,
+                            ),
                           ),
                         );
                       },
@@ -306,10 +395,103 @@ class GrievanceDetail extends StatelessWidget {
                   SizedBox(
                     height: 12.h,
                   ),
-                  PrimaryDisplayField(
-                    title: LocaleKeys.grievanceDetail_priority.tr(),
-                    value: state.grievanceList[grievanceListIndex].priority
-                        .toString(),
+                  Text(
+                    LocaleKeys.grievanceDetail_priority.tr(),
+                    style: TextStyle(
+                      color: AppColors.textColorDark,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.colorPrimaryLight,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                    child: DropdownButtonFormField(
+                      isExpanded: true,
+                      iconSize: 24.sp,
+                      icon: Text(
+                        LocaleKeys.grievanceDetail_change.tr(),
+                        style: TextStyle(
+                          color: AppColors.colorPrimary,
+                          fontFamily: 'LexendDeca',
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      value: priorityDropdownValue,
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(
+                          overflow: TextOverflow.fade,
+                          color: AppColors.textColorDark,
+                          fontFamily: 'LexendDeca',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w300,
+                          height: 1.1,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      items: priorityList
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  overflow: TextOverflow.fade,
+                                  color: AppColors.textColorDark,
+                                  fontFamily: 'LexendDeca',
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w300,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        priorityDropdownValue = value.toString();
+                        final grievance =
+                            state.grievanceList[grievanceListIndex];
+                        statusDropdownValue = value.toString();
+                        BlocProvider.of<GrievancesBloc>(context).add(
+                          UpdateGrievanceEvent(
+                            grievanceId: state
+                                .grievanceList[grievanceListIndex].grievanceId
+                                .toString(),
+                            newGrievance: Grievances(
+                              grievanceId: grievance.grievanceId,
+                              audios: grievance.audios,
+                              contactByPhoneEnabled:
+                                  grievance.contactByPhoneEnabled,
+                              description: grievance.description,
+                              expectedCompletion: grievance.expectedCompletion,
+                              grievanceType: grievance.grievanceType,
+                              latitude: grievance.latitude,
+                              longitude: grievance.longitude,
+                              myComments: grievance.myComments,
+                              open: grievance.open,
+                              photos: grievance.photos,
+                              place: grievance.place,
+                              priority: grievance.priority,
+                              raisedBy: grievance.raisedBy,
+                              reporterComments: grievance.reporterComments,
+                              status: grievance.status,
+                              timeStamp: grievance.timeStamp,
+                              videos: grievance.videos,
+                              wardNumber: grievance.wardNumber,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   SizedBox(
                     height: 12.h,

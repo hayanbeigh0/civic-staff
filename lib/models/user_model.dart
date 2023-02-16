@@ -8,6 +8,7 @@ class User {
   String? streetName;
   String? city;
   String? country;
+  String? muncipality;
   String? wardNumber;
   String? email;
   String? about;
@@ -25,6 +26,7 @@ class User {
     this.wardNumber,
     this.email,
     this.about,
+    this.muncipality,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class User {
     streetName = json['streetName'];
     city = json['city'];
     country = json['country'];
+    muncipality = json['muncipality'];
     wardNumber = json['wardNumber'];
     about = json['about'];
   }
@@ -54,6 +57,7 @@ class User {
     data['streetName'] = streetName;
     data['city'] = city;
     data['country'] = country;
+    data['muncipality'] = muncipality;
     data['wardNumber'] = wardNumber;
     data['about'] = about;
     return data;

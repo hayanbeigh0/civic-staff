@@ -15,6 +15,7 @@ class PrimaryTextField extends StatelessWidget {
     this.fieldValidator,
     this.focusNode,
     this.inputFormatters,
+    this.onEditingComplete,
   });
   final String title;
   final String hintText;
@@ -26,6 +27,7 @@ class PrimaryTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   // final String fieldValidator;
   final String? Function(String?)? fieldValidator;
+  final void Function()? onEditingComplete;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,6 +48,7 @@ class PrimaryTextField extends StatelessWidget {
           height: 5.h,
         ),
         TextFormField(
+          onEditingComplete: onEditingComplete,
           focusNode: focusNode,
           maxLines: maxLines,
           style: TextStyle(

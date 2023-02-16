@@ -90,8 +90,8 @@
     "addCommentButton": "Add Comment",
     "useCamera": "Use Camera",
     "uploadFromGallery": "Upload from gallery",
-    "stop": "Stop",
-    "record": "Record"
+    "stop": "Tap the icon to stop recording",
+    "record": "Tap the icon to start recording"
   },
   "map": {
     "screenTitle": "Map"

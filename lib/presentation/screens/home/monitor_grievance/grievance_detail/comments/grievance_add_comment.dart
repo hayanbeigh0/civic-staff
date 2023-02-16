@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
+import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
@@ -35,6 +37,7 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
 
   XFile? image;
   XFile? video;
+  File? audioFile;
   bool recordingAudio = false;
 
   final recorder = FlutterSoundRecorder();
@@ -314,60 +317,127 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
                                 SizedBox(
                                   width: 30.w,
                                   child: IconButton(
-                                    onPressed: () {
-                                      showDialog(
+                                    onPressed: () async {
+                                      await showDialog(
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
                                             content: StatefulBuilder(builder:
                                                 (context, dialogState) {
-                                              return Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 20.h,
-                                                  ),
-                                                  IconButton(
-                                                    onPressed: () {
-                                                      if (recorder
-                                                          .isRecording) {
-                                                        stopAudioRecording();
-                                                        dialogState(() {
-                                                          recordingAudio =
-                                                              false;
-                                                        });
-                                                      }
-                                                      if (!recorder
-                                                          .isRecording) {
-                                                        recordAudio();
-                                                        dialogState(() {
-                                                          recordingAudio = true;
-                                                        });
-                                                      }
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.mic,
-                                                      size: 50.sp,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    recordingAudio
-                                                        ? LocaleKeys
-                                                            .addComment_stop
-                                                            .tr()
-                                                        : LocaleKeys
-                                                            .addComment_record
-                                                            .tr(),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 20.h,
-                                                  ),
-                                                ],
-                                              );
+                                              return audioFile != null &&
+                                                      recorder.isStopped
+                                                  ? Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text('Recording done!'),
+                                                        AudioComment(
+                                                          audioUrl:
+                                                              'file://${audioFile!.path}',
+                                                        ),
+                                                        // Add save and delete option for the audio file...
+                                                      ],
+                                                    ) // Handle the recorded audio file here......
+                                                  : Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 20.h,
+                                                        ),
+                                                        StreamBuilder<
+                                                            RecordingDisposition>(
+                                                          stream: recorder
+                                                              .onProgress,
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            final duration =
+                                                                snapshot.hasData
+                                                                    ? snapshot
+                                                                        .data!
+                                                                        .duration
+                                                                    : Duration
+                                                                        .zero;
+                                                            String twoDigits(
+                                                                    int n) =>
+                                                                n
+                                                                    .toString()
+                                                                    .padLeft(
+                                                                        2, '0');
+                                                            final twoDigitMinutes =
+                                                                twoDigits(duration
+                                                                    .inMinutes
+                                                                    .remainder(
+                                                                        60));
+                                                            final twoDigitSeconds =
+                                                                twoDigits(duration
+                                                                    .inSeconds
+                                                                    .remainder(
+                                                                        60));
+
+                                                            return Text(
+                                                              '$twoDigitMinutes : $twoDigitSeconds',
+                                                              style: TextStyle(
+                                                                fontSize: 28.sp,
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () async {
+                                                            if (recorder
+                                                                .isRecording) {
+                                                              audioFile =
+                                                                  await stopAudioRecording();
+                                                              dialogState(() {
+                                                                recordingAudio =
+                                                                    false;
+                                                              });
+                                                            }
+                                                            if (!recorder
+                                                                .isRecording) {
+                                                              recordAudio();
+                                                              dialogState(() {
+                                                                recordingAudio =
+                                                                    true;
+                                                              });
+                                                            }
+                                                          },
+                                                          icon: recordingAudio
+                                                              ? Icon(
+                                                                  Icons
+                                                                      .stop_circle_outlined,
+                                                                  color: AppColors
+                                                                      .textColorRed,
+                                                                  size: 50.sp,
+                                                                )
+                                                              : Icon(
+                                                                  Icons.circle,
+                                                                  color: AppColors
+                                                                      .textColorRed,
+                                                                  size: 50.sp,
+                                                                ),
+                                                        ),
+                                                        Text(
+                                                          recordingAudio
+                                                              ? LocaleKeys
+                                                                  .addComment_stop
+                                                                  .tr()
+                                                              : LocaleKeys
+                                                                  .addComment_record
+                                                                  .tr(),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 20.h,
+                                                        ),
+                                                      ],
+                                                    );
                                             }),
                                           );
                                         },
                                       );
+                                      recorder.dispositionStream();
+                                      // recorder.deleteRecord(fileName: fileName)
                                     },
                                     icon: Icon(
                                       Icons.audio_file,
@@ -693,12 +763,15 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
     });
   }
 
-  Future<void> recordAudio() async {
+  Future recordAudio() async {
     await recorder.startRecorder(toFile: 'audio');
   }
 
-  Future<void> stopAudioRecording() async {
-    await recorder.stopRecorder();
+  Future<File> stopAudioRecording() async {
+    final path = await recorder.stopRecorder();
+    final audioFile = File(path!);
+    log('Recorded audio: $audioFile');
+    return audioFile;
   }
 
   void initAudioRecorder() async {
@@ -707,5 +780,10 @@ class _GrievanceAddCommentState extends State<GrievanceAddComment> {
       throw 'Microphone Permission not granted';
     }
     await recorder.openRecorder();
+    recorder.setSubscriptionDuration(
+      const Duration(
+        milliseconds: 500,
+      ),
+    );
   }
 }

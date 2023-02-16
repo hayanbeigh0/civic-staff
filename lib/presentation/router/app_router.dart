@@ -1,7 +1,8 @@
-import 'package:civic_staff/presentation/screens/login/activation_screen.dart';
-import 'package:civic_staff/presentation/screens/login/login.dart';
+import 'package:civic_staff/presentation/screens/home/enroll_user/edit_user.dart';
 import 'package:flutter/material.dart';
 
+import 'package:civic_staff/presentation/screens/login/activation_screen.dart';
+import 'package:civic_staff/presentation/screens/login/login.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_add_comment.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_audio.dart';
@@ -119,6 +120,12 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => EditProfileScreen(
             myProfile: args['my_profile'],
+          ),
+        );
+      case EditUserScreen.routeName:
+        return MaterialPageRoute(
+          builder: (context) => EditUserScreen(
+            user: args['user'],
           ),
         );
       default:

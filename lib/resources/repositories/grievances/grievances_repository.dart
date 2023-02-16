@@ -33,10 +33,10 @@ class GrievancesRepository {
     return grievanceList;
   }
 
-  updateGrievanceStatus(String grievanceId, String status) async {
-    grievanceList
-        .firstWhere((element) => element.grievanceId == grievanceId)
-        .status = status;
+  updateGrievanceStatus(String grievanceId, Grievances newGrievance) async {
+    final grievanceIndex = grievanceList
+        .indexWhere((element) => element.grievanceId == grievanceId);
+    grievanceList[grievanceIndex] = newGrievance;
   }
 
   updateExpectedCompletion(

@@ -47,3 +47,26 @@ class UserEnrolledState extends SearchUsersState {
   @override
   List<Object?> get props => [user];
 }
+
+class EditingUserFailedState extends SearchUsersState {
+  @override
+  List<Object?> get props => [];
+}
+
+class EditingAUserState extends SearchUsersState {
+  final bool loading;
+  const EditingAUserState({
+    required this.loading,
+  });
+  @override
+  List<Object?> get props => [loading];
+}
+
+class UserEditedState extends SearchUsersState {
+  final User user;
+  const UserEditedState({
+    required this.user,
+  });
+  @override
+  List<Object?> get props => [user];
+}

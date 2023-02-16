@@ -58,11 +58,11 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
       add(LoadGrievancesEvent());
     });
 
-    on<UpdateGrievanceStatusEvent>((event, emit) async {
+    on<UpdateGrievanceEvent>((event, emit) async {
       emit(UpdatingGrievanceStatusState());
       await grievancesRepository.updateGrievanceStatus(
         event.grievanceId,
-        event.status,
+        event.newGrievance,
       );
       emit(const GrievanceUpdatedState(grievanceUpdated: true));
       add(LoadGrievancesEvent());

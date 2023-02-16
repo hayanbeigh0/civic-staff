@@ -1,8 +1,11 @@
+import 'package:chewie/chewie.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/date_formatter.dart';
 import 'package:civic_staff/presentation/widgets/comment_list.dart';
+import 'package:civic_staff/presentation/widgets/video_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 
@@ -21,6 +24,7 @@ class VideoCommentWidget extends StatefulWidget {
 
 class _VideoCommentWidgetState extends State<VideoCommentWidget> {
   late VideoPlayerController _controller;
+  late ChewieController _chewieController;
   @override
   void initState() {
     _controller = VideoPlayerController.network(
@@ -47,6 +51,24 @@ class _VideoCommentWidgetState extends State<VideoCommentWidget> {
         });
       }
     });
+    _chewieController = ChewieController(
+      videoPlayerController: _controller,
+      autoPlay: true,
+      allowMuting: true,
+      looping: false,
+      showControls: false,
+      aspectRatio: 1,
+      deviceOrientationsAfterFullScreen: [
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitUp,
+      ],
+      deviceOrientationsOnEnterFullScreen: [
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitUp,
+      ],
+    );
     super.initState();
   }
 
@@ -96,6 +118,31 @@ class _VideoCommentWidgetState extends State<VideoCommentWidget> {
                             color: AppColors.colorWhite,
                             size: 50.sp,
                           ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenVideoPlayer(
+                            chewieController: _chewieController,
+                            videoPlayerController: _controller,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: Icon(
+                      Icons.fullscreen,
+                      color: AppColors.colorWhite,
+                      size: 30.sp,
+                    ),
                   ),
                 ),
               ),

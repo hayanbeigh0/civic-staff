@@ -55,6 +55,7 @@ dependencies:
   permission_handler: ^10.2.0
   flutter_native_splash: ^2.2.17
   easy_localization: ^3.0.1
+  chewie: ^1.4.0
 
 dev_dependencies:
   flutter_test:

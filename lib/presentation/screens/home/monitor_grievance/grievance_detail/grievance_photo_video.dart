@@ -2,8 +2,8 @@ import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
-import 'package:civic_staff/presentation/widgets/primary_bottom_shape.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:civic_staff/presentation/widgets/video_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -117,14 +117,16 @@ class GrievancePhotoVideo extends StatelessWidget {
                     return Container(
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
-                        color: AppColors.colorPrimaryLight,
+                        color: AppColors.colorPrimaryExtraLight,
                         borderRadius: BorderRadius.circular(
                           20.r,
                         ),
                       ),
-                      child: IconButton(
-                        icon: const Icon(Icons.play_arrow),
-                        onPressed: () {},
+                      child: VideoWidget(
+                        url: state.grievanceList[grievanceListIndex].videos![
+                            index -
+                                state.grievanceList[grievanceListIndex].photos!
+                                    .length],
                       ),
                     );
                   }
@@ -137,9 +139,9 @@ class GrievancePhotoVideo extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: PrimaryBottomShape(
-        height: 80.h,
-      ),
+      // bottomNavigationBar: PrimaryBottomShape(
+      //   height: 80.h,
+      // ),
     );
   }
 }

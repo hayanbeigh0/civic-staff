@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
+import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
@@ -45,15 +46,33 @@ class _EnrollUserState extends State<EnrollUser> {
 
   final FocusNode firstNameNode = FocusNode();
 
-  final List<String> wards = ['Ward 12', 'Ward 13', 'Ward 14', 'Ward 15'];
+  @override
+  initState() {
+    BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
+    wards = [];
+    muncipality = wardsAndMuncipality.keys.toList();
+    wards.sort();
 
-  String? dropdownValue;
+    super.initState();
+  }
 
-  bool showDropdownError = false;
+  late List<String> wards;
+  late List<dynamic> muncipality;
+  final Map wardsAndMuncipality = {
+    '1': ['10', '11', '12', '13', '14'],
+    '2': ['15', '16', '17', '18', '19'],
+    '3': ['20', '21', '22', '23', '24'],
+    '4': ['30', '31', '32', '33', '34'],
+  };
+
+  String? wardDropdownValue;
+  String? muncipalityDropdownValue;
+
+  bool showWardDropdownError = false;
+  bool showMuncipalityDropdownError = false;
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
     return Scaffold(
       body: Column(
         children: [
@@ -109,90 +128,143 @@ class _EnrollUserState extends State<EnrollUser> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PrimaryTextField(
-                        focusNode: firstNameNode,
-                        fieldValidator: (p0) {
-                          return validateFirstName(p0.toString());
-                        },
-                        title: LocaleKeys.enrollUsers_firstName.tr(),
-                        hintText: LocaleKeys.enrollUsers_firstName.tr(),
-                        textEditingController: firstNameController,
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      PrimaryTextField(
-                        fieldValidator: (p0) {
-                          return validateLastName(p0.toString());
-                        },
-                        title: LocaleKeys.enrollUsers_lastName.tr(),
-                        hintText: LocaleKeys.enrollUsers_lastName.tr(),
-                        textEditingController: lastNameController,
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      PrimaryTextField(
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        fieldValidator: (p0) => validateMobileNumber(
-                          p0.toString(),
-                        ),
-                        title: LocaleKeys.enrollUsers_contactNumber.tr(),
-                        hintText: LocaleKeys.enrollUsers_contactNumberHint.tr(),
-                        textEditingController: contactNumberController,
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      PrimaryTextField(
-                        fieldValidator: (p0) => validateEmailAddress(
-                          p0.toString(),
-                        ),
-                        title: LocaleKeys.enrollUsers_email.tr(),
-                        hintText: LocaleKeys.enrollUsers_emailHint.tr(),
-                        textEditingController: emailController,
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      Text(
-                        LocaleKeys.enrollUsers_ward.tr(),
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.colorPrimaryLight,
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 15.sp),
-                        child: DropdownButtonFormField(
-                          isExpanded: true,
-                          iconSize: 24.sp,
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down,
-                          ),
-                          hint: Text(
-                            LocaleKeys.enrollUsers_wardDropdownInitialValue
-                                .tr(),
+            child: BlocBuilder<MyProfileCubit, MyProfileState>(
+              builder: (context, state) {
+                if (state is MyProfileLoaded) {
+                  wards = wardsAndMuncipality[state.myProfile.muncipality];
+                  wards.sort();
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
+                      child: enrollUserForm(state),
+                    ),
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.colorPrimary,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Form enrollUserForm(MyProfileLoaded state) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PrimaryTextField(
+            focusNode: firstNameNode,
+            fieldValidator: (p0) {
+              return validateFirstName(p0.toString());
+            },
+            title: LocaleKeys.enrollUsers_firstName.tr(),
+            hintText: LocaleKeys.enrollUsers_firstName.tr(),
+            textEditingController: firstNameController,
+          ),
+          SizedBox(
+            height: 12.h,
+          ),
+          PrimaryTextField(
+            fieldValidator: (p0) {
+              return validateLastName(p0.toString());
+            },
+            title: LocaleKeys.enrollUsers_lastName.tr(),
+            hintText: LocaleKeys.enrollUsers_lastName.tr(),
+            textEditingController: lastNameController,
+          ),
+          SizedBox(
+            height: 12.h,
+          ),
+          PrimaryTextField(
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(10),
+            ],
+            fieldValidator: (p0) => validateMobileNumber(
+              p0.toString(),
+            ),
+            title: LocaleKeys.enrollUsers_contactNumber.tr(),
+            hintText: LocaleKeys.enrollUsers_contactNumberHint.tr(),
+            textEditingController: contactNumberController,
+          ),
+          SizedBox(
+            height: 12.h,
+          ),
+          PrimaryTextField(
+            fieldValidator: (p0) => validateEmailAddress(
+              p0.toString(),
+            ),
+            title: LocaleKeys.enrollUsers_email.tr(),
+            hintText: LocaleKeys.enrollUsers_emailHint.tr(),
+            textEditingController: emailController,
+          ),
+          SizedBox(
+            height: 12.h,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                LocaleKeys.enrollUsers_ward.tr(),
+                style: TextStyle(
+                  color: AppColors.textColorDark,
+                  fontFamily: 'LexendDeca',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.colorPrimaryLight,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                child: DropdownButtonFormField(
+                  value: wardDropdownValue,
+                  isExpanded: true,
+                  iconSize: 24.sp,
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down,
+                  ),
+                  hint: Text(
+                    LocaleKeys.enrollUsers_wardDropdownInitialValue.tr(),
+                    style: TextStyle(
+                      overflow: TextOverflow.fade,
+                      color: AppColors.textColorDark,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w300,
+                      height: 1.1,
+                    ),
+                  ),
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(
+                      overflow: TextOverflow.fade,
+                      color: AppColors.textColorDark,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w300,
+                      height: 1.1,
+                    ),
+                    border: InputBorder.none,
+                  ),
+                  items: wards
+                      .map(
+                        (item) => DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(
+                            item,
+                            maxLines: 1,
                             style: TextStyle(
                               overflow: TextOverflow.fade,
                               color: AppColors.textColorDark,
@@ -202,259 +274,219 @@ class _EnrollUserState extends State<EnrollUser> {
                               height: 1.1,
                             ),
                           ),
-                          decoration: InputDecoration(
-                            labelStyle: TextStyle(
-                              overflow: TextOverflow.fade,
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w300,
-                              height: 1.1,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          items: wards
-                              .map(
-                                (item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      overflow: TextOverflow.fade,
-                                      color: AppColors.textColorDark,
-                                      fontFamily: 'LexendDeca',
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w300,
-                                      height: 1.1,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) {
-                            dropdownValue = value.toString();
-                            setState(() {
-                              showDropdownError = false;
-                            });
-                          },
-                          validator: (value) => validateWardNumber(
-                            value.toString(),
-                          ),
                         ),
-                      ),
-                      showDropdownError
-                          ? Column(
-                              children: [
-                                SizedBox(
-                                  height: 5.h,
-                                ),
-                                Text(
-                                  LocaleKeys.enrollUsers_wardDropdownError.tr(),
-                                  style: AppStyles.errorTextStyle,
-                                )
-                              ],
-                            )
-                          : const SizedBox(),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      Text(
-                        'Location',
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      BlocBuilder<CurrentLocationCubit, CurrentLocationState>(
-                        builder: (context, state) {
-                          if (state is CurrentLocationLoaded) {
-                            return Stack(
-                              children: [
-                                LocationMapField(
-                                  gesturesEnabled: true,
-                                  myLocationEnabled: true,
-                                  zoomEnabled: true,
-                                  mapController: _controller,
-                                  latitude: state.latitude,
-                                  longitude: state.longitude,
-                                ),
-                                Container(
-                                  height: 180.h,
-                                  alignment: Alignment.center,
-                                  child: Center(
-                                    child: Transform.translate(
-                                      offset: Offset(0, -10.h),
-                                      child: SvgPicture.asset(
-                                        'assets/svg/marker.svg',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.colorPrimaryExtraLight,
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            height: 180.h,
-                            width: double.infinity,
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.colorPrimary,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      SizedBox(
-                        height: 50.h,
-                      ),
-                      BlocBuilder<ReverseGeocodingCubit, ReverseGeocodingState>(
-                        builder: (context, state) {
-                          if (state is ReverseGeocodingLoaded) {
-                            return Align(
-                              alignment: Alignment.bottomRight,
-                              child: BlocBuilder<CurrentLocationCubit,
-                                  CurrentLocationState>(
-                                builder: (context, currentLocationState) {
-                                  if (currentLocationState
-                                      is CurrentLocationLoaded) {
-                                    return BlocConsumer<UsersBloc,
-                                        SearchUsersState>(
-                                      listener: (context, userState) {
-                                        if (userState is UserEnrolledState) {
-                                          primaryPopupDialog(
-                                            context: context,
-                                            title: LocaleKeys
-                                                .enrollUsers_dialogSuccessMessage
-                                                .tr(),
-                                            buttonText: LocaleKeys
-                                                .enrollUsers_dialogOk
-                                                .tr(),
-                                            content: LocaleKeys
-                                                .enrollUsers_dialogSuccessMessage,
-                                            ontap: () =>
-                                                Navigator.of(context).pop(),
-                                          ).then(
-                                            (value) => FocusScope.of(context)
-                                                .requestFocus(firstNameNode),
-                                          );
-
-                                          firstNameController.text = '';
-                                          lastNameController.text = '';
-                                          emailController.text = '';
-                                          contactNumberController.text = '';
-                                          wardNumberController.text = '';
-                                        }
-                                      },
-                                      builder: (context, userState) {
-                                        if (userState is EnrollingAUserState) {
-                                          return PrimaryButton(
-                                            enabled: true,
-                                            isLoading: true,
-                                            onTap: () {},
-                                            buttonText: LocaleKeys
-                                                .enrollUsers_submit
-                                                .tr(),
-                                          );
-                                        }
-                                        return PrimaryButton(
-                                          isLoading: false,
-                                          onTap: () {
-                                            if (dropdownValue == null) {
-                                              setState(() {
-                                                showDropdownError = true;
-                                              });
-                                            }
-                                            if (_formKey.currentState!
-                                                    .validate() &&
-                                                !showDropdownError) {
-                                              if (!showDropdownError) {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                BlocProvider.of<UsersBloc>(
-                                                        context)
-                                                    .add(
-                                                  EnrollAUserEvent(
-                                                    user: User(
-                                                      id: '2',
-                                                      about: '',
-                                                      city: state.name,
-                                                      country:
-                                                          state.countryName,
-                                                      streetName: state.street,
-                                                      mobileNumber:
-                                                          contactNumberController
-                                                              .text,
-                                                      firstName:
-                                                          firstNameController
-                                                              .text,
-                                                      lastName:
-                                                          lastNameController
-                                                              .text,
-                                                      wardNumber: dropdownValue,
-                                                      email:
-                                                          emailController.text,
-                                                      latitude:
-                                                          currentLocationState
-                                                              .latitude
-                                                              .toString(),
-                                                      longitude:
-                                                          currentLocationState
-                                                              .longitude
-                                                              .toString(),
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            } else {}
-                                          },
-                                          buttonText: 'Submit',
-                                        );
-                                      },
-                                    );
-                                  }
-                                  return Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: PrimaryButton(
-                                      enabled: false,
-                                      isLoading: false,
-                                      onTap: () {},
-                                      buttonText:
-                                          LocaleKeys.enrollUsers_submit.tr(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          }
-                          return Align(
-                            alignment: Alignment.bottomRight,
-                            child: PrimaryButton(
-                              enabled: false,
-                              isLoading: false,
-                              onTap: () {},
-                              buttonText: LocaleKeys.enrollUsers_submit.tr(),
-                            ),
-                          );
-                        },
-                      ),
-                      SizedBox(
-                        height: 50.h,
-                      ),
-                    ],
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    wardDropdownValue = value.toString();
+                    setState(() {
+                      showWardDropdownError = false;
+                    });
+                  },
+                  validator: (value) => validateWardNumber(
+                    value.toString(),
                   ),
                 ),
               ),
+              showWardDropdownError
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        Text(
+                          LocaleKeys.enrollUsers_wardDropdownError.tr(),
+                          style: AppStyles.errorTextStyle,
+                        )
+                      ],
+                    )
+                  : const SizedBox(),
+            ],
+          ),
+          SizedBox(
+            height: 12.h,
+          ),
+          Text(
+            'Location',
+            style: TextStyle(
+              color: AppColors.textColorDark,
+              fontFamily: 'LexendDeca',
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
             ),
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
+          BlocBuilder<CurrentLocationCubit, CurrentLocationState>(
+            builder: (context, state) {
+              if (state is CurrentLocationLoaded) {
+                return Stack(
+                  children: [
+                    LocationMapField(
+                      gesturesEnabled: true,
+                      myLocationEnabled: true,
+                      zoomEnabled: true,
+                      mapController: _controller,
+                      latitude: state.latitude,
+                      longitude: state.longitude,
+                    ),
+                    Container(
+                      height: 180.h,
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Transform.translate(
+                          offset: Offset(0, -10.h),
+                          child: SvgPicture.asset(
+                            'assets/svg/marker.svg',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return Container(
+                decoration: BoxDecoration(
+                  color: AppColors.colorPrimaryExtraLight,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                height: 180.h,
+                width: double.infinity,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.colorPrimary,
+                  ),
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            height: 50.h,
+          ),
+          BlocBuilder<ReverseGeocodingCubit, ReverseGeocodingState>(
+            builder: (context, state) {
+              if (state is ReverseGeocodingLoaded) {
+                return Align(
+                  alignment: Alignment.bottomRight,
+                  child:
+                      BlocBuilder<CurrentLocationCubit, CurrentLocationState>(
+                    builder: (context, currentLocationState) {
+                      if (currentLocationState is CurrentLocationLoaded) {
+                        return BlocConsumer<UsersBloc, SearchUsersState>(
+                          listener: (context, userState) {
+                            if (userState is UserEnrolledState) {
+                              primaryPopupDialog(
+                                context: context,
+                                title: LocaleKeys
+                                    .enrollUsers_dialogSuccessMessage
+                                    .tr(),
+                                buttonText:
+                                    LocaleKeys.enrollUsers_dialogOk.tr(),
+                                content:
+                                    LocaleKeys.enrollUsers_dialogSuccessMessage,
+                                ontap: () => Navigator.of(context).pop(),
+                              ).then(
+                                (value) => FocusScope.of(context)
+                                    .requestFocus(firstNameNode),
+                              );
+
+                              firstNameController.text = '';
+                              lastNameController.text = '';
+                              emailController.text = '';
+                              contactNumberController.text = '';
+                              wardNumberController.text = '';
+                            }
+                          },
+                          builder: (context, userState) {
+                            if (userState is EnrollingAUserState) {
+                              return PrimaryButton(
+                                enabled: true,
+                                isLoading: true,
+                                onTap: () {},
+                                buttonText: LocaleKeys.enrollUsers_submit.tr(),
+                              );
+                            }
+                            return PrimaryButton(
+                              isLoading: false,
+                              onTap: () {
+                                if (muncipalityDropdownValue == null) {
+                                  setState(() {
+                                    showMuncipalityDropdownError = true;
+                                  });
+                                  return;
+                                }
+                                if (wardDropdownValue == null &&
+                                    muncipalityDropdownValue != null) {
+                                  setState(() {
+                                    showWardDropdownError = true;
+                                  });
+                                  // return;
+                                }
+                                if (_formKey.currentState!.validate() &&
+                                    !showWardDropdownError &&
+                                    !showMuncipalityDropdownError) {
+                                  if (!showWardDropdownError &&
+                                      !showMuncipalityDropdownError) {
+                                    FocusScope.of(context).unfocus();
+                                    BlocProvider.of<UsersBloc>(context).add(
+                                      EnrollAUserEvent(
+                                        user: User(
+                                          id: '2',
+                                          about: '',
+                                          city: state.name,
+                                          country: state.countryName,
+                                          streetName: state.street,
+                                          mobileNumber:
+                                              contactNumberController.text,
+                                          firstName: firstNameController.text,
+                                          lastName: lastNameController.text,
+                                          muncipality: muncipalityDropdownValue,
+                                          wardNumber: wardDropdownValue,
+                                          email: emailController.text,
+                                          latitude: currentLocationState
+                                              .latitude
+                                              .toString(),
+                                          longitude: currentLocationState
+                                              .longitude
+                                              .toString(),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                } else {}
+                              },
+                              buttonText: 'Submit',
+                            );
+                          },
+                        );
+                      }
+                      return Align(
+                        alignment: Alignment.bottomRight,
+                        child: PrimaryButton(
+                          enabled: false,
+                          isLoading: false,
+                          onTap: () {},
+                          buttonText: LocaleKeys.enrollUsers_submit.tr(),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }
+              return Align(
+                alignment: Alignment.bottomRight,
+                child: PrimaryButton(
+                  enabled: false,
+                  isLoading: false,
+                  onTap: () {},
+                  buttonText: LocaleKeys.enrollUsers_submit.tr(),
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            height: 50.h,
           ),
         ],
       ),

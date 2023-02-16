@@ -160,50 +160,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         hintText: LocaleKeys.editProfile_aboutHint.tr(),
                         textEditingController: aboutController,
                       ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                      Text(
-                        LocaleKeys.editProfile_location.tr(),
-                        style: TextStyle(
-                          color: AppColors.textColorDark,
-                          fontFamily: 'LexendDeca',
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      Stack(
-                        children: [
-                          LocationMapField(
-                            zoomEnabled: true,
-                            mapController: _controller,
-                            latitude: double.parse(
-                              widget.myProfile.latitude.toString(),
-                            ),
-                            longitude: double.parse(
-                              widget.myProfile.longitude.toString(),
-                            ),
-                          ),
-                          Container(
-                            height: 180.h,
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: Transform.translate(
-                                offset: Offset(0, -10.h),
-                                child: SvgPicture.asset(
-                                  'assets/svg/marker.svg',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 12.h,
-                      ),
+                      // SizedBox(
+                      //   height: 12.h,
+                      // ),
+                      // Text(
+                      //   LocaleKeys.editProfile_location.tr(),
+                      //   style: TextStyle(
+                      //     color: AppColors.textColorDark,
+                      //     fontFamily: 'LexendDeca',
+                      //     fontSize: 12.sp,
+                      //     fontWeight: FontWeight.w500,
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 5.h,
+                      // ),
+                      // Stack(
+                      //   children: [
+                      //     LocationMapField(
+                      //       zoomEnabled: true,
+                      //       mapController: _controller,
+                      //       latitude: double.parse(
+                      //         widget.myProfile.latitude.toString(),
+                      //       ),
+                      //       longitude: double.parse(
+                      //         widget.myProfile.longitude.toString(),
+                      //       ),
+                      //     ),
+                      //     Container(
+                      //       height: 180.h,
+                      //       alignment: Alignment.center,
+                      //       child: Center(
+                      //         child: Transform.translate(
+                      //           offset: Offset(0, -10.h),
+                      //           child: SvgPicture.asset(
+                      //             'assets/svg/marker.svg',
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // SizedBox(
+                      //   height: 12.h,
+                      // ),
                       SizedBox(
                         height: 50.h,
                       ),

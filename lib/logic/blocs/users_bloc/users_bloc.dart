@@ -57,5 +57,33 @@ class UsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
       await userRepository.addUser(event.user);
       emit(UserEnrolledState(user: event.user));
     });
+    on<EditUserEvent>((event, emit) async {
+      emit(const EnrollingAUserState(loading: true));
+      await editUser(event.user);
+      emit(
+        LoadedUsersState(
+          selectedFilterNumber: 0,
+          userList: usersList,
+        ),
+      );
+      emit(UserEditedState(user: event.user));
+    });
+  }
+  Future<void> editUser(User user) async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    User newUser = usersList.firstWhere((element) => element.id == user.id);
+    newUser.about = user.about;
+    newUser.city = user.city;
+    newUser.country = user.country;
+    newUser.email = user.email;
+    newUser.mobileNumber = user.mobileNumber;
+    newUser.email = user.email;
+    newUser.latitude = user.latitude;
+    newUser.longitude = user.longitude;
+    newUser.streetName = user.streetName;
+    newUser.wardNumber = user.wardNumber;
+    newUser.firstName = user.firstName;
+    newUser.lastName = user.lastName;
   }
 }

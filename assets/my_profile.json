@@ -4,6 +4,7 @@
   "lastName": "Reyaz",
   "mobileNumber": "7051744660",
   "email": "hayanbeigh119@gmail.com",
+  "muncipality": "3",
   "about": "Lorem ipsum dolor sit amet. Et iusto molestiae et enim maiores est praesentium assumenda. Et quasi perspiciatis et omnis natus eos necessitatibus delectus id dolorem pariatur At doloribus unde quo voluptas repellendus!",
   "latitude": "12.972442",
   "longitude": "77.580643",
@@ -13,11 +14,11 @@
   "allocatedWards": [
     {
       "grievanceType": "Road Maintainance",
-      "wardNumber": ["14", "15"]
+      "wardNumber": ["Saligarmam", "Kodambakkam"]
     },
     {
       "grievanceType": "Construction",
-      "wardNumber": ["16"]
+      "wardNumber": ["Guindy (West)"]
     }
   ]
 }

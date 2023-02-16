@@ -1,0 +1,54 @@
+PODS:
+  - audioplayers_darwin (0.0.1):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+  - geolocator_apple (1.2.0):
+    - FlutterMacOS
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - url_launcher_macos (0.0.1):
+    - FlutterMacOS
+  - wakelock_macos (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - audioplayers_darwin (from `Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - geolocator_apple (from `Flutter/ephemeral/.symlinks/plugins/geolocator_apple/macos`)
+  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/macos`)
+  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos`)
+  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - wakelock_macos (from `Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos`)
+
+EXTERNAL SOURCES:
+  audioplayers_darwin:
+    :path: Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  geolocator_apple:
+    :path: Flutter/ephemeral/.symlinks/plugins/geolocator_apple/macos
+  path_provider_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/macos
+  shared_preferences_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos
+  url_launcher_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  wakelock_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos
+
+SPEC CHECKSUMS:
+  audioplayers_darwin: dcad41de4fbd0099cb3749f7ab3b0cb8f70b810c
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  geolocator_apple: 72a78ae3f3e4ec0db62117bd93e34523f5011d58
+  path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
+  shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
+  url_launcher_macos: c04e4fa86382d4f94f6b38f14625708be3ae52e2
+  wakelock_macos: bc3f2a9bd8d2e6c89fee1e1822e7ddac3bd004a9
+
+PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
+
+COCOAPODS: 1.11.3

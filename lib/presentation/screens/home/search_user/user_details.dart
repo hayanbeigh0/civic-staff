@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
 import 'package:civic_staff/models/user_model.dart';
+import 'package:civic_staff/presentation/screens/home/enroll_user/edit_user.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
@@ -10,6 +13,7 @@ import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -66,6 +70,40 @@ class UserDetails extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
+                        BlocListener<UsersBloc, SearchUsersState>(
+                          listener: (context, state) {
+                            if (state is UserEditedState) {
+                              Navigator.of(context).pushReplacementNamed(
+                                UserDetails.routeName,
+                                arguments: {'user': state.user},
+                              );
+                            }
+                          },
+                          child: InkWell(
+                            onTap: () async {
+                              await Navigator.of(context).pushNamed(
+                                EditUserScreen.routeName,
+                                arguments: {
+                                  'user': user,
+                                },
+                              );
+                              // if(mounted){}
+                              BlocProvider.of<UsersBloc>(context).add(
+                                const LoadUsersEvent(1),
+                              );
+                            },
+                            child: Text(
+                              LocaleKeys.profile_edit.tr(),
+                              style: TextStyle(
+                                color: AppColors.colorWhite,
+                                fontFamily: 'LexendDeca',
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                height: 1.1,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -244,6 +282,20 @@ class UserDetails extends StatelessWidget {
                     SizedBox(
                       height: 12.h,
                     ),
+                    PrimaryDisplayField(
+                      title: 'Muncipality',
+                      value: user.muncipality.toString(),
+                    ),
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    PrimaryDisplayField(
+                      title: 'Ward',
+                      value: user.wardNumber.toString(),
+                    ),
+                    SizedBox(
+                      height: 12.h,
+                    ),
                     Text(
                       LocaleKeys.userDetails_location.tr(),
                       style: TextStyle(
@@ -274,13 +326,6 @@ class UserDetails extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: 12.h,
-                    ),
-                    PrimaryDisplayField(
-                      title: LocaleKeys.userDetails_ward.tr(),
-                      value: '${user.wardNumber}',
-                    ),
-                    SizedBox(
                       height: 40.h,
                     ),
                     Align(
@@ -303,5 +348,12 @@ class UserDetails extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String? validateWardNumber(String value) {
+    if (value.isEmpty) {
+      return LocaleKeys.enrollUsers_wardDropdownError.tr();
+    }
+    return null;
   }
 }

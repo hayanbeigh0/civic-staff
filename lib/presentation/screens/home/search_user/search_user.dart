@@ -279,95 +279,93 @@ class _SearchUserState extends State<SearchUser> {
     );
   }
 
-  Container userInfoCard(LoadedUsersState state, int index) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 10.w,
-        vertical: 15.h,
-      ),
-      margin: EdgeInsets.symmetric(
-        // horizontal: 18.w,
-        vertical: 10.h,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.cardColorLight,
-        borderRadius: BorderRadius.circular(20.r),
-        boxShadow: const [
-          BoxShadow(
-            offset: Offset(2, 2),
-            blurRadius: 4,
-            color: AppColors.cardShadowColor,
-          ),
-          BoxShadow(
-            offset: Offset(-2, -2),
-            blurRadius: 4,
-            color: AppColors.colorWhite,
-          ),
-        ],
-      ),
-      width: double.infinity,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 10.w,
-          ),
-          CircleAvatar(
-            radius: 36.w,
-            backgroundColor: AppColors.colorPrimary,
-            child: CircleAvatar(
-              radius: 35.w,
-              backgroundColor: const Color.fromARGB(255, 234, 234, 234),
+  GestureDetector userInfoCard(LoadedUsersState state, int index) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed(UserDetails.routeName, arguments: {
+          'user': state.userList[index],
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 10.w,
+          vertical: 15.h,
+        ),
+        margin: EdgeInsets.symmetric(
+          // horizontal: 18.w,
+          vertical: 10.h,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.cardColorLight,
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: const [
+            BoxShadow(
+              offset: Offset(2, 2),
+              blurRadius: 4,
+              color: AppColors.cardShadowColor,
             ),
-          ),
-          SizedBox(
-            width: 15.w,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  state.userList[index].firstName.toString(),
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: AppColors.cardTextColor,
-                    fontFamily: 'LexendDeca',
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  '${LocaleKeys.userDetails_location.tr()} - ${state.userList[index].city}',
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: AppColors.cardTextColor,
-                    fontFamily: 'LexendDeca',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  '${LocaleKeys.userDetails_mobile.tr()} - ${state.userList[index].mobileNumber}',
-                  maxLines: 1,
-                  style: TextStyle(
-                    color: AppColors.cardTextColor,
-                    fontFamily: 'LexendDeca',
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
+            BoxShadow(
+              offset: Offset(-2, -2),
+              blurRadius: 4,
+              color: AppColors.colorWhite,
             ),
-          ),
-          SizedBox(
-            child: InkWell(
-              borderRadius: BorderRadius.circular(100.r),
-              onTap: () {
-                Navigator.of(context)
-                    .pushNamed(UserDetails.routeName, arguments: {
-                  'user': state.userList[index],
-                });
-              },
+          ],
+        ),
+        width: double.infinity,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 10.w,
+            ),
+            CircleAvatar(
+              radius: 36.w,
+              backgroundColor: AppColors.colorPrimary,
+              child: CircleAvatar(
+                radius: 35.w,
+                backgroundColor: const Color.fromARGB(255, 234, 234, 234),
+              ),
+            ),
+            SizedBox(
+              width: 15.w,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.userList[index].firstName.toString(),
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: AppColors.cardTextColor,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    '${LocaleKeys.userDetails_location.tr()} - ${state.userList[index].city}',
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: AppColors.cardTextColor,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    '${LocaleKeys.userDetails_mobile.tr()} - ${state.userList[index].mobileNumber}',
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: AppColors.cardTextColor,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
               child: Container(
                 padding: EdgeInsets.all(14.sp),
                 decoration: const BoxDecoration(
@@ -392,8 +390,8 @@ class _SearchUserState extends State<SearchUser> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -48,3 +48,13 @@ class EnrollAUserEvent extends SearchUsersEvent {
   @override
   List<Object?> get props => [user];
 }
+
+class EditUserEvent extends SearchUsersEvent {
+  final User user;
+  const EditUserEvent({
+    required this.user,
+  });
+
+  @override
+  List<Object?> get props => [user];
+}

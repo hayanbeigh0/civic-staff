@@ -245,41 +245,41 @@ class ProfileScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 12.h,
-                          ),
-                          Text(
-                            LocaleKeys.profile_location.tr(),
-                            style: TextStyle(
-                              color: AppColors.textColorDark,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          Stack(
-                            children: [
-                              LocationMapField(
-                                gesturesEnabled: false,
-                                markerEnabled: true,
-                                myLocationEnabled: false,
-                                zoomEnabled: false,
-                                latitude: double.parse(
-                                    state.myProfile.latitude.toString()),
-                                longitude: double.parse(
-                                    state.myProfile.latitude.toString()),
-                                mapController: _controller,
-                              ),
-                              Container(
-                                height: 180.h,
-                                width: double.infinity,
-                                color: Colors.transparent,
-                              ),
-                            ],
-                          ),
+                          // SizedBox(
+                          //   height: 12.h,
+                          // ),
+                          // Text(
+                          //   LocaleKeys.profile_location.tr(),
+                          //   style: TextStyle(
+                          //     color: AppColors.textColorDark,
+                          //     fontFamily: 'LexendDeca',
+                          //     fontSize: 12.sp,
+                          //     fontWeight: FontWeight.w500,
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   height: 5.h,
+                          // ),
+                          // Stack(
+                          //   children: [
+                          //     LocationMapField(
+                          //       gesturesEnabled: false,
+                          //       markerEnabled: true,
+                          //       myLocationEnabled: false,
+                          //       zoomEnabled: false,
+                          //       latitude: double.parse(
+                          //           state.myProfile.latitude.toString()),
+                          //       longitude: double.parse(
+                          //           state.myProfile.latitude.toString()),
+                          //       mapController: _controller,
+                          //     ),
+                          //     Container(
+                          //       height: 180.h,
+                          //       width: double.infinity,
+                          //       color: Colors.transparent,
+                          //     ),
+                          //   ],
+                          // ),
                           SizedBox(
                             height: 12.h,
                           ),
@@ -339,7 +339,7 @@ class ProfileScreen extends StatelessWidget {
                                                 (e) => Column(
                                                   children: [
                                                     Text(
-                                                      'Ward $e',
+                                                      e,
                                                       style: TextStyle(
                                                         color: AppColors
                                                             .textColorDark,
