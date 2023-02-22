@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
+import 'package:civic_staff/services/auth_api.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +13,7 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/shapes/login_shape_bottom.dart';
 import 'package:civic_staff/presentation/utils/shapes/login_shape_top.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatelessWidget {
   static const routeName = '/login';
@@ -121,13 +125,16 @@ class Login extends StatelessWidget {
                               buttonText: LocaleKeys
                                   .loginAndActivationScreen_continue
                                   .tr(),
-                              onTap: () {
+                              onTap: () async {
                                 if (_formKey.currentState!.validate()) {
+                                  Map signIn_repsonse =  await Auth_Api().signIn(_mobileNumberController.text);
+                                  Map<String, dynamic> userDetails = jsonDecode(signIn_repsonse['body']);
                                   Navigator.of(context).pushNamed(
                                     '/activation',
                                     arguments: {
                                       'mobileNumber':
                                           _mobileNumberController.text,
+                                      'userDetails':userDetails 
                                     },
                                   );
                                 } else {}

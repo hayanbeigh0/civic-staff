@@ -32,7 +32,7 @@ class PrimaryButton extends StatelessWidget {
             10.r,
           ),
         ),
-        backgroundColor: AppColors.colorPrimary,
+        primary: AppColors.colorPrimary,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
         return Row(

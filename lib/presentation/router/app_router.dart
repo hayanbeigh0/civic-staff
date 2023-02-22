@@ -32,6 +32,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => Activation(
             mobileNumber: args['mobileNumber'],
+            userDetails: args['userDetails'],
           ),
         );
       case HomeScreen.routeName:

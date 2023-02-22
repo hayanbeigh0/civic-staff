@@ -409,7 +409,7 @@ class _SearchUserState extends State<SearchUser> {
                               groupValue: _selectedRadio,
                               onChanged: (value) {
                                 setModalState(() {
-                                  setSelectedRadio(value!.toInt());
+                                  setSelectedRadio(int.parse(value.toString()));
                                 });
                               }),
                           Text(
@@ -432,7 +432,7 @@ class _SearchUserState extends State<SearchUser> {
                               groupValue: _selectedRadio,
                               onChanged: (value) {
                                 setModalState(() {
-                                  setSelectedRadio(value!.toInt());
+                                  setSelectedRadio(int.parse(value.toString()));
                                 });
                               }),
                           Text(
@@ -451,7 +451,7 @@ class _SearchUserState extends State<SearchUser> {
                               groupValue: _selectedRadio,
                               onChanged: (value) {
                                 setModalState(() {
-                                  setSelectedRadio(value!.toInt());
+                                  setSelectedRadio(int.parse(value.toString()));
                                 });
                               }),
                           Text(

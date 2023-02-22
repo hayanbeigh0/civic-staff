@@ -4,6 +4,7 @@ import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/screens/home/home.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
+import 'package:civic_staff/services/auth_api.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,10 +19,12 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 
 class Activation extends StatefulWidget {
   final String mobileNumber;
+  final Map<String, dynamic> userDetails;
   static const routeName = '/activation';
   const Activation({
     super.key,
     required this.mobileNumber,
+    required this.userDetails,
   });
 
   @override
@@ -337,10 +340,10 @@ class _ActivationState extends State<Activation> {
                                                         .text.isNotEmpty &&
                                                     otpController4
                                                         .text.isNotEmpty) {
-                                                  Navigator.of(context)
-                                                      .pushNamed(
-                                                    HomeScreen.routeName,
-                                                  );
+                                                  // Navigator.of(context)
+                                                  //     .pushNamed(
+                                                  //   HomeScreen.routeName,
+                                                  // );
                                                 }
                                               }
                                               if (value.isEmpty) {
@@ -416,11 +419,25 @@ class _ActivationState extends State<Activation> {
                             buttonText: LocaleKeys
                                 .loginAndActivationScreen_continue
                                 .tr(),
-                            onTap: () {
+                            onTap: ()async {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.of(context).pushNamed(
-                                  '/home',
-                                );
+                                var response = await Auth_Api().verifyOtp(widget.userDetails, otpController1.text + otpController2.text + otpController3.text + otpController4.text);
+
+                                try {
+                                  if(response['AuthenticationResult'] != null){
+                                    Navigator.of(context).pushNamed(
+                                      '/home',
+                                    );
+                                  }else{
+                                    widget.userDetails['session'] = response['Session'];
+                                  }
+                                } catch (e) {
+                                 //TODO
+                                }
+
+                                // Navigator.of(context).pushNamed(
+                                //   '/home',
+                                // );
                               } else {}
                             },
                           ),

@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               useMaterial3: true,
               primaryColor: AppColors.colorPrimary,
             ),
-            home: HomeScreen(),
+            home: Login(),
             onGenerateRoute: (settings) => AppRouter.onGenrateRoute(settings),
           ),
         );

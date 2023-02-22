@@ -21,7 +21,7 @@ class SecondaryButton extends StatelessWidget {
       onPressed: isLoading ? null : onTap,
       style: OutlinedButton.styleFrom(
         backgroundColor: AppColors.colorWhite,
-        foregroundColor: AppColors.colorPrimary,
+        primary: AppColors.colorPrimary,
         side: const BorderSide(
           color: AppColors.colorPrimary,
           width: 1.0,
