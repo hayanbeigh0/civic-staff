@@ -51,6 +51,14 @@ class _EditUserScreenState extends State<EditUserScreen> {
     '2': ['15', '16', '17', '18', '19'],
     '3': ['20', '21', '22', '23', '24'],
     '4': ['30', '31', '32', '33', '34'],
+    'MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301': [
+      '35',
+      '36',
+      '37',
+      '38',
+      '39',
+      '2'
+    ],
   };
 
   String? wardDropdownValue;
@@ -64,10 +72,10 @@ class _EditUserScreenState extends State<EditUserScreen> {
     firstNameController.text = widget.user.firstName.toString();
     lastNameController.text = widget.user.lastName.toString();
     contactNumberController.text = widget.user.mobileNumber.toString();
-    emailController.text = widget.user.email.toString();
+    emailController.text = widget.user.emailId.toString();
     aboutController.text = widget.user.about.toString();
     wardDropdownValue = widget.user.wardNumber;
-    muncipalityDropdownValue = widget.user.muncipality;
+    muncipalityDropdownValue = widget.user.municipalityId;
     wards = wardsAndMuncipality[muncipalityDropdownValue];
     muncipality = wardsAndMuncipality.keys.toList();
     super.initState();
@@ -380,19 +388,28 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                       EditUserEvent(
                                         user: User(
                                           about: aboutController.text,
-                                          city: state.locality,
-                                          country: state.countryName,
-                                          email: emailController.text,
+                                          countryCode: '+91',
+                                          emailId: emailController.text,
                                           firstName: firstNameController.text,
-                                          id: widget.user.id,
+                                          userId: widget.user.userId,
                                           lastName: lastNameController.text,
                                           latitude: widget.user.latitude,
                                           longitude: widget.user.longitude,
                                           mobileNumber:
                                               contactNumberController.text,
-                                          streetName: state.street,
+                                          address: state.street +
+                                              state.locality +
+                                              state.countryName,
                                           wardNumber: wardDropdownValue,
-                                          muncipality: muncipalityDropdownValue,
+                                          municipalityId:
+                                              widget.user.municipalityId,
+                                          active: true,
+                                          createdDate: '',
+                                          lastModifiedDate:
+                                              DateTime.now().toString(),
+                                          notificationToken: '',
+                                          profilePicture: '',
+                                          staffId: '',
                                         ),
                                       ),
                                     );

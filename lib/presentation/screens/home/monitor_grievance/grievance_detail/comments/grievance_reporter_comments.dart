@@ -1,5 +1,6 @@
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/models/grievances/grievance_comments.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class GrievanceReporterComments extends StatelessWidget {
-  final List<ReporterComments> reporterComments;
+  final List<GrievanceComments> reporterComments;
   static const routeName = '/grievanceReporterComments';
   const GrievanceReporterComments({
     super.key,

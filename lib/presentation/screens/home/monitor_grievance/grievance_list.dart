@@ -116,13 +116,14 @@ class GrievanceList extends StatelessWidget {
                     ),
                     onChanged: (value) {
                       if (value.isEmpty) {
-                        BlocProvider.of<GrievancesBloc>(context).add(
+                        return BlocProvider.of<GrievancesBloc>(context).add(
                           LoadGrievancesEvent(),
                         );
                       }
                       if (value.isNotEmpty) {
-                        BlocProvider.of<GrievancesBloc>(context).add(
-                            SearchGrievanceByTypeEvent(grievanceType: value));
+                        return BlocProvider.of<GrievancesBloc>(context).add(
+                          SearchGrievanceByTypeEvent(grievanceType: value),
+                        );
                       }
                     },
                   ),
@@ -272,6 +273,11 @@ class GrievanceList extends StatelessWidget {
                           state: state,
                         );
                       }
+                      if (state is NoGrievanceFoundState) {
+                        return const Center(
+                          child: Text('No Grievance Found'),
+                        );
+                      }
                       return const SizedBox();
                     },
                   ),
@@ -299,7 +305,11 @@ class GrievanceListWidget extends StatelessWidget {
     "streetlighting": 'assets/svg/streetlighting.svg',
     "watersupplyanddrainage": 'assets/svg/watersupplyanddrainage.svg',
     "garbagecollection": 'assets/svg/garbagecollection.svg',
+    "garb": 'assets/svg/garbagecollection.svg',
     "certificaterequest": 'assets/svg/certificaterequest.svg',
+  };
+  final Map<String, String> grievanceTypesMap = {
+    "garb": 'Garbage Collection',
   };
 
   @override
@@ -369,13 +379,16 @@ class GrievanceListWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          state.grievanceList[index].grievanceType.toString(),
+                          grievanceTypesMap[state
+                                  .grievanceList[index].grievanceType!
+                                  .toLowerCase()]
+                              .toString(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.cardTextStyle,
                         ),
                         Text(
-                          '${LocaleKeys.grievancesScreen_locaiton.tr()} - ${state.grievanceList[index].place}',
+                          '${LocaleKeys.grievancesScreen_locaiton.tr()} - ${state.grievanceList[index].address}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.cardTextStyle.copyWith(
@@ -384,7 +397,7 @@ class GrievanceListWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${LocaleKeys.grievancesScreen_reporter.tr()} - ${state.grievanceList[index].raisedBy}',
+                          '${LocaleKeys.grievancesScreen_reporter.tr()} - ${state.grievanceList[index].createdByName}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppStyles.cardTextStyle.copyWith(
@@ -393,8 +406,9 @@ class GrievanceListWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${LocaleKeys.grievancesScreen_date.tr()} - ${DateFormatter.formatDate(
-                            state.grievanceList[index].timeStamp.toString(),
+                          '${LocaleKeys.grievancesScreen_date.tr()} - ${DateFormatter.formatTimeStamp(
+                            state.grievanceList[index].lastModifiedDate
+                                .toString(),
                           )}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

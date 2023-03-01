@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
@@ -366,19 +367,22 @@ class _EnrollUserState extends State<EnrollUser> {
                               return PrimaryButton(
                                 enabled: true,
                                 isLoading: true,
-                                onTap: () {},
+                                onTap: () {
+                                  log('Not Working');
+                                },
                                 buttonText: LocaleKeys.enrollUsers_submit.tr(),
                               );
                             }
                             return PrimaryButton(
                               isLoading: false,
                               onTap: () {
-                                if (muncipalityDropdownValue == null) {
-                                  setState(() {
-                                    showMuncipalityDropdownError = true;
-                                  });
-                                  return;
-                                }
+                                // if (muncipalityDropdownValue == null) {
+                                //   log('Not Working');
+                                //   setState(() {
+                                //     showMuncipalityDropdownError = true;
+                                //   });
+                                //   return;
+                                // }
                                 if (wardDropdownValue == null &&
                                     muncipalityDropdownValue != null) {
                                   setState(() {
@@ -387,37 +391,46 @@ class _EnrollUserState extends State<EnrollUser> {
                                   // return;
                                 }
                                 if (_formKey.currentState!.validate() &&
-                                    !showWardDropdownError &&
-                                    !showMuncipalityDropdownError) {
-                                  if (!showWardDropdownError &&
-                                      !showMuncipalityDropdownError) {
+                                    !showWardDropdownError) {
+                                  if (!showWardDropdownError) {
+                                    log('Everything correct!');
                                     FocusScope.of(context).unfocus();
                                     BlocProvider.of<UsersBloc>(context).add(
                                       EnrollAUserEvent(
                                         user: User(
-                                          id: '2',
                                           about: '',
-                                          city: state.name,
-                                          country: state.countryName,
-                                          streetName: state.street,
+                                          active: true,
+                                          address: state.name,
+                                          countryCode: '+91',
+                                          staffId:
+                                              'STAFF-2ce3e905-362c-4f0e-b621-82b82d50a7f6',
+                                          createdDate:
+                                              DateTime.now().toString(),
+                                          emailId: emailController.text,
+                                          firstName: firstNameController.text,
+                                          lastModifiedDate:
+                                              DateTime.now().toString(),
+                                          lastName: lastNameController.text,
                                           mobileNumber:
                                               contactNumberController.text,
-                                          firstName: firstNameController.text,
-                                          lastName: lastNameController.text,
-                                          muncipality: muncipalityDropdownValue,
-                                          wardNumber: wardDropdownValue,
-                                          email: emailController.text,
+                                          municipalityId:
+                                              'MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301',
+                                          notificationToken: '',
+                                          profilePicture: '',
                                           latitude: currentLocationState
                                               .latitude
                                               .toString(),
                                           longitude: currentLocationState
                                               .longitude
                                               .toString(),
+                                          wardNumber: wardDropdownValue,
                                         ),
                                       ),
                                     );
                                   }
-                                } else {}
+                                } else {
+                                  log('Not Working');
+                                }
                               },
                               buttonText: 'Submit',
                             );

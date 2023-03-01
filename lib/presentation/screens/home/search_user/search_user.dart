@@ -317,7 +317,7 @@ class _SearchUserState extends State<SearchUser> {
                     style: AppStyles.userCardTitleTextStyle,
                   ),
                   Text(
-                    '${LocaleKeys.userDetails_location.tr()} - ${state.userList[index].city}',
+                    '${LocaleKeys.userDetails_location.tr()} - ${state.userList[index].address}',
                     maxLines: 1,
                     style: AppStyles.userCardTextStyle,
                   ),

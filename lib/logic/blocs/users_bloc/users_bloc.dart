@@ -45,9 +45,9 @@ class UsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
       emit(SearchingUsersState());
       usersList = UserRepository.usersList
           .where(
-            (element) => element.streetName!
-                .toLowerCase()
-                .contains(event.streetName.toLowerCase()),
+            (element) => element.address!.toLowerCase().contains(
+                  event.streetName.toLowerCase(),
+                ),
           )
           .toList();
       emit(LoadedUsersState(userList: usersList, selectedFilterNumber: 3));
@@ -72,16 +72,14 @@ class UsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
   Future<void> editUser(User user) async {
     await Future.delayed(const Duration(seconds: 2));
 
-    User newUser = usersList.firstWhere((element) => element.id == user.id);
+    User newUser =
+        usersList.firstWhere((element) => element.userId == user.userId);
     newUser.about = user.about;
-    newUser.city = user.city;
-    newUser.country = user.country;
-    newUser.email = user.email;
+    newUser.address = user.address;
     newUser.mobileNumber = user.mobileNumber;
-    newUser.email = user.email;
+    newUser.emailId = user.emailId;
     newUser.latitude = user.latitude;
     newUser.longitude = user.longitude;
-    newUser.streetName = user.streetName;
     newUser.wardNumber = user.wardNumber;
     newUser.firstName = user.firstName;
     newUser.lastName = user.lastName;

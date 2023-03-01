@@ -12,4 +12,10 @@ class DateFormatter {
     var formatter = DateFormat('hh:mm a - dd/MM/yy');
     return formatter.format(dateTime);
   }
+
+  static String formatTimeStamp(String timestamp) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
+    String formattedDate = DateFormat('dd-MM-yyyy').format(date);
+    return formattedDate;
+  }
 }

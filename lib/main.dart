@@ -1,4 +1,6 @@
+import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
 import 'package:civic_staff/presentation/screens/home/home.dart';
+import 'package:civic_staff/resources/repositories/auth/authentication_repository.dart';
 import 'package:flutter/material.dart';
 
 import 'package:civic_staff/presentation/screens/login/login.dart';
@@ -102,6 +104,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             ),
             BlocProvider<HomeGridItemsCubit>(
               create: (context) => HomeGridItemsCubit(),
+            ),
+            BlocProvider<AuthenticationCubit>(
+              create: (context) => AuthenticationCubit(
+                AuthenticationRepository(),
+              ),
             ),
           ],
           child: MaterialApp(

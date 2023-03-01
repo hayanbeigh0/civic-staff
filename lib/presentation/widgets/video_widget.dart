@@ -142,7 +142,6 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   @override
   void initState() {
     super.initState();
-
     widget.videoPlayerController.setVolume(50);
     widget.chewieController = ChewieController(
       videoPlayerController: widget.videoPlayerController,
@@ -162,6 +161,7 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         DeviceOrientation.portraitUp,
       ],
     );
+    
   }
 
   @override

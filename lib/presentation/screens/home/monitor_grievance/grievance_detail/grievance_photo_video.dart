@@ -89,12 +89,14 @@ class GrievancePhotoVideo extends StatelessWidget {
                   crossAxisSpacing: 30.w,
                   mainAxisSpacing: 20.h,
                 ),
-                itemCount:
-                    state.grievanceList[grievanceListIndex].photos!.length +
-                        state.grievanceList[grievanceListIndex].videos!.length,
+                itemCount: state.grievanceList[grievanceListIndex]
+                        .assets!['photos']!.length +
+                    state.grievanceList[grievanceListIndex].assets!['videos']!
+                        .length,
                 itemBuilder: (context, index) {
                   if (index <
-                      state.grievanceList[grievanceListIndex].photos!.length) {
+                      state.grievanceList[grievanceListIndex].assets!['photos']!
+                          .length) {
                     return Container(
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
@@ -104,7 +106,8 @@ class GrievancePhotoVideo extends StatelessWidget {
                         ),
                       ),
                       child: Image.network(
-                        state.grievanceList[grievanceListIndex].photos![index],
+                        state.grievanceList[grievanceListIndex]
+                            .assets!['photos']![index],
                         fit: BoxFit.cover,
                       ),
                     );
@@ -118,10 +121,11 @@ class GrievancePhotoVideo extends StatelessWidget {
                         ),
                       ),
                       child: VideoWidget(
-                        url: state.grievanceList[grievanceListIndex].videos![
+                        url: state.grievanceList[grievanceListIndex]
+                                .assets!['videos']![
                             index -
-                                state.grievanceList[grievanceListIndex].photos!
-                                    .length],
+                                state.grievanceList[grievanceListIndex]
+                                    .assets!['photos']!.length],
                       ),
                     );
                   }

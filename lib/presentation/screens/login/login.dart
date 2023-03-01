@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
+import 'package:civic_staff/presentation/screens/login/activation_screen.dart';
+import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/services/auth_api.dart';
@@ -12,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/shapes/login_shape_bottom.dart';
 import 'package:civic_staff/presentation/utils/shapes/login_shape_top.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 
@@ -118,28 +123,91 @@ class Login extends StatelessWidget {
                           SizedBox(
                             height: 40.h,
                           ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: PrimaryButton(
-                              isLoading: false,
-                              buttonText: LocaleKeys
-                                  .loginAndActivationScreen_continue
-                                  .tr(),
-                              onTap: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  Map signIn_repsonse =  await Auth_Api().signIn(_mobileNumberController.text);
-                                  Map<String, dynamic> userDetails = jsonDecode(signIn_repsonse['body']);
-                                  Navigator.of(context).pushNamed(
-                                    '/activation',
-                                    arguments: {
-                                      'mobileNumber':
-                                          _mobileNumberController.text,
-                                      'userDetails':userDetails 
-                                    },
-                                  );
-                                } else {}
-                              },
-                            ),
+                          BlocConsumer<AuthenticationCubit,
+                              AuthenticationState>(
+                            listener: (context, state) {
+                              if (state is NavigateToActivationState) {
+                                SnackBars.sucessMessageSnackbar(
+                                  context,
+                                  'Otp has been sent to your mobile number',
+                                );
+                                // log('OTP sent state: ${state.sessionId}');
+                                Navigator.of(context).pushNamed(
+                                  Activation.routeName,
+                                  arguments: {
+                                    'mobileNumber':
+                                        _mobileNumberController.text,
+                                    'userDetails': {
+                                      "username": state.username,
+                                      "session": state.sessionId,
+                                    }
+                                  },
+                                );
+                              }
+                              if (state is AuthenticationLoginErrorState) {
+                                log('hello from login');
+                                SnackBars.errorMessageSnackbar(
+                                    context, state.error);
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (context) => AlertDialog(
+                                //     actions: [
+                                //       ElevatedButton(
+                                //         onPressed: () =>
+                                //             Navigator.of(context).pop(),
+                                //         child: const Text('Ok'),
+                                //       ),
+                                //     ],
+                                //     contentPadding: EdgeInsets.all(20.sp),
+                                //     content: Text(
+                                //       state.error,
+                                //     ),
+                                //   ),
+                                // );
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is AuthenticationLoading) {
+                                return Align(
+                                  alignment: Alignment.centerRight,
+                                  child: PrimaryButton(
+                                    isLoading: true,
+                                    buttonText: LocaleKeys
+                                        .loginAndActivationScreen_continue
+                                        .tr(),
+                                    onTap: () async {},
+                                  ),
+                                );
+                              }
+
+                              return Align(
+                                alignment: Alignment.centerRight,
+                                child: PrimaryButton(
+                                  isLoading: false,
+                                  buttonText: LocaleKeys
+                                      .loginAndActivationScreen_continue
+                                      .tr(),
+                                  onTap: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      // Map signIn_repsonse =  await Auth_Api().signIn(_mobileNumberController.text);
+                                      // Map<String, dynamic> userDetails = jsonDecode(signIn_repsonse['body']);
+                                      BlocProvider.of<AuthenticationCubit>(
+                                              context)
+                                          .signIn(_mobileNumberController.text,
+                                              false);
+                                      // Navigator.of(context).pushNamed(
+                                      //   '/activation',
+                                      //   arguments: {
+                                      //     'mobileNumber':
+                                      //         _mobileNumberController.text,
+                                      //     'userDetails':userDetails
+                                      //   },
+                                      // );
+                                    } else {}
+                                  },
+                                ),
+                              );
+                            },
                           ),
                           SizedBox(
                             height: 20.h,

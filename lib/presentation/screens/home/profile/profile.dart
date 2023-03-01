@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
@@ -7,7 +5,6 @@ import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart'
 import 'package:civic_staff/presentation/screens/login/login.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
-import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:civic_staff/presentation/widgets/secondary_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,12 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profileScreen';
-  ProfileScreen({super.key});
-  final Completer<GoogleMapController> _controller = Completer();
+  const ProfileScreen({super.key});
+  // final Completer<GoogleMapController> _controller = Completer();
 
   @override
   Widget build(BuildContext context) {
@@ -73,15 +69,17 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               const Spacer(),
                               InkWell(
-                                onTap: () async {
-                                  await Navigator.of(context).pushNamed(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
                                     EditProfileScreen.routeName,
                                     arguments: {
                                       'my_profile': state.myProfile,
                                     },
+                                  ).then(
+                                    (_) =>
+                                        BlocProvider.of<MyProfileCubit>(context)
+                                            .loadMyProfile(),
                                   );
-                                  BlocProvider.of<MyProfileCubit>(context)
-                                      .loadMyProfile();
                                 },
                                 child: Text(
                                   LocaleKeys.profile_edit.tr(),

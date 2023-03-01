@@ -41,7 +41,7 @@ class GrievanceMap extends StatelessWidget {
                 grievanceMarkers = state.grievanceList
                     .mapIndexed(
                       (i, e) => Marker(
-                        markerId: MarkerId(e.grievanceId.toString()),
+                        markerId: MarkerId(e.grievanceID.toString()),
                         infoWindow: InfoWindow(
                           snippet: 'Status: ${e.status}',
                           title: e.grievanceType,
@@ -116,8 +116,8 @@ class GrievanceMap extends StatelessWidget {
                                                             .hueViolet,
                                                       ),
                         position: LatLng(
-                          double.parse(e.latitude.toString()),
-                          double.parse(e.longitude.toString()),
+                          double.parse(e.locationLat.toString()),
+                          double.parse(e.locationLong.toString()),
                         ),
                       ),
                     )
@@ -134,10 +134,10 @@ class GrievanceMap extends StatelessWidget {
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
                       double.parse(
-                        state.grievanceList.first.latitude.toString(),
+                        state.grievanceList.first.locationLat.toString(),
                       ),
                       double.parse(
-                        state.grievanceList.first.longitude.toString(),
+                        state.grievanceList.first.locationLong.toString(),
                       ),
                     ),
                     zoom: 12,

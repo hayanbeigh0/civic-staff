@@ -39,14 +39,17 @@ class GrievanceDetail extends StatelessWidget {
   GrievancesLoadedState state;
   final int grievanceListIndex;
   final Completer<GoogleMapController> _controller = Completer();
-  List<String> statusList = ['Processing', 'Completed'];
+  List<String> statusList = ['1', '2'];
   List<String> expectedCompletionList = ['1 Day', '2 Days', '3 Days'];
-  List<String> priorityList = ['Immediate', 'Low', 'High'];
+  List<String> priorityList = ['1', '2', '3'];
   List<String> grievanceTypes = [
     'Road Maintainance',
     'Garbage Collection',
     'Street Lighting'
   ];
+  final Map<String, String> grievanceTypesMap = {
+    "garb": 'Garbage Collection',
+  };
   late String statusDropdownValue;
   late String expectedCompletionDropdownValue;
   late String priorityDropdownValue;
@@ -58,15 +61,17 @@ class GrievanceDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     reporterController.text =
-        state.grievanceList[grievanceListIndex].raisedBy.toString();
+        state.grievanceList[grievanceListIndex].createdByName.toString();
     statusDropdownValue =
         state.grievanceList[grievanceListIndex].status.toString();
     expectedCompletionDropdownValue =
         state.grievanceList[grievanceListIndex].expectedCompletion.toString();
     priorityDropdownValue =
         state.grievanceList[grievanceListIndex].priority.toString();
-    grievanceTypeDropdownValue =
-        state.grievanceList[grievanceListIndex].grievanceType.toString();
+    grievanceTypeDropdownValue = grievanceTypesMap[state
+            .grievanceList[grievanceListIndex].grievanceType!
+            .toLowerCase()]
+        .toString();
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: BlocBuilder<GrievancesBloc, GrievancesState>(
@@ -182,28 +187,20 @@ class GrievanceDetail extends StatelessWidget {
                         BlocProvider.of<GrievancesBloc>(context).add(
                           UpdateGrievanceEvent(
                             grievanceId: state
-                                .grievanceList[grievanceListIndex].grievanceId
+                                .grievanceList[grievanceListIndex].grievanceID
                                 .toString(),
                             newGrievance: Grievances(
-                              grievanceId: grievance.grievanceId,
-                              audios: grievance.audios,
-                              contactByPhoneEnabled:
-                                  grievance.contactByPhoneEnabled,
+                              grievanceID: grievance.grievanceID,
+                              assets: grievance.assets,
                               description: grievance.description,
                               expectedCompletion: grievance.expectedCompletion,
                               grievanceType: grievanceTypeDropdownValue,
-                              latitude: grievance.latitude,
-                              longitude: grievance.longitude,
-                              myComments: grievance.myComments,
-                              open: grievance.open,
-                              photos: grievance.photos,
-                              place: grievance.place,
+                              locationLat: grievance.locationLat,
+                              locationLong: grievance.locationLong,
+                              address: grievance.address,
                               priority: grievance.priority,
-                              raisedBy: grievance.raisedBy,
-                              reporterComments: grievance.reporterComments,
+                              createdBy: grievance.createdBy,
                               status: statusDropdownValue,
-                              timeStamp: grievance.timeStamp,
-                              videos: grievance.videos,
                               wardNumber: grievance.wardNumber,
                             ),
                           ),
@@ -224,32 +221,24 @@ class GrievanceDetail extends StatelessWidget {
                   PrimaryTextField(
                     onFieldSubmitted: (value) {
                       final grievance = state.grievanceList[grievanceListIndex];
-
                       BlocProvider.of<GrievancesBloc>(context).add(
                         UpdateGrievanceEvent(
                           grievanceId: state
-                              .grievanceList[grievanceListIndex].grievanceId
+                              .grievanceList[grievanceListIndex].grievanceID
                               .toString(),
                           newGrievance: Grievances(
-                            grievanceId: grievance.grievanceId,
-                            audios: grievance.audios,
-                            contactByPhoneEnabled:
-                                grievance.contactByPhoneEnabled,
+                            grievanceID: grievance.grievanceID,
+                            assets: grievance.assets,
+                            mobileContactStatus: grievance.mobileContactStatus,
                             description: grievance.description,
                             expectedCompletion: grievance.expectedCompletion,
                             grievanceType: grievance.grievanceType,
-                            latitude: grievance.latitude,
-                            longitude: grievance.longitude,
-                            myComments: grievance.myComments,
-                            open: grievance.open,
-                            photos: grievance.photos,
-                            place: grievance.place,
+                            locationLat: grievance.locationLat,
+                            locationLong: grievance.locationLong,
+                            address: grievance.address,
                             priority: grievance.priority,
-                            raisedBy: value,
-                            reporterComments: grievance.reporterComments,
+                            createdBy: value,
                             status: grievance.status,
-                            timeStamp: grievance.timeStamp,
-                            videos: grievance.videos,
                             wardNumber: grievance.wardNumber,
                           ),
                         ),
@@ -302,28 +291,20 @@ class GrievanceDetail extends StatelessWidget {
                         BlocProvider.of<GrievancesBloc>(context).add(
                           UpdateGrievanceEvent(
                             grievanceId: state
-                                .grievanceList[grievanceListIndex].grievanceId
+                                .grievanceList[grievanceListIndex].grievanceID
                                 .toString(),
                             newGrievance: Grievances(
-                              grievanceId: grievance.grievanceId,
-                              audios: grievance.audios,
-                              contactByPhoneEnabled:
-                                  grievance.contactByPhoneEnabled,
+                              grievanceID: grievance.grievanceID,
+                              assets: grievance.assets,
                               description: grievance.description,
                               expectedCompletion: grievance.expectedCompletion,
                               grievanceType: grievance.grievanceType,
-                              latitude: grievance.latitude,
-                              longitude: grievance.longitude,
-                              myComments: grievance.myComments,
-                              open: grievance.open,
-                              photos: grievance.photos,
-                              place: grievance.place,
+                              locationLat: grievance.locationLat,
+                              locationLong: grievance.locationLong,
+                              address: grievance.address,
                               priority: grievance.priority,
-                              raisedBy: grievance.raisedBy,
-                              reporterComments: grievance.reporterComments,
+                              createdBy: grievance.createdBy,
                               status: statusDropdownValue,
-                              timeStamp: grievance.timeStamp,
-                              videos: grievance.videos,
                               wardNumber: grievance.wardNumber,
                             ),
                           ),
@@ -375,29 +356,23 @@ class GrievanceDetail extends StatelessWidget {
                         BlocProvider.of<GrievancesBloc>(context).add(
                           UpdateGrievanceEvent(
                             grievanceId: state
-                                .grievanceList[grievanceListIndex].grievanceId
+                                .grievanceList[grievanceListIndex].grievanceID
                                 .toString(),
                             newGrievance: Grievances(
-                              grievanceId: grievance.grievanceId,
-                              audios: grievance.audios,
-                              contactByPhoneEnabled:
-                                  grievance.contactByPhoneEnabled,
+                              grievanceID: grievance.grievanceID,
+                              assets: grievance.assets,
+                              mobileContactStatus:
+                                  grievance.mobileContactStatus,
                               description: grievance.description,
                               expectedCompletion:
                                   expectedCompletionDropdownValue,
                               grievanceType: grievance.grievanceType,
-                              latitude: grievance.latitude,
-                              longitude: grievance.longitude,
-                              myComments: grievance.myComments,
-                              open: grievance.open,
-                              photos: grievance.photos,
-                              place: grievance.place,
+                              locationLat: grievance.locationLat,
+                              locationLong: grievance.locationLong,
+                              address: grievance.address,
                               priority: grievance.priority,
-                              raisedBy: grievance.raisedBy,
-                              reporterComments: grievance.reporterComments,
+                              createdBy: grievance.createdBy,
                               status: grievance.status,
-                              timeStamp: grievance.timeStamp,
-                              videos: grievance.videos,
                               wardNumber: grievance.wardNumber,
                             ),
                           ),
@@ -448,28 +423,20 @@ class GrievanceDetail extends StatelessWidget {
                         BlocProvider.of<GrievancesBloc>(context).add(
                           UpdateGrievanceEvent(
                             grievanceId: state
-                                .grievanceList[grievanceListIndex].grievanceId
+                                .grievanceList[grievanceListIndex].grievanceID
                                 .toString(),
                             newGrievance: Grievances(
-                              grievanceId: grievance.grievanceId,
-                              audios: grievance.audios,
-                              contactByPhoneEnabled:
-                                  grievance.contactByPhoneEnabled,
+                              grievanceID: grievance.grievanceID,
+                              assets: grievance.assets,
                               description: grievance.description,
                               expectedCompletion: grievance.expectedCompletion,
                               grievanceType: grievance.grievanceType,
-                              latitude: grievance.latitude,
-                              longitude: grievance.longitude,
-                              myComments: grievance.myComments,
-                              open: grievance.open,
-                              photos: grievance.photos,
-                              place: grievance.place,
+                              locationLat: grievance.locationLat,
+                              locationLong: grievance.locationLong,
+                              address: grievance.address,
                               priority: priorityDropdownValue,
-                              raisedBy: grievance.raisedBy,
-                              reporterComments: grievance.reporterComments,
+                              createdBy: grievance.createdBy,
                               status: grievance.status,
-                              timeStamp: grievance.timeStamp,
-                              videos: grievance.videos,
                               wardNumber: grievance.wardNumber,
                             ),
                           ),
@@ -480,205 +447,243 @@ class GrievanceDetail extends StatelessWidget {
                   SizedBox(
                     height: 12.h,
                   ),
-                  Text(
-                    LocaleKeys.grievanceDetail_photosAndVideos.tr(),
-                    style: AppStyles.inputAndDisplayTitleStyle,
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  Container(
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    height: 70.h,
-                    child: Stack(
-                      children: [
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state.grievanceList[grievanceListIndex]
-                                  .photos!.length +
-                              state.grievanceList[grievanceListIndex].videos!
-                                  .length,
-                          itemBuilder: (context, index) {
-                            if (index <
-                                state.grievanceList[grievanceListIndex].photos!
-                                    .length) {
-                              return Container(
-                                clipBehavior: Clip.antiAlias,
-                                height: 70.h,
-                                width: 70.h,
-                                margin: EdgeInsets.only(right: 12.w),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: Image.network(
-                                  state.grievanceList[grievanceListIndex]
-                                      .photos![index],
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            } else {
-                              return Container(
-                                clipBehavior: Clip.antiAlias,
-                                height: 70.h,
-                                width: 70.h,
-                                margin: EdgeInsets.only(right: 12.w),
-                                decoration: BoxDecoration(
-                                  color: AppColors.colorPrimaryLight,
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.play_arrow),
-                                  onPressed: () {},
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        Positioned(
-                          right: 0,
-                          bottom: 0,
-                          top: 0,
-                          child: Container(
-                            width: 100.w,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color.fromARGB(15, 0, 0, 0),
-                                  Color.fromARGB(255, 0, 0, 0),
+                  state.grievanceList[grievanceListIndex].assets!.isEmpty &&
+                          state
+                              .grievanceList[grievanceListIndex].assets!.isEmpty
+                      ? const SizedBox()
+                      : Column(
+                          children: [
+                            Text(
+                              LocaleKeys.grievanceDetail_photosAndVideos.tr(),
+                              style: AppStyles.inputAndDisplayTitleStyle,
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Container(
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                              height: 70.h,
+                              child: Stack(
+                                children: [
+                                  ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: state
+                                            .grievanceList[grievanceListIndex]
+                                            .assets!['photos']!
+                                            .length +
+                                        state.grievanceList[grievanceListIndex]
+                                            .assets!['videos']!.length,
+                                    itemBuilder: (context, index) {
+                                      if (index <
+                                          state
+                                              .grievanceList[grievanceListIndex]
+                                              .assets!['photos']!
+                                              .length) {
+                                        return Container(
+                                          clipBehavior: Clip.antiAlias,
+                                          height: 70.h,
+                                          width: 70.h,
+                                          margin: EdgeInsets.only(right: 12.w),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8.r),
+                                          ),
+                                          child: Image.network(
+                                            state
+                                                .grievanceList[
+                                                    grievanceListIndex]
+                                                .assets!['photos']![index],
+                                            fit: BoxFit.cover,
+                                          ),
+                                        );
+                                      } else {
+                                        return Container(
+                                          clipBehavior: Clip.antiAlias,
+                                          height: 70.h,
+                                          width: 70.h,
+                                          margin: EdgeInsets.only(right: 12.w),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.colorPrimaryLight,
+                                            borderRadius:
+                                                BorderRadius.circular(8.r),
+                                          ),
+                                          child: IconButton(
+                                            icon: const Icon(Icons.play_arrow),
+                                            onPressed: () {},
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    top: 0,
+                                    child: Container(
+                                      width: 100.w,
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                          colors: [
+                                            Color.fromARGB(15, 0, 0, 0),
+                                            Color.fromARGB(255, 0, 0, 0),
+                                          ],
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(10.r),
+                                      ),
+                                      child: Center(
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                              GrievancePhotoVideo.routeName,
+                                              arguments: {
+                                                "index": grievanceListIndex,
+                                                "state": state,
+                                              },
+                                            );
+                                          },
+                                          child: Text(
+                                            LocaleKeys.grievanceDetail_viewAll
+                                                .tr(),
+                                            style:
+                                                AppStyles.viewAllWhiteTextStyle,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(10.r),
                             ),
-                            child: Center(
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed(
-                                    GrievancePhotoVideo.routeName,
-                                    arguments: {
-                                      "index": grievanceListIndex,
-                                      "state": state,
-                                    },
-                                  );
-                                },
-                                child: Text(
-                                  LocaleKeys.grievanceDetail_viewAll.tr(),
-                                  style: AppStyles.viewAllWhiteTextStyle,
-                                ),
-                              ),
+                          ],
+                        ),
+                  state.grievanceList[grievanceListIndex].assets!.isEmpty &&
+                          state
+                              .grievanceList[grievanceListIndex].assets!.isEmpty
+                      ? const SizedBox()
+                      : Column(
+                          children: [
+                            SizedBox(
+                              height: 12.h,
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 12.h,
-                  ),
-                  Text(
-                    LocaleKeys.grievanceDetail_voiceAndAudio.tr(),
-                    style: AppStyles.inputAndDisplayTitleStyle,
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  Container(
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    height: 100.h,
-                    child: Stack(
-                      children: [
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state
-                              .grievanceList[grievanceListIndex].audios!.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  clipBehavior: Clip.antiAlias,
-                                  height: 70.h,
-                                  width: 70.h,
-                                  margin: EdgeInsets.only(right: 12.w),
-                                  padding: EdgeInsets.all(20.sp),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.colorPrimaryLight,
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  child: SvgPicture.asset(
-                                    'assets/svg/audiofile.svg',
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 5.h,
-                                ),
-                                Text(
-                                  '${LocaleKeys.grievanceDetail_audio.tr()} - ${index + 1}',
-                                  style: AppStyles.audioTitleTextStyle,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        Positioned(
-                          right: 0,
-                          bottom: 0,
-                          top: 0,
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
+                            Text(
+                              LocaleKeys.grievanceDetail_voiceAndAudio.tr(),
+                              style: AppStyles.inputAndDisplayTitleStyle,
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Container(
                               clipBehavior: Clip.antiAlias,
-                              width: 100.w,
-                              height: 70.h,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(10.r),
-                                  bottomRight: Radius.circular(10.r),
-                                ),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                    Color.fromARGB(0, 0, 0, 0),
-                                    Color.fromARGB(255, 0, 0, 0),
-                                  ],
-                                ),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
-                              child: Center(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                      GrievanceAudio.routeName,
-                                      arguments: {
-                                        "index": grievanceListIndex,
-                                        "state": state,
-                                      },
-                                    );
-                                  },
-                                  child: Text(
-                                    LocaleKeys.grievanceDetail_viewAll.tr(),
-                                    style: AppStyles.viewAllWhiteTextStyle,
+                              height: 100.h,
+                              child: Stack(
+                                children: [
+                                  ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: state
+                                        .grievanceList[grievanceListIndex]
+                                        .assets!['audios']!
+                                        .length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            clipBehavior: Clip.antiAlias,
+                                            height: 70.h,
+                                            width: 70.h,
+                                            margin:
+                                                EdgeInsets.only(right: 12.w),
+                                            padding: EdgeInsets.all(20.sp),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  AppColors.colorPrimaryLight,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
+                                            ),
+                                            child: SvgPicture.asset(
+                                              'assets/svg/audiofile.svg',
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5.h,
+                                          ),
+                                          Text(
+                                            '${LocaleKeys.grievanceDetail_audio.tr()} - ${index + 1}',
+                                            style:
+                                                AppStyles.audioTitleTextStyle,
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   ),
-                                ),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    top: 0,
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: Container(
+                                        clipBehavior: Clip.antiAlias,
+                                        width: 100.w,
+                                        height: 70.h,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(10.r),
+                                            bottomRight: Radius.circular(10.r),
+                                          ),
+                                          gradient: const LinearGradient(
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                            colors: [
+                                              Color.fromARGB(0, 0, 0, 0),
+                                              Color.fromARGB(255, 0, 0, 0),
+                                            ],
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                GrievanceAudio.routeName,
+                                                arguments: {
+                                                  "index": grievanceListIndex,
+                                                  "state": state,
+                                                },
+                                              );
+                                            },
+                                            child: Text(
+                                              LocaleKeys.grievanceDetail_viewAll
+                                                  .tr(),
+                                              style: AppStyles
+                                                  .viewAllWhiteTextStyle,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
+                            SizedBox(
+                              height: 12.h,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 12.h,
-                  ),
                   Text(
                     LocaleKeys.grievanceDetail_locaiton.tr(),
                     style: AppStyles.inputAndDisplayTitleStyle,
@@ -693,11 +698,11 @@ class GrievanceDetail extends StatelessWidget {
                     zoomEnabled: false,
                     mapController: _controller,
                     latitude: double.parse(
-                      state.grievanceList[grievanceListIndex].latitude
+                      state.grievanceList[grievanceListIndex].locationLat
                           .toString(),
                     ),
                     longitude: double.parse(
-                      state.grievanceList[grievanceListIndex].longitude
+                      state.grievanceList[grievanceListIndex].locationLong
                           .toString(),
                     ),
                   ),
@@ -736,7 +741,7 @@ class GrievanceDetail extends StatelessWidget {
                       const Spacer(),
                       Text(
                         state.grievanceList[grievanceListIndex]
-                                    .contactByPhoneEnabled ==
+                                    .mobileContactStatus ==
                                 true
                             ? 'Yes'
                             : 'No',
@@ -759,9 +764,9 @@ class GrievanceDetail extends StatelessWidget {
                           Navigator.of(context).pushNamed(
                             GrievanceReporterComments.routeName,
                             arguments: {
-                              'reporterComments': state
+                              'grievanceId': state
                                   .grievanceList[grievanceListIndex]
-                                  .reporterComments,
+                                  .grievanceID,
                             },
                           );
                         },
@@ -782,185 +787,73 @@ class GrievanceDetail extends StatelessWidget {
                       color: AppColors.colorPrimaryLight,
                       borderRadius: BorderRadius.circular(10.r),
                     ),
-                    child: Column(
-                        children: state
-                            .grievanceList[grievanceListIndex].reporterComments!
-                            .mapIndexed((i, e) {
-                      if (i >= 6) {
-                        return const SizedBox();
-                      }
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          e.text == ''
-                              ? const SizedBox()
-                              : TextCommentWidget(
-                                  commentList: state
-                                      .grievanceList[grievanceListIndex]
-                                      .reporterComments as List<dynamic>,
-                                  commentListIndex: i,
-                                ),
-                          e.imageUrl == ''
-                              ? const SizedBox()
-                              : PhotoCommentWidget(
-                                  commentList: state
-                                      .grievanceList[grievanceListIndex]
-                                      .reporterComments as List<dynamic>,
-                                  commentListIndex: i,
-                                ),
-                          e.videoUrl == ''
-                              ? const SizedBox()
-                              : VideoCommentWidget(
-                                  commentList: state
-                                      .grievanceList[grievanceListIndex]
-                                      .reporterComments as List<dynamic>,
-                                  commentListIndex: i,
-                                ),
-                          e.audioUrl == ''
-                              ? const SizedBox()
-                              : AudioCommentWidget(
-                                  commentList: state
-                                      .grievanceList[grievanceListIndex]
-                                      .reporterComments as List<dynamic>,
-                                  commentListIndex: i,
-                                ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          i <
-                                  state.grievanceList[grievanceListIndex]
-                                          .reporterComments!.length -
-                                      1
-                              ? const Divider(
-                                  color: AppColors.colorGreyLight,
-                                )
-                              : const SizedBox(),
-                        ],
-                      );
-                    }).toList()),
-                  ),
-                  SizedBox(
-                    height: 12.h,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        LocaleKeys.grievanceDetail_myComments.tr(),
-                        style: AppStyles.inputAndDisplayTitleStyle,
-                      ),
-                      const Spacer(),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            GrievanceAddComment.routeName,
-                            arguments: {
-                              "grievanceId": state
-                                  .grievanceList[grievanceListIndex]
-                                  .grievanceId,
-                            },
-                          );
-                        },
-                        child: Text(
-                          LocaleKeys.grievanceDetail_addComment.tr(),
-                          style: AppStyles.inputAndDisplayTitleStyle,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 12.h,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(10.sp),
-                    decoration: BoxDecoration(
-                      color: AppColors.colorPrimaryLight,
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: InkWell(
-                            onTap: () => Navigator.of(context).pushNamed(
-                              GrievanceMyComments.routeName,
-                              arguments: {
-                                'myComments': state
-                                    .grievanceList[grievanceListIndex]
-                                    .myComments,
-                              },
-                            ),
-                            child: Text(
-                              LocaleKeys.grievanceDetail_viewAll.tr(),
-                              style: AppStyles.inputAndDisplayTitleStyle,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Column(
-                            children: state
-                                .grievanceList[grievanceListIndex].myComments!
+                    child: [].isEmpty
+                        ? const Center(
+                            child: Text('No Comments Yet!'),
+                          )
+                        : Column(
+                            children: []
+                                // children: state
+                                //     .grievanceList[grievanceListIndex].comments!
                                 .mapIndexed((i, e) {
-                          if (i >= 6) {
-                            return const SizedBox();
-                          }
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 10.h,
-                              ),
-                              e.text == ''
-                                  ? const SizedBox()
-                                  : TextCommentWidget(
-                                      commentList: state
-                                          .grievanceList[grievanceListIndex]
-                                          .myComments as List<dynamic>,
-                                      commentListIndex: i,
-                                    ),
-                              e.imageUrl == ''
-                                  ? const SizedBox()
-                                  : PhotoCommentWidget(
-                                      commentList: state
-                                          .grievanceList[grievanceListIndex]
-                                          .myComments as List<dynamic>,
-                                      commentListIndex: i,
-                                    ),
-                              e.videoUrl == ''
-                                  ? const SizedBox()
-                                  : VideoCommentWidget(
-                                      commentList: state
-                                          .grievanceList[grievanceListIndex]
-                                          .myComments as List<dynamic>,
-                                      commentListIndex: i,
-                                    ),
-                              e.audioUrl == ''
-                                  ? const SizedBox()
-                                  : AudioCommentWidget(
-                                      commentList: state
-                                          .grievanceList[grievanceListIndex]
-                                          .myComments as List<dynamic>,
-                                      commentListIndex: i,
-                                    ),
-                              SizedBox(
-                                height: 10.h,
-                              ),
-                              i <
-                                      state.grievanceList[grievanceListIndex]
-                                              .myComments!.length -
-                                          1
-                                  ? const Divider(
-                                      color: AppColors.colorGreyLight,
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          );
-                        }).toList()),
-                      ],
-                    ),
+                            if (i >= 6) {
+                              return const SizedBox();
+                            }
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                e.text == ''
+                                    ? const SizedBox()
+                                    : TextCommentWidget(
+                                        commentList: [],
+                                        // commentList: state
+                                        //     .grievanceList[grievanceListIndex]
+                                        //     .comments as List<dynamic>,
+                                        commentListIndex: i,
+                                      ),
+                                e.imageUrl == ''
+                                    ? const SizedBox()
+                                    : PhotoCommentWidget(
+                                        commentList: [],
+                                        // commentList: state
+                                        //     .grievanceList[grievanceListIndex]
+                                        //     .comments as List<dynamic>,
+                                        commentListIndex: i,
+                                      ),
+                                e.videoUrl == ''
+                                    ? const SizedBox()
+                                    : VideoCommentWidget(
+                                        commentList: [],
+                                        // commentList: state
+                                        //     .grievanceList[grievanceListIndex]
+                                        //     .comments as List<dynamic>,
+                                        commentListIndex: i,
+                                      ),
+                                e.audioUrl == ''
+                                    ? const SizedBox()
+                                    : AudioCommentWidget(
+                                        commentList: [],
+                                        // commentList: state
+                                        //     .grievanceList[grievanceListIndex]
+                                        //     .comments as List<dynamic>,
+                                        commentListIndex: i,
+                                      ),
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                // i <
+                                //         state.grievanceList[grievanceListIndex]
+                                //                 .comments!.length -
+                                //             1
+                                //     ? const Divider(
+                                //         color: AppColors.colorGreyLight,
+                                //       )
+                                //     : const SizedBox(),
+                              ],
+                            );
+                          }).toList()),
                   ),
                   SizedBox(
                     height: 30.h,
@@ -992,7 +885,7 @@ class GrievanceDetail extends StatelessWidget {
                                 CloseGrievanceEvent(
                                   grievanceId: state
                                       .grievanceList[grievanceListIndex]
-                                      .grievanceId
+                                      .grievanceID
                                       .toString(),
                                 ),
                               );
@@ -1008,7 +901,7 @@ class GrievanceDetail extends StatelessWidget {
                               CloseGrievanceEvent(
                                 grievanceId: state
                                     .grievanceList[grievanceListIndex]
-                                    .grievanceId
+                                    .grievanceID
                                     .toString(),
                               ),
                             );

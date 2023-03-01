@@ -1,65 +1,86 @@
 class User {
-  String? id;
+  String? userId;
+  String? about;
+  bool? active;
+  String? address;
+  String? countryCode;
+  String? staffId;
+  String? createdDate;
+  String? emailId;
   String? firstName;
+  String? lastModifiedDate;
   String? lastName;
   String? mobileNumber;
+  String? municipalityId;
+  String? notificationToken;
+  String? profilePicture;
   String? latitude;
   String? longitude;
-  String? streetName;
-  String? city;
-  String? country;
-  String? muncipality;
   String? wardNumber;
-  String? email;
-  String? about;
 
   User({
-    this.id,
+    this.about,
+    this.active,
+    this.address,
+    this.countryCode,
+    this.staffId,
+    this.createdDate,
+    this.emailId,
     this.firstName,
+    this.lastModifiedDate,
     this.lastName,
     this.mobileNumber,
+    this.municipalityId,
+    this.notificationToken,
+    this.profilePicture,
     this.latitude,
     this.longitude,
-    this.streetName,
-    this.city,
-    this.country,
     this.wardNumber,
-    this.email,
-    this.about,
-    this.muncipality,
+    this.userId,
   });
 
   User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    mobileNumber = json['mobileNumber'];
-    email = json['email'];
-    latitude = json['latitude'];
-    longitude = json['longitude'];
-    streetName = json['streetName'];
-    city = json['city'];
-    country = json['country'];
-    muncipality = json['muncipality'];
-    wardNumber = json['wardNumber'];
-    about = json['about'];
+    userId = json['UserId'];
+    about = json['About'];
+    active = json['Active'];
+    address = json['Address'];
+    countryCode = json['CountryCode'];
+    staffId = json['StaffId'];
+    createdDate = json['CreatedDate'];
+    emailId = json['EmailID'];
+    firstName = json['FirstName'];
+    lastModifiedDate = json['LastModifiedDate'];
+    lastName = json['LastName'];
+    mobileNumber = json['MobileNumber'];
+    municipalityId = json['MunicipalityID'];
+    notificationToken = json['NotificationToken'];
+    profilePicture = json['ProfilePicture'];
+    latitude = json['UserLatitude'];
+    longitude = json['UserLongitude'];
+    wardNumber = json['UserWardNumber'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['firstName'] = firstName;
-    data['lastName'] = lastName;
-    data['mobileNumber'] = mobileNumber;
-    data['email'] = email;
-    data['latitude'] = latitude;
-    data['longitude'] = longitude;
-    data['streetName'] = streetName;
-    data['city'] = city;
-    data['country'] = country;
-    data['muncipality'] = muncipality;
-    data['wardNumber'] = wardNumber;
-    data['about'] = about;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['UserID'] = userId;
+    data['About'] = about;
+    data['Active'] = active;
+    data['Address'] = address;
+    data['CountryCode'] = countryCode;
+    data['StaffID'] = staffId;
+    data['CreatedDate'] = createdDate;
+    data['EmailID'] = emailId;
+    data['FirstName'] = firstName;
+    data['LastModifiedDate'] = lastModifiedDate;
+    data['LastName'] = lastName;
+    data['MobileNumber'] = mobileNumber;
+    data['MunicipalityID'] = municipalityId;
+    data['NotificationToken'] = notificationToken;
+    data['ProfilePicture'] = profilePicture;
+    data['UserLatitude'] = latitude;
+    data['UserLongitude'] = longitude;
+    data['UserWardNumber'] = wardNumber;
     return data;
   }
 }

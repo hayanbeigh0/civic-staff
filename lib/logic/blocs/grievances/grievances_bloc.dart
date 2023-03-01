@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:civic_staff/models/grievances/grievances_model.dart';
@@ -9,36 +11,17 @@ part 'grievances_state.dart';
 
 class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
   final GrievancesRepository grievancesRepository;
-  // List<Grievances> grievanceList = [];
   GrievancesBloc(this.grievancesRepository) : super(GrievancesLoadingState()) {
     on<GrievancesEvent>((event, emit) {});
-    on<GetGrievancesEvent>((event, emit) async {
-      emit(GrievancesLoadingState());
-      try {
-        List<Grievances> grievanceList =
-            await grievancesRepository.loadGrievancesJson();
-        emit(
-          GrievancesMarkersLoadedState(grievanceList: grievanceList),
-        );
-        emit(GrievancesLoadedState(
-          grievanceList: grievanceList,
-          selectedFilterNumber: 1,
-        ));
-        add(LoadGrievancesEvent());
-      } catch (e) {
-        emit(GrievancesLoadingFailedState());
-      }
-    });
 
     on<LoadGrievancesEvent>((event, emit) async {
       emit(GrievancesLoadingState());
       try {
-        await Future.delayed(const Duration(seconds: 2));
-        final List<Grievances> updatedGrievanceList =
-            List.of(GrievancesRepository.grievanceList);
+        List<Grievances> updatedGrievanceList =
+            await grievancesRepository.loadGrievancesJson();
         updatedGrievanceList.sort((g1, g2) {
-          DateTime timestamp1 = DateTime.parse(g1.timeStamp.toString());
-          DateTime timestamp2 = DateTime.parse(g2.timeStamp.toString());
+          DateTime timestamp1 = DateTime.parse(g1.lastModifiedDate.toString());
+          DateTime timestamp2 = DateTime.parse(g2.lastModifiedDate.toString());
           return timestamp2.compareTo(timestamp1);
         });
         emit(
@@ -53,7 +36,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
 
     on<CloseGrievanceEvent>((event, emit) async {
       emit(ClosingGrievanceState());
-      await grievancesRepository.closeGrievance(event.grievanceId);
+      // await grievancesRepository.closeGrievance(event.grievanceId);
       emit(GrievanceClosedState());
       add(LoadGrievancesEvent());
     });
@@ -76,27 +59,33 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
       emit(const GrievanceUpdatedState(grievanceUpdated: true));
       add(LoadGrievancesEvent());
     });
-    on<SearchGrievanceByTypeEvent>((event, emit) {
+    on<SearchGrievanceByTypeEvent>((event, emit) async {
       emit(GrievancesLoadingState());
       // userRepository.loadUserJson();
-      final List<Grievances> updatedGrievanceList =
-          GrievancesRepository.grievanceList
-              .where(
-                (element) => element.grievanceType!
-                    .toLowerCase()
-                    .replaceAll(' ', '')
-                    .startsWith(
-                      event.grievanceType.toLowerCase().replaceAll(' ', ''),
-                    ),
-              )
-              .toList();
+      List<Grievances> updatedGrievanceList =
+          await grievancesRepository.loadGrievancesJson();
+      updatedGrievanceList = updatedGrievanceList
+          .where(
+            (element) => element.grievanceType!
+                .toLowerCase()
+                .replaceAll(' ', '')
+                .startsWith(
+                  event.grievanceType.toLowerCase().replaceAll(' ', ''),
+                ),
+          )
+          .toList();
+
       updatedGrievanceList.sort();
-      emit(
-        GrievancesLoadedState(
-          grievanceList: updatedGrievanceList,
-          selectedFilterNumber: 1,
-        ),
-      );
+      if (updatedGrievanceList.isEmpty) {
+        emit(NoGrievanceFoundState());
+      } else {
+        emit(
+          GrievancesLoadedState(
+            grievanceList: updatedGrievanceList,
+            selectedFilterNumber: 1,
+          ),
+        );
+      }
     });
     // on<SearchUserByMobileEvent>((event, emit) {
     //   // userRepository.loadUserJson();

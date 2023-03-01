@@ -122,7 +122,7 @@ class UserDetails extends StatelessWidget {
                             height: 5.h,
                           ),
                           Text(
-                            user.city.toString(),
+                            user.address.toString(),
                             style: AppStyles.userDisplayCityTextStyle,
                           ),
                         ],
@@ -187,7 +187,7 @@ class UserDetails extends StatelessWidget {
                         width: 8.w,
                       ),
                       Text(
-                        user.email.toString(),
+                        user.emailId.toString(),
                         style: AppStyles.userContactDetailsMobileNumberStyle,
                       )
                     ],
@@ -230,7 +230,7 @@ class UserDetails extends StatelessWidget {
                     ),
                     PrimaryDisplayField(
                       title: 'Muncipality',
-                      value: user.muncipality.toString(),
+                      value: user.municipalityId.toString(),
                     ),
                     SizedBox(
                       height: 12.h,

@@ -74,12 +74,12 @@ class AppRouter {
             reporterComments: args['reporterComments'],
           ),
         );
-      case GrievanceMyComments.routeName:
-        return MaterialPageRoute(
-          builder: (context) => GrievanceMyComments(
-            myComments: args['myComments'],
-          ),
-        );
+      // case GrievanceMyComments.routeName:
+      //   return MaterialPageRoute(
+      //     builder: (context) => GrievanceMyComments(
+      //       myComments: args['myComments'],
+      //     ),
+      //   );
       case GrievanceAddComment.routeName:
         return MaterialPageRoute(
           builder: (context) => GrievanceAddComment(

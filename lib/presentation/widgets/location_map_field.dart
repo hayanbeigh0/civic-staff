@@ -34,6 +34,7 @@ class LocationMapField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    pickedLoc = LatLng(latitude, longitude);
     return Column(
       children: [
         Container(

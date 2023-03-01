@@ -10,6 +10,11 @@ class GrievancesLoadingState extends GrievancesState {
   List<Object?> get props => [];
 }
 
+class NoGrievanceFoundState extends GrievancesState {
+  @override
+  List<Object?> get props => [];
+}
+
 class GrievancesLoadedState extends GrievancesState {
   final List<Grievances> grievanceList;
   final int selectedFilterNumber;

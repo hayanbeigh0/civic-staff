@@ -10,10 +10,10 @@ class LoadGrievancesEvent extends GrievancesEvent {
   List<Object> get props => [];
 }
 
-class GetGrievancesEvent extends GrievancesEvent {
-  @override
-  List<Object> get props => [];
-}
+// class GetGrievancesEvent extends GrievancesEvent {
+//   @override
+//   List<Object> get props => [];
+// }
 
 class CloseGrievanceEvent extends GrievancesEvent {
   final String grievanceId;

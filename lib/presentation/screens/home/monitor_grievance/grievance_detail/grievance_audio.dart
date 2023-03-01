@@ -90,8 +90,8 @@ class GrievanceAudio extends StatelessWidget {
                   crossAxisSpacing: 30.w,
                   mainAxisSpacing: 20.h,
                 ),
-                itemCount:
-                    state.grievanceList[grievanceListIndex].audios!.length,
+                itemCount: state.grievanceList[grievanceListIndex]
+                    .assets!['audios']!.length,
                 //  +
                 //     state.grievanceList[grievanceListIndex].videos!.length,
                 itemBuilder: (context, index) {
@@ -111,7 +111,7 @@ class GrievanceAudio extends StatelessWidget {
                                     AudioComment(
                                       audioUrl: state
                                           .grievanceList[grievanceListIndex]
-                                          .audios![index],
+                                          .assets!['audios'][index],
                                     ),
                                   ],
                                 ),

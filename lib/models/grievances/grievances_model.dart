@@ -1,183 +1,89 @@
-import 'package:equatable/equatable.dart';
-
-class Grievances extends Equatable {
-  String? grievanceId;
-  String? grievanceType;
-  String? raisedBy;
-  String? status;
+class Grievances {
+  String? createdByName;
+  String? address;
   String? priority;
-  String? place;
-  String? timeStamp;
-  String? expectedCompletion;
-  List<String>? photos;
-  List<String>? audios;
-  List<String>? videos;
-  String? latitude;
-  String? longitude;
-  String? wardNumber;
+  String? locationLong;
+  String? grievanceID;
+  String? contactNumber;
+  String? status;
   String? description;
-  bool? contactByPhoneEnabled;
-  bool? open;
-  List<ReporterComments>? reporterComments;
-  List<MyComments>? myComments;
+  String? expectedCompletion;
+  String? municipalityID;
+  String? locationLat;
+  String? assignedTo;
+  String? lastModifiedDate;
+  String? location;
+  bool? mobileContactStatus;
+  String? createdBy;
+  String? wardNumber;
+  String? grievanceType;
+  Map? assets;
 
   Grievances({
-    this.grievanceId,
-    this.grievanceType,
-    this.raisedBy,
-    this.status,
+    this.createdByName,
+    this.address,
     this.priority,
-    this.place,
-    this.timeStamp,
-    this.photos,
-    this.audios,
-    this.videos,
-    this.latitude,
-    this.longitude,
-    this.wardNumber,
+    this.locationLong,
+    this.grievanceID,
+    this.contactNumber,
+    this.status,
     this.description,
-    this.contactByPhoneEnabled,
-    this.reporterComments,
-    this.myComments,
-    this.open,
     this.expectedCompletion,
+    this.municipalityID,
+    this.locationLat,
+    this.assignedTo,
+    this.lastModifiedDate,
+    this.location,
+    this.mobileContactStatus,
+    this.createdBy,
+    this.wardNumber,
+    this.grievanceType,
+    this.assets,
   });
 
   Grievances.fromJson(Map<String, dynamic> json) {
-    expectedCompletion = json['expectedCompletion'];
-    grievanceId = json['grievanceId'];
-    open = json['open'];
-    grievanceType = json['grievanceType'];
-    raisedBy = json['raisedBy'];
-    status = json['status'];
-    priority = json['priority'];
-    timeStamp = json['timeStamp'];
-    photos = json['photos'].cast<String>();
-    audios = json['audios'].cast<String>();
-    videos = json['videos'].cast<String>();
-    latitude = json['latitude'];
-    longitude = json['longitude'];
-    wardNumber = json['wardNumber'];
-    description = json['description'];
-    place = json['place'];
-    contactByPhoneEnabled = json['contactByPhoneEnabled'];
-    if (json['reporterComments'] != null) {
-      reporterComments = <ReporterComments>[];
-      json['reporterComments'].forEach((v) {
-        reporterComments!.add(ReporterComments.fromJson(v));
-      });
-    }
-    if (json['myComments'] != null) {
-      myComments = <MyComments>[];
-      json['myComments'].forEach((v) {
-        myComments!.add(MyComments.fromJson(v));
-      });
-    }
+    createdByName = json['CreatedByName'];
+    address = json['Address'];
+    priority = json['Priority'];
+    locationLong = json['LocationLong'];
+    grievanceID = json['GrievanceID'];
+    contactNumber = json['ContactNumber'];
+    status = json['Status'];
+    description = json['Description'];
+    expectedCompletion = json['ExpectedCompletion'];
+    municipalityID = json['MunicipalityID'];
+    locationLat = json['LocationLat'];
+    assignedTo = json['AssignedTo'];
+    lastModifiedDate = json['LastModifiedDate'];
+    location = json['Location'];
+    mobileContactStatus = json['MobileContactStatus'];
+    createdBy = json['CreatedBy'];
+    wardNumber = json['WardNumber'];
+    grievanceType = json['GrievanceType'];
+    assets = json['Assets'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['expectedCompletion'] = expectedCompletion;
-    data['grievanceId'] = grievanceId;
-    data['open'] = open;
-    data['grievanceType'] = grievanceType;
-    data['raisedBy'] = raisedBy;
-    data['status'] = status;
-    data['priority'] = priority;
-    data['timeStamp'] = timeStamp;
-    data['photos'] = photos;
-    data['audios'] = audios;
-    data['videos'] = videos;
-    data['latitude'] = latitude;
-    data['longitude'] = longitude;
-    data['wardNumber'] = wardNumber;
-    data['description'] = description;
-    data['place'] = place;
-    data['contactByPhoneEnabled'] = contactByPhoneEnabled;
-    if (reporterComments != null) {
-      data['reporterComments'] =
-          reporterComments!.map((v) => v.toJson()).toList();
-    }
-    if (myComments != null) {
-      data['myComments'] = myComments!.map((v) => v.toJson()).toList();
-    }
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['CreatedByName'] = createdByName;
+    data['Address'] = address;
+    data['Priority'] = priority;
+    data['LocationLong'] = locationLong;
+    data['GrievanceID'] = grievanceID;
+    data['ContactNumber'] = contactNumber;
+    data['Status'] = status;
+    data['Description'] = description;
+    data['ExpectedCompletion'] = expectedCompletion;
+    data['MunicipalityID'] = municipalityID;
+    data['LocationLat'] = locationLat;
+    data['AssignedTo'] = assignedTo;
+    data['LastModifiedDate'] = lastModifiedDate;
+    data['Location'] = location;
+    data['MobileContactStatus'] = mobileContactStatus;
+    data['CreatedBy'] = createdBy;
+    data['WardNumber'] = wardNumber;
+    data['GrievanceType'] = grievanceType;
+    data['Assets'] = assets;
     return data;
   }
-
-  @override
-  List<Object?> get props => [status];
-}
-
-class ReporterComments extends Equatable {
-  String? text;
-  String? imageUrl;
-  String? videoUrl;
-  String? audioUrl;
-  String? timeStamp;
-
-  ReporterComments({
-    this.text,
-    this.imageUrl,
-    this.videoUrl,
-    this.audioUrl,
-    this.timeStamp,
-  });
-
-  ReporterComments.fromJson(Map<String, dynamic> json) {
-    text = json['text'];
-    imageUrl = json['imageUrl'];
-    videoUrl = json['videoUrl'];
-    audioUrl = json['audioUrl'];
-    timeStamp = json['timeStamp'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['text'] = text;
-    data['imageUrl'] = imageUrl;
-    data['videoUrl'] = videoUrl;
-    data['audioUrl'] = audioUrl;
-    data['timeStamp'] = timeStamp;
-    return data;
-  }
-
-  @override
-  List<Object?> get props => [];
-}
-
-class MyComments extends Equatable {
-  String? text;
-  String? imageUrl;
-  String? videoUrl;
-  String? audioUrl;
-  String? timeStamp;
-
-  MyComments({
-    this.text,
-    this.imageUrl,
-    this.videoUrl,
-    this.audioUrl,
-    this.timeStamp,
-  });
-
-  MyComments.fromJson(Map<String, dynamic> json) {
-    text = json['text'];
-    imageUrl = json['imageUrl'];
-    videoUrl = json['videoUrl'];
-    audioUrl = json['audioUrl'];
-    timeStamp = json['timeStamp'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['text'] = text;
-    data['imageUrl'] = imageUrl;
-    data['videoUrl'] = videoUrl;
-    data['audioUrl'] = audioUrl;
-    data['timeStamp'] = timeStamp;
-    return data;
-  }
-
-  @override
-  List<Object?> get props => [];
 }

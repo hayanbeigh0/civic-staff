@@ -1,5 +1,9 @@
 import 'dart:developer';
 
+import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
+import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
+import 'package:flutter/material.dart';
+
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/screens/home/home.dart';
@@ -8,6 +12,7 @@ import 'package:civic_staff/services/auth_api.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -324,57 +329,67 @@ class _ActivationState extends State<Activation> {
                                               BorderRadius.circular(8.r),
                                         ),
                                         child: Center(
-                                          child: TextFormField(
-                                            keyboardType: TextInputType.number,
-                                            cursorColor: AppColors.colorPrimary,
-                                            textAlign: TextAlign.center,
-                                            focusNode: focusNode4,
-                                            onChanged: (value) {
-                                              if (value.length == 1) {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                if (otpController1.text.isNotEmpty &&
-                                                    otpController2
-                                                        .text.isNotEmpty &&
-                                                    otpController3
-                                                        .text.isNotEmpty &&
-                                                    otpController4
-                                                        .text.isNotEmpty) {
-                                                  // Navigator.of(context)
-                                                  //     .pushNamed(
-                                                  //   HomeScreen.routeName,
-                                                  // );
-                                                }
-                                              }
-                                              if (value.isEmpty) {
-                                                FocusScope.of(context)
-                                                    .requestFocus(focusNode3);
-                                              }
+                                          child: BlocBuilder<
+                                              AuthenticationCubit,
+                                              AuthenticationState>(
+                                            builder: (context, state) {
+                                              if (state is OtpSentState) {}
+                                              return TextFormField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                cursorColor:
+                                                    AppColors.colorPrimary,
+                                                textAlign: TextAlign.center,
+                                                focusNode: focusNode4,
+                                                onChanged: (value) {
+                                                  if (value.length == 1) {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    if (otpController1.text.isNotEmpty &&
+                                                        otpController2
+                                                            .text.isNotEmpty &&
+                                                        otpController3
+                                                            .text.isNotEmpty &&
+                                                        otpController4
+                                                            .text.isNotEmpty) {
+                                                      // Navigator.of(context)
+                                                      //     .pushNamed(
+                                                      //   HomeScreen.routeName,
+                                                      // );
+                                                    }
+                                                  }
+                                                  if (value.isEmpty) {
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            focusNode3);
+                                                  }
+                                                },
+                                                inputFormatters: [
+                                                  FilteringTextInputFormatter
+                                                      .digitsOnly,
+                                                  LengthLimitingTextInputFormatter(
+                                                      1),
+                                                ],
+                                                decoration: InputDecoration(
+                                                  filled: true,
+                                                  fillColor: AppColors
+                                                      .colorPrimaryLight,
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                    horizontal: 16.sp,
+                                                    vertical: 0.sp,
+                                                  ),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.sp),
+                                                    borderSide: BorderSide.none,
+                                                  ),
+                                                  hintMaxLines: 1,
+                                                ),
+                                                controller: otpController4,
+                                              );
                                             },
-                                            inputFormatters: [
-                                              FilteringTextInputFormatter
-                                                  .digitsOnly,
-                                              LengthLimitingTextInputFormatter(
-                                                  1),
-                                            ],
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor:
-                                                  AppColors.colorPrimaryLight,
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                horizontal: 16.sp,
-                                                vertical: 0.sp,
-                                              ),
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.sp),
-                                                borderSide: BorderSide.none,
-                                              ),
-                                              hintMaxLines: 1,
-                                            ),
-                                            controller: otpController4,
                                           ),
                                         ),
                                       ),
@@ -392,17 +407,24 @@ class _ActivationState extends State<Activation> {
                                         .loginAndActivationScreen_otpNotRecieved
                                         .tr(),
                                     style: AppStyles.inputAndDisplayTitleStyle
-                                        .copyWith(fontSize: 400),
+                                        .copyWith(fontSize: 12.sp),
                                   ),
                                   SizedBox(
                                     width: 5.w,
                                   ),
-                                  Text(
-                                    LocaleKeys
-                                        .loginAndActivationScreen_resendOtp
-                                        .tr(),
-                                    style: AppStyles
-                                        .loginScreensResendOtpTextStyle,
+                                  InkWell(
+                                    onTap: () {
+                                      BlocProvider.of<AuthenticationCubit>(
+                                              context)
+                                          .signIn(widget.mobileNumber, true);
+                                    },
+                                    child: Text(
+                                      LocaleKeys
+                                          .loginAndActivationScreen_resendOtp
+                                          .tr(),
+                                      style: AppStyles
+                                          .loginScreensResendOtpTextStyle,
+                                    ),
                                   ),
                                 ],
                               )
@@ -412,35 +434,79 @@ class _ActivationState extends State<Activation> {
                         SizedBox(
                           height: 10.h,
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: PrimaryButton(
-                            isLoading: false,
-                            buttonText: LocaleKeys
-                                .loginAndActivationScreen_continue
-                                .tr(),
-                            onTap: ()async {
-                              if (_formKey.currentState!.validate()) {
-                                var response = await Auth_Api().verifyOtp(widget.userDetails, otpController1.text + otpController2.text + otpController3.text + otpController4.text);
-
-                                try {
-                                  if(response['AuthenticationResult'] != null){
-                                    Navigator.of(context).pushNamed(
-                                      '/home',
-                                    );
-                                  }else{
-                                    widget.userDetails['session'] = response['Session'];
-                                  }
-                                } catch (e) {
-                                 //TODO
-                                }
-
-                                // Navigator.of(context).pushNamed(
-                                //   '/home',
-                                // );
-                              } else {}
-                            },
-                          ),
+                        BlocConsumer<AuthenticationCubit, AuthenticationState>(
+                          listener: (context, state) {
+                            if (state is AuthenticationSuccessState) {
+                              Navigator.of(context).pushNamed(
+                                HomeScreen.routeName,
+                              );
+                            }
+                            if (state is AuthenticationOtpErrorState) {
+                              SnackBars.errorMessageSnackbar(
+                                context,
+                                state.error,
+                              );
+                              otpController1.clear();
+                              otpController2.clear();
+                              otpController3.clear();
+                              otpController4.clear();
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (context) => AlertDialog(
+                              //     actions: [
+                              //       ElevatedButton(
+                              //         onPressed: () =>
+                              //             Navigator.of(context).pop(),
+                              //         child: const Text('Ok'),
+                              //       ),
+                              //     ],
+                              //     contentPadding: EdgeInsets.all(20.sp),
+                              //     content: Text(
+                              //       state.error,
+                              //     ),
+                              //   ),
+                              // );
+                            }
+                            if (state is OtpSentSucessfully) {
+                              SnackBars.sucessMessageSnackbar(
+                                context,
+                                'Otp has been sent to your mobile number',
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state is AuthenticationLoading) {
+                              return Align(
+                                alignment: Alignment.centerRight,
+                                child: PrimaryButton(
+                                  isLoading: true,
+                                  buttonText: LocaleKeys
+                                      .loginAndActivationScreen_continue
+                                      .tr(),
+                                  onTap: () async {},
+                                ),
+                              );
+                            }
+                            if (state is NavigateToActivationState) {
+                              return submitOtpButton(state, context);
+                            }
+                            if (state is OtpSentState) {
+                              return submitOtpButton(state, context);
+                            }
+                            return Align(
+                              alignment: Alignment.centerRight,
+                              child: PrimaryButton(
+                                isLoading: false,
+                                enabled: false,
+                                buttonText: LocaleKeys
+                                    .loginAndActivationScreen_continue
+                                    .tr(),
+                                onTap: () async {
+                                  log('Nothing');
+                                },
+                              ),
+                            );
+                          },
                         ),
                         SizedBox(
                           height: 20.h,
@@ -455,6 +521,44 @@ class _ActivationState extends State<Activation> {
         ),
       ),
       bottomNavigationBar: const LoginShapeBottom(),
+    );
+  }
+
+  Align submitOtpButton(var state, BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: PrimaryButton(
+        isLoading: false,
+        buttonText: LocaleKeys.loginAndActivationScreen_continue.tr(),
+        onTap: () async {
+          if (_formKey.currentState!.validate() &&
+              otpController1.text.isNotEmpty &&
+              otpController2.text.isNotEmpty &&
+              otpController3.text.isNotEmpty &&
+              otpController4.text.isNotEmpty) {
+            log(state.sessionId);
+            log(state.username);
+            BlocProvider.of<AuthenticationCubit>(context).verifyOtp(
+              {
+                "username": state.username,
+                "session": state.sessionId,
+                "phone_number": state.phoneNumber,
+                "user_type": 'STAFF',
+              },
+              otpController1.text +
+                  otpController2.text +
+                  otpController3.text +
+                  otpController4.text,
+            );
+          } else {
+            SnackBars.errorMessageSnackbar(
+                context, 'OTP fields cannot be empty!');
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              FocusScope.of(context).requestFocus(focusNode1);
+            });
+          }
+        },
+      ),
     );
   }
 }

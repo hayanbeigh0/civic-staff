@@ -52,9 +52,11 @@ class PrimaryButton extends StatelessWidget {
                     child: SizedBox(
                       height: 20.sp,
                       width: 20.sp,
-                      child: const CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.colorWhite,
+                      child: const RepaintBoundary(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.colorWhite,
+                        ),
                       ),
                     ),
                   )
