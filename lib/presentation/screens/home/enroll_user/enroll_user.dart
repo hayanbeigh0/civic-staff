@@ -3,12 +3,15 @@ import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
+import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
+import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/popups.dart';
+import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
@@ -49,6 +52,7 @@ class _EnrollUserState extends State<EnrollUser> {
 
   @override
   initState() {
+    BlocProvider.of<LocalStorageCubit>(context).getUserDataFromLocalStorage();
     BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
     wards = [];
     muncipality = wardsAndMuncipality.keys.toList();
@@ -64,6 +68,22 @@ class _EnrollUserState extends State<EnrollUser> {
     '2': ['15', '16', '17', '18', '19'],
     '3': ['20', '21', '22', '23', '24'],
     '4': ['30', '31', '32', '33', '34'],
+    'MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301': [
+      '35',
+      '36',
+      '37',
+      '38',
+      '39',
+      '2'
+    ],
+    'MUNCI-de7f8138-7ce5-4a91-a21a-98dd0b2de9f9': [
+      '35',
+      '36',
+      '37',
+      '38',
+      '39',
+      '2'
+    ],
   };
 
   String? wardDropdownValue;
@@ -123,10 +143,12 @@ class _EnrollUserState extends State<EnrollUser> {
             ),
           ),
           Expanded(
-            child: BlocBuilder<MyProfileCubit, MyProfileState>(
+            child: BlocBuilder<LocalStorageCubit, LocalStorageState>(
               builder: (context, state) {
-                if (state is MyProfileLoaded) {
-                  wards = wardsAndMuncipality[state.myProfile.muncipality];
+                if (state is LocalStorageFetchingDoneState) {
+                  wards = wardsAndMuncipality[
+                      state.afterLogin.userDetails!.municipalityID];
+                  // wards = wardsAndMuncipality[state.afterLogin.masterData];
                   wards.sort();
                   return SingleChildScrollView(
                     child: Padding(
@@ -148,7 +170,7 @@ class _EnrollUserState extends State<EnrollUser> {
     );
   }
 
-  Form enrollUserForm(MyProfileLoaded state) {
+  Form enrollUserForm(var authenticationSuccessState) {
     return Form(
       key: _formKey,
       child: Column(
@@ -340,26 +362,34 @@ class _EnrollUserState extends State<EnrollUser> {
                         return BlocConsumer<UsersBloc, SearchUsersState>(
                           listener: (context, userState) {
                             if (userState is UserEnrolledState) {
-                              primaryPopupDialog(
-                                context: context,
-                                title: LocaleKeys
-                                    .enrollUsers_dialogSuccessMessage
-                                    .tr(),
-                                buttonText:
-                                    LocaleKeys.enrollUsers_dialogOk.tr(),
-                                content:
-                                    LocaleKeys.enrollUsers_dialogSuccessMessage,
-                                ontap: () => Navigator.of(context).pop(),
-                              ).then(
-                                (value) => FocusScope.of(context)
-                                    .requestFocus(firstNameNode),
-                              );
+                              // primaryPopupDialog(
+                              //   context: context,
+                              //   title: LocaleKeys
+                              //       .enrollUsers_dialogSuccessMessage
+                              //       .tr(),
+                              //   buttonText:
+                              //       LocaleKeys.enrollUsers_dialogOk.tr(),
+                              //   content:
+                              //       LocaleKeys.enrollUsers_dialogSuccessMessage,
+                              //   ontap: () => Navigator.of(context).pop(),
+                              // ).then(
+                              // (value) => FocusScope.of(context)
+                              //     .requestFocus(firstNameNode),
+                              // );
+                              FocusScope.of(context)
+                                  .requestFocus(firstNameNode);
+                              SnackBars.sucessMessageSnackbar(context,
+                                  'User has been added to the system!');
 
                               firstNameController.text = '';
                               lastNameController.text = '';
                               emailController.text = '';
                               contactNumberController.text = '';
                               wardNumberController.text = '';
+                            }
+                            if (state is EnrollingAUserFailedState) {
+                              SnackBars.errorMessageSnackbar(
+                                  context, 'Enrolling user failed!');
                             }
                           },
                           builder: (context, userState) {
@@ -402,8 +432,8 @@ class _EnrollUserState extends State<EnrollUser> {
                                           active: true,
                                           address: state.name,
                                           countryCode: '+91',
-                                          staffId:
-                                              'STAFF-2ce3e905-362c-4f0e-b621-82b82d50a7f6',
+                                          staffId: authenticationSuccessState
+                                              .afterLogin.userDetails!.staffID,
                                           createdDate:
                                               DateTime.now().toString(),
                                           emailId: emailController.text,
@@ -414,7 +444,10 @@ class _EnrollUserState extends State<EnrollUser> {
                                           mobileNumber:
                                               contactNumberController.text,
                                           municipalityId:
-                                              'MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301',
+                                              authenticationSuccessState
+                                                  .afterLogin
+                                                  .userDetails!
+                                                  .municipalityID,
                                           notificationToken: '',
                                           profilePicture: '',
                                           latitude: currentLocationState

@@ -2,8 +2,10 @@
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
+import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/home_grid_items/home_grid_items_cubit.dart';
+import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
@@ -64,8 +66,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
     BlocProvider.of<HomeGridItemsCubit>(context).loadAllGridItems();
-    BlocProvider.of<MyProfileCubit>(context).getMyProfile();
-    // BlocProvider.of<GrievancesBloc>(context).add(GetGrievancesEvent());
+    // BlocProvider.of<MyProfileCubit>(context).getMyProfile();
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: Column(
@@ -142,8 +143,10 @@ class HomeScreen extends StatelessWidget {
               alignment: Alignment.topCenter,
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: AppConstants.screenPadding,
                 vertical: 12.0.h,
+              ),
+              margin: EdgeInsets.symmetric(
+                horizontal: AppConstants.screenPadding,
               ),
               child: BlocBuilder<HomeGridItemsCubit, HomeGridItemsState>(
                 builder: (context, state) {

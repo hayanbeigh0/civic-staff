@@ -106,8 +106,8 @@ class CodegenLoader extends AssetLoader{
     "addCommentButton": "Add Comment",
     "useCamera": "Use Camera",
     "uploadFromGallery": "Upload from gallery",
-    "stop": "Stop",
-    "record": "Record"
+    "stop": "Tap the icon to stop recording",
+    "record": "Tap the icon to start recording"
   },
   "map": {
     "screenTitle": "Map"
@@ -252,8 +252,8 @@ static const Map<String,dynamic> es = {
     "addCommentButton": "Add Comment",
     "useCamera": "Use Camera",
     "uploadFromGallery": "Upload from gallery",
-    "stop": "Stop",
-    "record": "Record"
+    "stop": "Tap the icon to stop recording",
+    "record": "Tap the icon to start recording"
   },
   "map": {
     "screenTitle": "Map"

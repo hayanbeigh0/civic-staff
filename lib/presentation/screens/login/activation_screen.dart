@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
+import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:flutter/material.dart';
 
@@ -437,6 +438,8 @@ class _ActivationState extends State<Activation> {
                         BlocConsumer<AuthenticationCubit, AuthenticationState>(
                           listener: (context, state) {
                             if (state is AuthenticationSuccessState) {
+                              BlocProvider.of<LocalStorageCubit>(context)
+                                  .storeUserData(state.afterLogin);
                               Navigator.of(context).pushNamed(
                                 HomeScreen.routeName,
                               );

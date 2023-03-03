@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'users_bloc.dart';
 
 abstract class SearchUsersState extends Equatable {
@@ -5,8 +6,12 @@ abstract class SearchUsersState extends Equatable {
 }
 
 class SearchingUsersState extends SearchUsersState {
+  final int selectedFilterNumber;
+  const SearchingUsersState({
+    required this.selectedFilterNumber,
+  });
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [selectedFilterNumber];
 }
 
 class LoadedUsersState extends SearchUsersState {
@@ -21,8 +26,12 @@ class LoadedUsersState extends SearchUsersState {
 }
 
 class LoadingUsersFailedState extends SearchUsersState {
+  final int selectedFilterNumber;
+  const LoadingUsersFailedState({
+    required this.selectedFilterNumber,
+  });
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [selectedFilterNumber];
 }
 
 class EnrollingAUserFailedState extends SearchUsersState {
@@ -65,6 +74,25 @@ class EditingAUserState extends SearchUsersState {
 class UserEditedState extends SearchUsersState {
   final User user;
   const UserEditedState({
+    required this.user,
+  });
+  @override
+  List<Object?> get props => [user];
+}
+
+class GettingUserByIdState extends SearchUsersState {
+  @override
+  List<Object?> get props => [];
+}
+
+class GettingUserByIdFailedState extends SearchUsersState {
+  @override
+  List<Object?> get props => [];
+}
+
+class LoadedUserByIdState extends SearchUsersState {
+  final User user;
+  const LoadedUserByIdState({
     required this.user,
   });
   @override

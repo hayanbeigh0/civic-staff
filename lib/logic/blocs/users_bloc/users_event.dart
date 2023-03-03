@@ -12,13 +12,23 @@ class LoadUsersEvent extends SearchUsersEvent {
   List<Object?> get props => [radioValue];
 }
 
+class LoadAllUsersEvent extends SearchUsersEvent {
+  final int selectedFilterNumber;
+  const LoadAllUsersEvent(this.selectedFilterNumber);
+
+  @override
+  List<Object?> get props => [selectedFilterNumber];
+}
+
 class SearchUserByNameEvent extends SearchUsersEvent {
   final String name;
+  final String municipalityId;
   const SearchUserByNameEvent({
     required this.name,
+    required this.municipalityId,
   });
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [name, municipalityId];
 }
 
 class SearchUserByStreetEvent extends SearchUsersEvent {
@@ -57,4 +67,14 @@ class EditUserEvent extends SearchUsersEvent {
 
   @override
   List<Object?> get props => [user];
+}
+
+class GetUserByIdEvent extends SearchUsersEvent {
+  final String userId;
+  const GetUserByIdEvent({
+    required this.userId,
+  });
+
+  @override
+  List<Object?> get props => [userId];
 }

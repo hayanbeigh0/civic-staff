@@ -1,4 +1,6 @@
 import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
+import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
+import 'package:civic_staff/models/user_details.dart';
 import 'package:civic_staff/presentation/screens/home/home.dart';
 import 'package:civic_staff/resources/repositories/auth/authentication_repository.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +112,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 AuthenticationRepository(),
               ),
             ),
+            BlocProvider<LocalStorageCubit>(
+              create: (context) => LocalStorageCubit(),
+            ),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -122,10 +127,47 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               useMaterial3: true,
               primaryColor: AppColors.colorPrimary,
             ),
-            home: Login(),
+            home: const AuthBasedRouting(),
             onGenerateRoute: (settings) => AppRouter.onGenrateRoute(settings),
           ),
         );
+      },
+    );
+  }
+}
+
+class AuthBasedRouting extends StatelessWidget {
+  const AuthBasedRouting({
+    Key? key,
+  }) : super(key: key);
+
+  static late AfterLogin afterLogin;
+  @override
+  Widget build(BuildContext context) {
+    BlocProvider.of<LocalStorageCubit>(context).getUserDataFromLocalStorage();
+    return BlocBuilder<LocalStorageCubit, LocalStorageState>(
+      builder: (context, state) {
+        if (state is LocalStorageFetchingDoneState) {
+          afterLogin = state.afterLogin;
+          return HomeScreen();
+        }
+        if (state is LocalStorageUserNotPresentState) {
+          return Login();
+        }
+        if (state is LocalStorageFetchingFailedState) {
+          return Login();
+        }
+        return const SizedBox();
+        // return const Scaffold(
+        //   backgroundColor: AppColors.colorWhite,
+        //   body: Center(
+        //     child: RepaintBoundary(
+        //       child: CircularProgressIndicator(
+        //         color: AppColors.colorPrimary,
+        //       ),
+        //     ),
+        //   ),
+        // );
       },
     );
   }

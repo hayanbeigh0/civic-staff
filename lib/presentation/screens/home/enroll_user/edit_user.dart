@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
+import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
+import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/my_profile.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
@@ -51,13 +55,15 @@ class _EditUserScreenState extends State<EditUserScreen> {
     '2': ['15', '16', '17', '18', '19'],
     '3': ['20', '21', '22', '23', '24'],
     '4': ['30', '31', '32', '33', '34'],
-    'MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301': [
+    'MUNCI-de7f8138-7ce5-4a91-a21a-98dd0b2de9f9': [
       '35',
       '36',
       '37',
       '38',
       '39',
-      '2'
+      '2',
+      '3',
+      '4',
     ],
   };
 
@@ -83,6 +89,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log('Hello');
+    log('Created Date: ${widget.user.createdDate.toString()}');
     return Scaffold(
       body: Column(
         children: [
@@ -366,59 +374,123 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       BlocBuilder<ReverseGeocodingCubit, ReverseGeocodingState>(
                         builder: (context, state) {
                           if (state is ReverseGeocodingLoaded) {
-                            return Align(
-                              alignment: Alignment.bottomRight,
-                              child: PrimaryButton(
-                                isLoading: false,
-                                onTap: () {
-                                  if (wardDropdownValue == null) {
-                                    setState(() {
-                                      showWardDropdownError = true;
-                                    });
-                                  }
-                                  if (muncipalityDropdownValue == null) {
-                                    setState(() {
-                                      showMuncipalityDropdownError = true;
-                                    });
-                                  }
-                                  if (_formKey.currentState!.validate() &&
-                                      !showMuncipalityDropdownError &&
-                                      !showWardDropdownError) {
-                                    BlocProvider.of<UsersBloc>(context).add(
-                                      EditUserEvent(
-                                        user: User(
-                                          about: aboutController.text,
-                                          countryCode: '+91',
-                                          emailId: emailController.text,
-                                          firstName: firstNameController.text,
-                                          userId: widget.user.userId,
-                                          lastName: lastNameController.text,
-                                          latitude: widget.user.latitude,
-                                          longitude: widget.user.longitude,
-                                          mobileNumber:
-                                              contactNumberController.text,
-                                          address: state.street +
-                                              state.locality +
-                                              state.countryName,
-                                          wardNumber: wardDropdownValue,
-                                          municipalityId:
-                                              widget.user.municipalityId,
-                                          active: true,
-                                          createdDate: '',
-                                          lastModifiedDate:
-                                              DateTime.now().toString(),
-                                          notificationToken: '',
-                                          profilePicture: '',
-                                          staffId: '',
+                            return BlocBuilder<CurrentLocationCubit,
+                                    CurrentLocationState>(
+                                builder: (context, currentLocationState) {
+                              if (currentLocationState
+                                  is CurrentLocationLoaded) {
+                                return BlocConsumer<UsersBloc,
+                                    SearchUsersState>(
+                                  listener: (context, userState) {
+                                    if (userState is EditingUserFailedState) {
+                                      SnackBars.errorMessageSnackbar(context,
+                                          'An unknown error occurred!');
+                                    }
+                                    if (userState is UserEditedState) {
+                                      SnackBars.sucessMessageSnackbar(
+                                          context, 'User has been edited!');
+                                      Navigator.of(context)
+                                          .pop({"user": userState.user});
+                                    }
+                                  },
+                                  builder: (context, userState) {
+                                    if (userState is EditingAUserState) {
+                                      return Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: PrimaryButton(
+                                          enabled: true,
+                                          isLoading: true,
+                                          onTap: () {},
+                                          buttonText: LocaleKeys
+                                              .editProfile_submit
+                                              .tr(),
                                         ),
+                                      );
+                                    }
+                                    return Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: PrimaryButton(
+                                        isLoading: false,
+                                        onTap: () {
+                                          if (wardDropdownValue == null) {
+                                            setState(() {
+                                              showWardDropdownError = true;
+                                            });
+                                          }
+                                          if (muncipalityDropdownValue ==
+                                              null) {
+                                            setState(() {
+                                              showMuncipalityDropdownError =
+                                                  true;
+                                            });
+                                          }
+                                          if (_formKey.currentState!
+                                                  .validate() &&
+                                              !showMuncipalityDropdownError &&
+                                              !showWardDropdownError) {
+                                            BlocProvider.of<UsersBloc>(context)
+                                                .add(
+                                              EditUserEvent(
+                                                user: User(
+                                                  about: aboutController.text,
+                                                  countryCode: '+91',
+                                                  emailId: emailController.text,
+                                                  firstName:
+                                                      firstNameController.text,
+                                                  userId: widget.user.userId,
+                                                  lastName:
+                                                      lastNameController.text,
+                                                  latitude: currentLocationState
+                                                      .latitude
+                                                      .toString(),
+                                                  longitude:
+                                                      currentLocationState
+                                                          .longitude
+                                                          .toString(),
+                                                  mobileNumber:
+                                                      contactNumberController
+                                                          .text,
+                                                  address: state.street +
+                                                      state.locality +
+                                                      state.countryName,
+                                                  wardNumber: wardDropdownValue,
+                                                  municipalityId: widget
+                                                      .user.municipalityId,
+                                                  active: widget.user.active,
+                                                  createdDate:
+                                                      widget.user.createdDate,
+                                                  lastModifiedDate:
+                                                      DateTime.now().toString(),
+                                                  notificationToken: widget
+                                                      .user.notificationToken,
+                                                  profilePicture: '',
+                                                  staffId: AuthBasedRouting
+                                                      .afterLogin
+                                                      .userDetails!
+                                                      .staffID,
+                                                ),
+                                              ),
+                                            );
+                                          } else {}
+                                        },
+                                        buttonText:
+                                            LocaleKeys.editProfile_submit.tr(),
                                       ),
                                     );
-                                    Navigator.of(context).pop();
-                                  } else {}
-                                },
-                                buttonText: LocaleKeys.editProfile_submit.tr(),
-                              ),
-                            );
+                                  },
+                                );
+                              }
+                              return Align(
+                                alignment: Alignment.bottomRight,
+                                child: PrimaryButton(
+                                  enabled: false,
+                                  isLoading: false,
+                                  onTap: () {},
+                                  buttonText:
+                                      LocaleKeys.editProfile_submit.tr(),
+                                ),
+                              );
+                            });
                           }
                           return Align(
                             alignment: Alignment.bottomRight,
@@ -460,9 +532,9 @@ class _EditUserScreenState extends State<EditUserScreen> {
   }
 
   String? validateAbout(String value) {
-    if (value.isEmpty) {
-      return LocaleKeys.editProfile_aboutError.tr();
-    }
+    // if (value.isEmpty) {
+    //   return LocaleKeys.editProfile_aboutError.tr();
+    // }
     return null;
   }
 

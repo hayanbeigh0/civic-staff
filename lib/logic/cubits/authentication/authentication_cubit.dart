@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'dart:developer';
-
+import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/models/user_details.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,16 +12,28 @@ part 'authentication_state.dart';
 class AuthenticationCubit extends Cubit<AuthenticationState> {
   AuthenticationCubit(this.authRepository) : super(AuthenticationInitial());
   final AuthenticationRepository authRepository;
+
   String? sessionId;
   String? username;
   String? phoneNumber;
+
+  late StreamSubscription subscription;
+  authSuccessState() {
+    subscription = LocalStorageCubit().stream.listen(
+      (state) {
+        if (state is LocalStorageFetchingDoneState) {
+          // emit(AuthenticationSuccessState(afterLogin: state.userDetails));
+        }
+      },
+    );
+  }
+
   signIn(String phoneNumber, bool resendOtp) async {
     this.phoneNumber = phoneNumber;
     emit(AuthenticationLoading());
     try {
       final response = await authRepository.signIn(phoneNumber);
       final responseBody = response.data;
-      // log('res: $responseBody');
       if (response.statusCode == 200) {
         if (responseBody['CUSTOM_CHALLENGE'] != null &&
             responseBody['Session'] != null) {
@@ -72,7 +85,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       if (e.response!.data == "User Phone number is not yet registered") {
         return emit(
           const AuthenticationLoginErrorState(
-            error: 'Provided phone number is not yet registered!',
+            error: 'Provided mobile number is not yet registered!',
           ),
         );
       }

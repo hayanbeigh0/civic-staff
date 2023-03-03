@@ -1,6 +1,8 @@
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
+import 'package:civic_staff/main.dart';
 import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart';
 import 'package:civic_staff/presentation/screens/login/login.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
@@ -20,13 +22,16 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<MyProfileCubit>(context).loadMyProfile();
+    BlocProvider.of<MyProfileCubit>(context).getMyProfile(
+        AuthBasedRouting.afterLogin.userDetails!.staffID.toString());
     return Scaffold(
       body: BlocBuilder<MyProfileCubit, MyProfileState>(
         builder: (context, state) {
           if (state is MyProfileLoading) {
             return const Center(
-              child: CircularProgressIndicator(color: AppColors.colorPrimary),
+              child: CircularProgressIndicator(
+                color: AppColors.colorPrimary,
+              ),
             );
           }
           if (state is MyProfileLoaded) {
@@ -78,7 +83,9 @@ class ProfileScreen extends StatelessWidget {
                                   ).then(
                                     (_) =>
                                         BlocProvider.of<MyProfileCubit>(context)
-                                            .loadMyProfile(),
+                                            .getMyProfile(AuthBasedRouting
+                                                .afterLogin.userDetails!.staffID
+                                                .toString()),
                                   );
                                 },
                                 child: Text(
@@ -192,6 +199,7 @@ class ProfileScreen extends StatelessWidget {
                             height: 5.h,
                           ),
                           Container(
+                            width: double.infinity,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10.sp),
                               color: AppColors.colorPrimaryLight,
@@ -212,76 +220,76 @@ class ProfileScreen extends StatelessWidget {
                           SizedBox(
                             height: 5.h,
                           ),
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(12.sp),
-                            decoration: BoxDecoration(
-                              color: AppColors.colorPrimaryLight,
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: state.myProfile.allocatedWards!
-                                  .map(
-                                    (e) => Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 8.0.sp,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          state.myProfile.allocatedWards!
-                                                      .indexOf(e) ==
-                                                  0
-                                              ? const SizedBox()
-                                              : const Divider(
-                                                  height: 1.1,
-                                                  color:
-                                                      AppColors.colorGreyLight,
-                                                ),
-                                          Text(
-                                            '${e.grievanceType}: ',
-                                            style: AppStyles
-                                                .inputAndDisplayTitleStyle,
-                                          ),
+                          // Container(
+                          //   width: double.infinity,
+                          //   padding: EdgeInsets.all(12.sp),
+                          //   decoration: BoxDecoration(
+                          //     color: AppColors.colorPrimaryLight,
+                          //     borderRadius: BorderRadius.circular(10.r),
+                          //   ),
+                          //   child: Column(
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     children: state.myProfile.allocatedWards!
+                          //         .map(
+                          //           (e) => Padding(
+                          //             padding: EdgeInsets.symmetric(
+                          //               vertical: 8.0.sp,
+                          //             ),
+                          //             child: Column(
+                          //               crossAxisAlignment:
+                          //                   CrossAxisAlignment.start,
+                          //               children: [
+                          //                 state.myProfile.allocatedWards!
+                          //                             .indexOf(e) ==
+                          //                         0
+                          //                     ? const SizedBox()
+                          //                     : const Divider(
+                          //                         height: 1.1,
+                          //                         color:
+                          //                             AppColors.colorGreyLight,
+                          //                       ),
+                          //                 Text(
+                          //                   '${e.grievanceType}: ',
+                          //                   style: AppStyles
+                          //                       .inputAndDisplayTitleStyle,
+                          //                 ),
 
-                                          ...e.wardNumber!
-                                              .toList()
-                                              .map(
-                                                (e) => Column(
-                                                  children: [
-                                                    Text(
-                                                      e,
-                                                      style: AppStyles
-                                                          .descriptiveTextStyle
-                                                          .copyWith(
-                                                        height: null,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                              .toList(),
-                                          // e.indexOf(e) <
-                                          //               state
-                                          //                       .myProfile
-                                          //                       .allocatedWards!
-                                          //                       .length -
-                                          //                   1
-                                          //           ?
-                                          // Divider(
-                                          //   height: 1.1,
-                                          //   color: AppColors.colorGreyLight,
-                                          // )
-                                          // : SizedBox()
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ),
+                          //                 ...e.wardNumber!
+                          //                     .toList()
+                          //                     .map(
+                          //                       (e) => Column(
+                          //                         children: [
+                          //                           Text(
+                          //                             e,
+                          //                             style: AppStyles
+                          //                                 .descriptiveTextStyle
+                          //                                 .copyWith(
+                          //                               height: null,
+                          //                             ),
+                          //                           ),
+                          //                         ],
+                          //                       ),
+                          //                     )
+                          //                     .toList(),
+                          //                 // e.indexOf(e) <
+                          //                 //               state
+                          //                 //                       .myProfile
+                          //                 //                       .allocatedWards!
+                          //                 //                       .length -
+                          //                 //                   1
+                          //                 //           ?
+                          //                 // Divider(
+                          //                 //   height: 1.1,
+                          //                 //   color: AppColors.colorGreyLight,
+                          //                 // )
+                          //                 // : SizedBox()
+                          //               ],
+                          //             ),
+                          //           ),
+                          //         )
+                          //         .toList(),
+                          //   ),
+                          // ),
                           SizedBox(
                             height: 40.h,
                           ),
@@ -291,6 +299,8 @@ class ProfileScreen extends StatelessWidget {
                               buttonText: LocaleKeys.profile_logout.tr(),
                               isLoading: false,
                               onTap: () {
+                                BlocProvider.of<LocalStorageCubit>(context)
+                                    .clearStorage();
                                 Navigator.of(context).pushNamedAndRemoveUntil(
                                   Login.routeName,
                                   (route) => false,

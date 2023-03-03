@@ -57,6 +57,7 @@ dependencies:
   easy_localization: ^3.0.1
   chewie: ^1.4.0
   dio: ^5.0.1
+  shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:

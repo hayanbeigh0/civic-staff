@@ -11,11 +11,10 @@ class MyProfileLoading extends MyProfileState {
 }
 
 class MyProfileLoaded extends MyProfileState {
+  final UserDetails userDetails;
   final MyProfile myProfile;
-  const MyProfileLoaded({
-    required this.myProfile,
-  });
+  const MyProfileLoaded({required this.myProfile, required this.userDetails});
 
   @override
-  List<Object?> get props => [myProfile];
+  List<Object?> get props => [userDetails, myProfile];
 }
