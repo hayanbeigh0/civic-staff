@@ -18,6 +18,7 @@ class LocalStorageCubit extends Cubit<LocalStorageState> {
       final userJson = jsonEncode(userDetails);
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('userdetails', userJson);
+      log('User json storing in local storage:$userJson');
       emit(LocalStorageStoringDoneState());
       emit(LocalStorageFetchingDoneState(afterLogin: userDetails));
     } catch (e) {
@@ -37,7 +38,7 @@ class LocalStorageCubit extends Cubit<LocalStorageState> {
     if (jsonString != null) {
       final jsonMap = jsonDecode(jsonString);
       final afterLogin = AfterLogin.fromJson(jsonMap);
-      log('EmailId: ${afterLogin.userDetails!.emailID}');
+      log('Allocated wards: ${afterLogin.userDetails!.allocatedWards!.length}');
       emit(LocalStorageFetchingDoneState(afterLogin: afterLogin));
     } else {
       log("Failed fetching local data");

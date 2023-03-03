@@ -520,7 +520,26 @@ class _SearchUserState extends State<SearchUser> {
               backgroundColor: AppColors.colorPrimary,
               child: CircleAvatar(
                 radius: 35.w,
-                backgroundColor: const Color.fromARGB(255, 234, 234, 234),
+                backgroundColor: AppColors.colorPrimaryExtraLight,
+                child: ClipOval(
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColors.colorPrimaryExtraLight,
+                        width: 5,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.person,
+                        size: 60.sp,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
             SizedBox(

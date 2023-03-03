@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/resources/repositories/Users/user_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'users_event.dart';
 part 'users_state.dart';
@@ -127,7 +126,7 @@ class UsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
     on<EnrollAUserEvent>((event, emit) async {
       emit(const EnrollingAUserState(loading: true));
       try {
-        final Response response = await userRepository.addUser(event.user);
+        await userRepository.addUser(event.user);
         emit(UserEnrolledState(user: event.user));
       } on DioError catch (e) {
         if (e.type == DioErrorType.connectionTimeout ||

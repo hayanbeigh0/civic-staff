@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
+import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/my_profile.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
+import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -125,9 +129,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         height: 12.h,
                       ),
                       PrimaryTextField(
-                        fieldValidator: (p0) => validateEmailAddress(
-                          p0.toString(),
-                        ),
+                        // fieldValidator: (p0) => validateEmailAddress(
+                        //   p0.toString(),
+                        // ),
                         title: LocaleKeys.editProfile_email.tr(),
                         hintText: 'you@example.com',
                         textEditingController: emailController,
@@ -135,60 +139,49 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(
                         height: 12.h,
                       ),
-                      PrimaryTextField(
-                        fieldValidator: (p0) => validateMobileNumber(
-                          p0.toString(),
-                        ),
+                      PrimaryDisplayField(
+                        fillColor: AppColors.colorDisabledTextField,
+                        value: AuthBasedRouting
+                            .afterLogin.userDetails!.mobileNumber
+                            .toString(),
                         title: LocaleKeys.editProfile_contactNumber.tr(),
-                        hintText: '123-7281-927',
-                        textEditingController: contactNumberController,
                       ),
                       SizedBox(
                         height: 12.h,
                       ),
-                      PrimaryTextField(
-                        maxLines: 8,
-                        fieldValidator: (p0) => validateAbout(
-                          p0.toString(),
-                        ),
-                        title: LocaleKeys.editProfile_about.tr(),
-                        hintText: LocaleKeys.editProfile_aboutHint.tr(),
-                        textEditingController: aboutController,
+                      PrimaryDisplayField(
+                        fillColor: AppColors.colorDisabledTextField,
+                        title: 'Municipality',
+                        value: AuthBasedRouting.afterLogin.masterData!
+                            .firstWhere((element) =>
+                                element.sK ==
+                                AuthBasedRouting
+                                    .afterLogin.userDetails!.municipalityID)
+                            .name
+                            .toString(),
                       ),
                       SizedBox(
-                        height: 50.h,
+                        height: 70.h,
                       ),
-                      BlocBuilder<ReverseGeocodingCubit, ReverseGeocodingState>(
+                      BlocConsumer<MyProfileCubit, MyProfileState>(
+                        listener: (context, state) {
+                          if (state is MyProfileEditingDoneState) {
+                            SnackBars.sucessMessageSnackbar(
+                                context, 'Successfully updated the profile.');
+                            Navigator.of(context).pop();
+                          }
+                          if (state is MyProfileEditingFailedState) {
+                            SnackBars.errorMessageSnackbar(
+                                context, 'Something went wrong!');
+                          }
+                        },
                         builder: (context, state) {
-                          if (state is ReverseGeocodingLoaded) {
+                          if (state is MyProfileEditingStartedState) {
                             return Align(
                               alignment: Alignment.bottomRight,
                               child: PrimaryButton(
-                                isLoading: false,
-                                onTap: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    BlocProvider.of<MyProfileCubit>(context)
-                                        .editMyProfile(
-                                      MyProfile(
-                                        about: aboutController.text,
-                                        allocatedWards:
-                                            widget.myProfile.allocatedWards,
-                                        city: state.locality,
-                                        country: state.countryName,
-                                        email: emailController.text,
-                                        firstName: firstNameController.text,
-                                        id: widget.myProfile.id,
-                                        lastName: lastNameController.text,
-                                        latitude: widget.myProfile.latitude,
-                                        longitude: widget.myProfile.longitude,
-                                        mobileNumber:
-                                            contactNumberController.text,
-                                        streetName: state.street,
-                                      ),
-                                    );
-                                    Navigator.of(context).pop();
-                                  } else {}
-                                },
+                                isLoading: true,
+                                onTap: () {},
                                 buttonText: LocaleKeys.editProfile_submit.tr(),
                               ),
                             );
@@ -196,17 +189,38 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           return Align(
                             alignment: Alignment.bottomRight,
                             child: PrimaryButton(
-                              enabled: false,
                               isLoading: false,
-                              onTap: () {},
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
+                                  BlocProvider.of<MyProfileCubit>(context)
+                                      .editMyProfile(
+                                    MyProfile(
+                                      about: aboutController.text,
+                                      allocatedWards: AuthBasedRouting
+                                          .afterLogin
+                                          .userDetails!
+                                          .allocatedWards!,
+                                      city: '',
+                                      country: '',
+                                      email: emailController.text,
+                                      firstName: firstNameController.text,
+                                      id: widget.myProfile.id,
+                                      lastName: lastNameController.text,
+                                      latitude: widget.myProfile.latitude,
+                                      longitude: widget.myProfile.longitude,
+                                      mobileNumber:
+                                          contactNumberController.text,
+                                      streetName: '',
+                                    ),
+                                  );
+                                  // Navigator.of(context).pop();
+                                } else {}
+                              },
                               buttonText: LocaleKeys.editProfile_submit.tr(),
                             ),
                           );
                         },
-                      ),
-                      SizedBox(
-                        height: 50.h,
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -233,9 +247,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   String? validateAbout(String value) {
-    if (value.isEmpty) {
-      return LocaleKeys.editProfile_aboutError.tr();
-    }
+    // if (value.isEmpty) {
+    //   return LocaleKeys.editProfile_aboutError.tr();
+    // }
     return null;
   }
 

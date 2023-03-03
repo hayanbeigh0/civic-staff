@@ -157,17 +157,16 @@ class AuthBasedRouting extends StatelessWidget {
         if (state is LocalStorageFetchingFailedState) {
           return Login();
         }
-        return const SizedBox();
-        // return const Scaffold(
-        //   backgroundColor: AppColors.colorWhite,
-        //   body: Center(
-        //     child: RepaintBoundary(
-        //       child: CircularProgressIndicator(
-        //         color: AppColors.colorPrimary,
-        //       ),
-        //     ),
-        //   ),
-        // );
+        return const Scaffold(
+          backgroundColor: AppColors.colorWhite,
+          body: Center(
+            child: RepaintBoundary(
+              child: CircularProgressIndicator(
+                color: AppColors.colorPrimary,
+              ),
+            ),
+          ),
+        );
       },
     );
   }

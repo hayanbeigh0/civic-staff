@@ -11,6 +11,8 @@ class AppColors {
   static const Color colorBlack = Color(0xFF000000);
   static const Color colorBlack200 = Color.fromARGB(129, 0, 0, 0);
   static const Color colorGreyLight = Color(0xFF7B7373);
+  static const Color colorDisabledTextField =
+      Color.fromARGB(255, 202, 202, 202);
   static const Color cardColorLight = Color.fromARGB(255, 249, 252, 255);
   static const Color cardShadowColor = Color(0x2B2B75FC);
   static const Color cardTextColor = Color(0xFF15336A);

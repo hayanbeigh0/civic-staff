@@ -10,6 +10,21 @@ class MyProfileLoading extends MyProfileState {
   List<Object?> get props => [];
 }
 
+class MyProfileEditingStartedState extends MyProfileState {
+  @override
+  List<Object?> get props => [];
+}
+
+class MyProfileEditingDoneState extends MyProfileState {
+  @override
+  List<Object?> get props => [];
+}
+
+class MyProfileEditingFailedState extends MyProfileState {
+  @override
+  List<Object?> get props => [];
+}
+
 class MyProfileLoaded extends MyProfileState {
   final UserDetails userDetails;
   final MyProfile myProfile;

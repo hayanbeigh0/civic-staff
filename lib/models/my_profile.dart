@@ -1,3 +1,4 @@
+import 'package:civic_staff/models/user_details.dart';
 import 'package:equatable/equatable.dart';
 
 class MyProfile extends Equatable {
@@ -89,24 +90,24 @@ class MyProfile extends Equatable {
       ];
 }
 
-class AllocatedWards extends Equatable {
-  String? grievanceType;
-  List<String>? wardNumber;
+// class AllocatedWards extends Equatable {
+//   String? grievanceType;
+//   List<String>? wardNumber;
 
-  AllocatedWards({this.grievanceType, this.wardNumber});
+//   AllocatedWards({this.grievanceType, this.wardNumber});
 
-  AllocatedWards.fromJson(Map<String, dynamic> json) {
-    grievanceType = json['grievanceType'];
-    wardNumber = json['wardNumber'].cast<String>();
-  }
+//   AllocatedWards.fromJson(Map<String, dynamic> json) {
+//     grievanceType = json['grievanceType'];
+//     wardNumber = json['wardNumber'].cast<String>();
+//   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['grievanceType'] = grievanceType;
-    data['wardNumber'] = wardNumber;
-    return data;
-  }
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data['grievanceType'] = grievanceType;
+//     data['wardNumber'] = wardNumber;
+//     return data;
+//   }
 
-  @override
-  List<Object?> get props => [grievanceType, wardNumber];
-}
+//   @override
+//   List<Object?> get props => [grievanceType, wardNumber];
+// }

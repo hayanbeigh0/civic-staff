@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
+import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/edit_user.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
@@ -30,6 +32,7 @@ class UserDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('${user.latitude},${user.longitude}');
     return Scaffold(
       body: Stack(
         children: [
@@ -40,6 +43,7 @@ class UserDetails extends StatelessWidget {
                 user = state.user;
               }
               if (state is LoadedUserByIdState) {
+                log('Userr location: ${state.user.latitude},${state.user.longitude}');
                 Navigator.of(context).pushReplacementNamed(
                   UserDetails.routeName,
                   arguments: {'user': state.user},
@@ -200,6 +204,7 @@ class UserDetails extends StatelessWidget {
                                   ),
                                 ),
                               );
+                              log('Useer location: ${user.latitude},${user.longitude}');
                             },
                             style:
                                 TextButton.styleFrom(padding: EdgeInsets.zero),
@@ -263,22 +268,25 @@ class UserDetails extends StatelessWidget {
                 SizedBox(
                   height: 5.h,
                 ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.email_outlined,
-                      color: AppColors.colorWhite,
-                      size: 16.sp,
-                    ),
-                    SizedBox(
-                      width: 8.w,
-                    ),
-                    Text(
-                      user.emailId.toString(),
-                      style: AppStyles.userContactDetailsMobileNumberStyle,
-                    )
-                  ],
-                ),
+                user.emailId!.isNotEmpty
+                    ? Row(
+                        children: [
+                          Icon(
+                            Icons.email_outlined,
+                            color: AppColors.colorWhite,
+                            size: 16.sp,
+                          ),
+                          SizedBox(
+                            width: 8.w,
+                          ),
+                          Text(
+                            user.emailId.toString(),
+                            style:
+                                AppStyles.userContactDetailsMobileNumberStyle,
+                          )
+                        ],
+                      )
+                    : const SizedBox(),
                 SizedBox(
                   height: 50.h,
                 ),
@@ -317,14 +325,24 @@ class UserDetails extends StatelessWidget {
                   ),
                   PrimaryDisplayField(
                     title: 'Muncipality',
-                    value: user.municipalityId.toString(),
+                    value: AuthBasedRouting.afterLogin.masterData!
+                        .firstWhere((element) =>
+                            element.sK ==
+                            AuthBasedRouting
+                                .afterLogin.userDetails!.municipalityID)
+                        .name
+                        .toString(),
                   ),
                   SizedBox(
                     height: 12.h,
                   ),
                   PrimaryDisplayField(
                     title: 'Ward',
-                    value: user.wardNumber.toString(),
+                    value: AuthBasedRouting.afterLogin.wardDetails!
+                        .firstWhere(
+                            (element) => element.wardNumber == user.wardNumber)
+                        .wardName
+                        .toString(),
                   ),
                   SizedBox(
                     height: 12.h,
@@ -343,7 +361,7 @@ class UserDetails extends StatelessWidget {
                         myLocationEnabled: false,
                         zoomEnabled: false,
                         latitude: double.parse(user.latitude.toString()),
-                        longitude: double.parse(user.latitude.toString()),
+                        longitude: double.parse(user.longitude.toString()),
                         mapController: _controller,
                       ),
                       Container(

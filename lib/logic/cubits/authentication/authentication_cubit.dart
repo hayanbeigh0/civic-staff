@@ -159,11 +159,27 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         );
       }
       log(error: e.toString(), '3');
-      if (e.response!.data['message'] == 'Unrecognizable lambda output') {
+      try {
+        if (e.response!.data['message'] == 'Unrecognizable lambda output') {
+          emit(
+            const AuthenticationOtpErrorState(
+              error:
+                  'You have exceeded 3 attempts.\nPlease use "Resend OTP" to try again.',
+            ),
+          );
+          emit(
+            OtpSentState(
+              sessionId: sessionId.toString(),
+              username: username.toString(),
+              phoneNumber: phoneNumber.toString(),
+            ),
+          );
+          return;
+        }
+      } catch (e) {
         emit(
           const AuthenticationOtpErrorState(
-            error:
-                'You have exceeded 3 attempts.\nPlease use "Resend OTP" to try again.',
+            error: 'Unknown error occurred!',
           ),
         );
         emit(
@@ -195,6 +211,13 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         emit(
           const AuthenticationOtpErrorState(
             error: 'Unknown error occurred!',
+          ),
+        );
+        emit(
+          OtpSentState(
+            sessionId: sessionId.toString(),
+            username: username.toString(),
+            phoneNumber: phoneNumber.toString(),
           ),
         );
         return;

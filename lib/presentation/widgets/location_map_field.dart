@@ -26,7 +26,7 @@ class LocationMapField extends StatelessWidget {
   final double latitude;
   final double longitude;
   final Completer<GoogleMapController> mapController;
-  late LatLng pickedLoc;
+  static late LatLng pickedLoc;
   final bool zoomEnabled;
   final bool myLocationEnabled;
   final bool gesturesEnabled;

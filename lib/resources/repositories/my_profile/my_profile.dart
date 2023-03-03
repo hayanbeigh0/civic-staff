@@ -26,6 +26,7 @@ class MyProfileRerpository {
   editProfile(UserDetails userDetails) async {
     log('getting staff profile');
     const String url = '$API_URL/staff/modify-staff-member';
+    log("Staff ID: ${userDetails.staffID}");
     final response = await Dio().put(
       url,
       data: jsonEncode({
@@ -35,7 +36,7 @@ class MyProfileRerpository {
         "createdDate": "2023-02-09 18:40:41",
         "email": userDetails.emailID,
         "firstName": userDetails.firstName,
-        "lastModifiedDate": "2023-02-09 18:40:41",
+        "lastModifiedDate": DateTime.now().toString(),
         "lastName": userDetails.lastName,
         "mobile": userDetails.mobileNumber,
         "municipalityId": userDetails.municipalityID,

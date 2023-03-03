@@ -440,8 +440,9 @@ class _ActivationState extends State<Activation> {
                             if (state is AuthenticationSuccessState) {
                               BlocProvider.of<LocalStorageCubit>(context)
                                   .storeUserData(state.afterLogin);
-                              Navigator.of(context).pushNamed(
+                              Navigator.of(context).pushNamedAndRemoveUntil(
                                 HomeScreen.routeName,
+                                (route) => false,
                               );
                             }
                             if (state is AuthenticationOtpErrorState) {

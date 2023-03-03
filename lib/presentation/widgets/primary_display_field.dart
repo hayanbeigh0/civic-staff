@@ -10,11 +10,13 @@ class PrimaryDisplayField extends StatelessWidget {
     required this.value,
     this.maxLines = 1,
     this.suffixIcon = const SizedBox(),
+    this.fillColor = AppColors.colorPrimaryLight,
   }) : super(key: key);
   final String title;
   final String value;
   final Widget suffixIcon;
   final int maxLines;
+  final Color fillColor;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class PrimaryDisplayField extends StatelessWidget {
           enabled: false,
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.colorPrimaryLight,
+            fillColor: fillColor,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16.sp,
               vertical: 10.sp,

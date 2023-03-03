@@ -16,11 +16,13 @@ class PrimaryTextField extends StatelessWidget {
     this.focusNode,
     this.inputFormatters,
     this.onFieldSubmitted,
+    this.enabled = true,
   });
   final String title;
   final String hintText;
   final Widget suffixIcon;
   final int maxLines;
+  final bool enabled;
 
   final TextEditingController textEditingController;
   final FocusNode? focusNode;
@@ -49,7 +51,7 @@ class PrimaryTextField extends StatelessWidget {
           style: AppStyles.primaryTextFieldStyle,
           inputFormatters: inputFormatters,
           controller: textEditingController,
-          enabled: true,
+          enabled: enabled,
           validator: fieldValidator,
           decoration: InputDecoration(
             filled: true,

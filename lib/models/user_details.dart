@@ -3,12 +3,14 @@ class AfterLogin {
   AuthenticationResult? authenticationResult;
   UserDetails? userDetails;
   List<MasterData>? masterData;
+  List<WardDetails>? wardDetails;
 
   AfterLogin({
     this.challengeParameters,
     this.authenticationResult,
     this.userDetails,
     this.masterData,
+    this.wardDetails,
   });
 
   AfterLogin.fromJson(Map<String, dynamic> json) {
@@ -21,10 +23,16 @@ class AfterLogin {
     userDetails = json['UserDetails'] != null
         ? UserDetails.fromJson(json['UserDetails'])
         : null;
-    if (json['masterData'] != null) {
+    if (json['MasterData'] != null) {
       masterData = <MasterData>[];
-      json['masterData'].forEach((v) {
+      json['MasterData'].forEach((v) {
         masterData!.add(MasterData.fromJson(v));
+      });
+    }
+    if (json['WardDetails'] != null) {
+      wardDetails = <WardDetails>[];
+      json['WardDetails'].forEach((v) {
+        wardDetails!.add(WardDetails.fromJson(v));
       });
     }
   }
@@ -41,7 +49,10 @@ class AfterLogin {
       data['UserDetails'] = userDetails!.toJson();
     }
     if (masterData != null) {
-      data['masterData'] = masterData!.map((v) => v.toJson()).toList();
+      data['MasterData'] = masterData!.map((v) => v.toJson()).toList();
+    }
+    if (wardDetails != null) {
+      data['WardDetails'] = wardDetails!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -101,9 +112,10 @@ class UserDetails {
   String? notificationToken;
   String? createdBy;
   String? firstName;
-  String? lastName;
   bool? active;
+  String? lastName;
   String? municipalityID;
+  List<AllocatedWards>? allocatedWards;
 
   UserDetails({
     this.mobileNumber,
@@ -114,9 +126,10 @@ class UserDetails {
     this.notificationToken,
     this.createdBy,
     this.firstName,
-    this.lastName,
     this.active,
+    this.lastName,
     this.municipalityID,
+    this.allocatedWards,
   });
 
   UserDetails.fromJson(Map<String, dynamic> json) {
@@ -128,9 +141,15 @@ class UserDetails {
     notificationToken = json['NotificationToken'];
     createdBy = json['CreatedBy'];
     firstName = json['FirstName'];
-    lastName = json['LastName'];
     active = json['Active'];
+    lastName = json['LastName'];
     municipalityID = json['MunicipalityID'];
+    if (json['allocatedWards'] != null) {
+      allocatedWards = <AllocatedWards>[];
+      json['allocatedWards'].forEach((v) {
+        allocatedWards!.add(AllocatedWards.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -143,9 +162,31 @@ class UserDetails {
     data['NotificationToken'] = notificationToken;
     data['CreatedBy'] = createdBy;
     data['FirstName'] = firstName;
-    data['LastName'] = lastName;
     data['Active'] = active;
+    data['LastName'] = lastName;
     data['MunicipalityID'] = municipalityID;
+    if (allocatedWards != null) {
+      data['allocatedWards'] = allocatedWards!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class AllocatedWards {
+  String? grievanceType;
+  List<String>? wardNumber;
+
+  AllocatedWards({this.grievanceType, this.wardNumber});
+
+  AllocatedWards.fromJson(Map<String, dynamic> json) {
+    grievanceType = json['grievanceType'];
+    wardNumber = json['wardNumber'].cast<String>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['grievanceType'] = grievanceType;
+    data['wardNumber'] = wardNumber;
     return data;
   }
 }
@@ -171,6 +212,36 @@ class MasterData {
     data['PK'] = pK;
     data['Active'] = active;
     data['Name'] = name;
+    return data;
+  }
+}
+
+class WardDetails {
+  bool? active;
+  String? wardName;
+  String? wardNumber;
+  String? municipalityID;
+
+  WardDetails({
+    this.active,
+    this.wardName,
+    this.wardNumber,
+    this.municipalityID,
+  });
+
+  WardDetails.fromJson(Map<String, dynamic> json) {
+    active = json['Active'];
+    wardName = json['WardName'];
+    wardNumber = json['WardNumber'];
+    municipalityID = json['MunicipalityID'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Active'] = active;
+    data['WardName'] = wardName;
+    data['WardNumber'] = wardNumber;
+    data['MunicipalityID'] = municipalityID;
     return data;
   }
 }

@@ -8,6 +8,8 @@ import 'package:civic_staff/logic/cubits/current_location/current_location_cubit
 import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
+import 'package:civic_staff/main.dart';
+import 'package:civic_staff/models/user_details.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/popups.dart';
@@ -54,37 +56,15 @@ class _EnrollUserState extends State<EnrollUser> {
   initState() {
     BlocProvider.of<LocalStorageCubit>(context).getUserDataFromLocalStorage();
     BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
-    wards = [];
-    muncipality = wardsAndMuncipality.keys.toList();
-    wards.sort();
-
+    wards = AuthBasedRouting.afterLogin.wardDetails!
+        .where((element) =>
+            element.municipalityID ==
+            AuthBasedRouting.afterLogin.userDetails!.municipalityID!)
+        .toList();
     super.initState();
   }
 
-  late List<String> wards;
-  late List<dynamic> muncipality;
-  final Map wardsAndMuncipality = {
-    '1': ['10', '11', '12', '13', '14'],
-    '2': ['15', '16', '17', '18', '19'],
-    '3': ['20', '21', '22', '23', '24'],
-    '4': ['30', '31', '32', '33', '34'],
-    'MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301': [
-      '35',
-      '36',
-      '37',
-      '38',
-      '39',
-      '2'
-    ],
-    'MUNCI-de7f8138-7ce5-4a91-a21a-98dd0b2de9f9': [
-      '35',
-      '36',
-      '37',
-      '38',
-      '39',
-      '2'
-    ],
-  };
+  late List<WardDetails> wards;
 
   String? wardDropdownValue;
   String? muncipalityDropdownValue;
@@ -146,10 +126,10 @@ class _EnrollUserState extends State<EnrollUser> {
             child: BlocBuilder<LocalStorageCubit, LocalStorageState>(
               builder: (context, state) {
                 if (state is LocalStorageFetchingDoneState) {
-                  wards = wardsAndMuncipality[
-                      state.afterLogin.userDetails!.municipalityID];
-                  // wards = wardsAndMuncipality[state.afterLogin.masterData];
-                  wards.sort();
+                  // wards = wardsAndMunicipality[
+                  //     state.afterLogin.userDetails!.municipalityID];
+                  // // wards = wardsAndMuncipality[state.afterLogin.masterData];
+                  // wards.sort();
                   return SingleChildScrollView(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
@@ -259,9 +239,9 @@ class _EnrollUserState extends State<EnrollUser> {
                   items: wards
                       .map(
                         (item) => DropdownMenuItem<String>(
-                          value: item,
+                          value: item.wardName,
                           child: Text(
-                            item,
+                            item.wardName.toString(),
                             maxLines: 1,
                             style: AppStyles.dropdownTextStyle,
                           ),
@@ -406,13 +386,6 @@ class _EnrollUserState extends State<EnrollUser> {
                             return PrimaryButton(
                               isLoading: false,
                               onTap: () {
-                                // if (muncipalityDropdownValue == null) {
-                                //   log('Not Working');
-                                //   setState(() {
-                                //     showMuncipalityDropdownError = true;
-                                //   });
-                                //   return;
-                                // }
                                 if (wardDropdownValue == null &&
                                     muncipalityDropdownValue != null) {
                                   setState(() {
@@ -423,7 +396,6 @@ class _EnrollUserState extends State<EnrollUser> {
                                 if (_formKey.currentState!.validate() &&
                                     !showWardDropdownError) {
                                   if (!showWardDropdownError) {
-                                    log('Everything correct!');
                                     FocusScope.of(context).unfocus();
                                     BlocProvider.of<UsersBloc>(context).add(
                                       EnrollAUserEvent(
@@ -456,7 +428,11 @@ class _EnrollUserState extends State<EnrollUser> {
                                           longitude: currentLocationState
                                               .longitude
                                               .toString(),
-                                          wardNumber: wardDropdownValue,
+                                          wardNumber: wards
+                                              .firstWhere((element) =>
+                                                  element.wardName ==
+                                                  wardDropdownValue)
+                                              .wardNumber,
                                         ),
                                       ),
                                     );
