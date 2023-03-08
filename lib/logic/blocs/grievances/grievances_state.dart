@@ -92,6 +92,38 @@ class ClosingGrievanceFailedState extends GrievancesState {
   List<Object?> get props => [];
 }
 
+class LoadingGrievanceByIdState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class LoadingGrievanceByIdFailedState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class GrievanceByIdLoadedState extends GrievancesState {
+  final GrievanceDetail grievanceDetail;
+  const GrievanceByIdLoadedState({required this.grievanceDetail});
+  @override
+  List<Object> get props => [grievanceDetail];
+}
+
+class AddingGrievanceCommentFailedState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddingGrievanceCommentState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddingGrievanceCommentSuccessState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
 // § GrievancesLoadingState
 
 // § GrievancesLoadedState

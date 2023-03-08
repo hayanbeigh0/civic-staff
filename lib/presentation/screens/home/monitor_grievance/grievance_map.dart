@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
+import 'package:civic_staff/main.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_detail.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
@@ -28,10 +29,24 @@ class GrievanceMap extends StatelessWidget {
   BitmapDescriptor busLocationMarker = BitmapDescriptor.defaultMarker;
 
   Set<Marker> grievanceMarkers = {};
+  final Map<String, String> grievanceTypesMap = {
+    "garb": 'Garbage Collection',
+    "road": 'Road maintenance / Construction',
+    "light": 'Street Lighting',
+    "cert": 'Certificate Request',
+    "house": 'House plan approval',
+    "water": 'Water supply / drainage',
+    "elect": 'Electricity',
+    "other": 'Other',
+  };
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<GrievancesBloc>(context).add(LoadGrievancesEvent());
+    BlocProvider.of<GrievancesBloc>(context).add(
+      LoadGrievancesEvent(
+          municipalityId:
+              AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
+    );
     return Scaffold(
       body: Stack(
         children: [
@@ -43,20 +58,22 @@ class GrievanceMap extends StatelessWidget {
                       (i, e) => Marker(
                         markerId: MarkerId(e.grievanceID.toString()),
                         infoWindow: InfoWindow(
-                          snippet: 'Status: ${e.status}',
-                          title: e.grievanceType,
+                          snippet:
+                              'Status: ${AuthBasedRouting.afterLogin.masterData!.firstWhere((element) => element.pK == '#GRIEVANCESTATUS#' && element.sK == e.status).name}',
+                          title:
+                              grievanceTypesMap[e.grievanceType!.toLowerCase()],
                           onTap: () {
                             Navigator.of(context).pushNamed(
                               GrievanceDetail.routeName,
                               arguments: {
-                                "state": state,
-                                "index": i,
+                                "grievanceId":
+                                    state.grievanceList[i].grievanceID,
                               },
                             );
                           },
                         ),
                         icon: e.grievanceType.toString().toLowerCase().replaceAll(' ', '') ==
-                                'garbagecollection'
+                                'garb'
                             ? BitmapDescriptor.defaultMarkerWithHue(
                                 BitmapDescriptor.hueRose,
                               )
@@ -64,7 +81,7 @@ class GrievanceMap extends StatelessWidget {
                                         .toString()
                                         .toLowerCase()
                                         .replaceAll(' ', '') ==
-                                    'streetlighting'
+                                    'light'
                                 ? BitmapDescriptor.defaultMarkerWithHue(
                                     BitmapDescriptor.hueBlue,
                                   )
@@ -72,7 +89,7 @@ class GrievanceMap extends StatelessWidget {
                                             .toString()
                                             .toLowerCase()
                                             .replaceAll(' ', '') ==
-                                        'construction'
+                                        'road'
                                     ? BitmapDescriptor.defaultMarkerWithHue(
                                         BitmapDescriptor.hueGreen,
                                       )
@@ -80,7 +97,7 @@ class GrievanceMap extends StatelessWidget {
                                                 .toString()
                                                 .toLowerCase()
                                                 .replaceAll(' ', '') ==
-                                            'watersupply/drainage'
+                                            'water'
                                         ? BitmapDescriptor.defaultMarkerWithHue(
                                             BitmapDescriptor.hueYellow,
                                           )
@@ -88,7 +105,7 @@ class GrievanceMap extends StatelessWidget {
                                                     .toString()
                                                     .toLowerCase()
                                                     .replaceAll(' ', '') ==
-                                                'certificaterequest'
+                                                'cert'
                                             ? BitmapDescriptor
                                                 .defaultMarkerWithHue(
                                                 BitmapDescriptor.hueCyan,
@@ -97,7 +114,7 @@ class GrievanceMap extends StatelessWidget {
                                                         .toString()
                                                         .toLowerCase()
                                                         .replaceAll(' ', '') ==
-                                                    'houseplanapproval'
+                                                    'house'
                                                 ? BitmapDescriptor
                                                     .defaultMarkerWithHue(
                                                     BitmapDescriptor.hueOrange,
@@ -106,15 +123,20 @@ class GrievanceMap extends StatelessWidget {
                                                             .toString()
                                                             .toLowerCase()
                                                             .replaceAll(' ', '') ==
-                                                        'roadmaintainance'
+                                                        'other'
                                                     ? BitmapDescriptor.defaultMarkerWithHue(
                                                         BitmapDescriptor
                                                             .hueViolet,
                                                       )
-                                                    : BitmapDescriptor.defaultMarkerWithHue(
-                                                        BitmapDescriptor
-                                                            .hueViolet,
-                                                      ),
+                                                    : e.grievanceType.toString().toLowerCase().replaceAll(' ', '') == 'elect'
+                                                        ? BitmapDescriptor.defaultMarkerWithHue(
+                                                            BitmapDescriptor
+                                                                .hueMagenta,
+                                                          )
+                                                        : BitmapDescriptor.defaultMarkerWithHue(
+                                                            BitmapDescriptor
+                                                                .hueViolet,
+                                                          ),
                         position: LatLng(
                           double.parse(e.locationLat.toString()),
                           double.parse(e.locationLong.toString()),
@@ -129,7 +151,7 @@ class GrievanceMap extends StatelessWidget {
               if (state is GrievancesLoadedState) {
                 return GoogleMap(
                   compassEnabled: true,
-                  padding: EdgeInsets.only(top: 100.h),
+                  padding: EdgeInsets.only(top: 120.h),
                   markers: grievanceMarkers,
                   initialCameraPosition: CameraPosition(
                     target: LatLng(

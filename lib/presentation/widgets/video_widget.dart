@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 
@@ -74,15 +76,15 @@ class _VideoWidgetState extends State<VideoWidget> {
               children: [
                 GestureDetector(
                   onDoubleTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenVideoPlayer(
-                          chewieController: _chewieController,
-                          videoPlayerController: _videoPlayerController,
-                        ),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => FullScreenVideoPlayer(
+                    //       chewieController: _chewieController,
+                    //       videoPlayerController: _videoPlayerController,
+                    //     ),
+                    //   ),
+                    // );
                   },
                   child: Chewie(
                     controller: _chewieController,
@@ -97,15 +99,15 @@ class _VideoWidgetState extends State<VideoWidget> {
                     alignment: Alignment.center,
                     child: IconButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FullScreenVideoPlayer(
-                              chewieController: _chewieController,
-                              videoPlayerController: _videoPlayerController,
-                            ),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => FullScreenVideoPlayer(
+                        //       chewieController: _chewieController,
+                        //       videoPlayerController: _videoPlayerController, file: null,
+                        //     ),
+                        //   ),
+                        // );
                       },
                       icon: Icon(
                         Icons.fullscreen,
@@ -125,13 +127,13 @@ class _VideoWidgetState extends State<VideoWidget> {
 }
 
 class FullScreenVideoPlayer extends StatefulWidget {
-  ChewieController chewieController;
-  VideoPlayerController videoPlayerController;
+  File file;
 
   FullScreenVideoPlayer({
     Key? key,
-    required this.chewieController,
-    required this.videoPlayerController,
+    // required this.chewieController,
+    // required this.videoPlayerController,
+    required this.file,
   }) : super(key: key);
 
   @override
@@ -139,12 +141,21 @@ class FullScreenVideoPlayer extends StatefulWidget {
 }
 
 class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
+  late ChewieController chewieController;
+  late VideoPlayerController videoPlayerController;
   @override
   void initState() {
     super.initState();
-    widget.videoPlayerController.setVolume(50);
-    widget.chewieController = ChewieController(
-      videoPlayerController: widget.videoPlayerController,
+    videoPlayerController = VideoPlayerController.file(
+      widget.file,
+    );
+    videoPlayerController.setVolume(50);
+    chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      fullScreenByDefault: true,
+      autoInitialize: true,
+      allowFullScreen: true,
+      zoomAndPan: true,
       autoPlay: true,
       allowMuting: true,
       looping: false,
@@ -161,22 +172,41 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
         DeviceOrientation.portraitUp,
       ],
     );
-    
+    chewieController.enterFullScreen();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Chewie(
-        controller: widget.chewieController,
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0.sp),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: 24.sp,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              Chewie(
+                controller: chewieController,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  // @override
-  // void dispose() {
-  //   widget.chewieController.dispose();
-  //   widget.videoPlayerController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    chewieController.dispose();
+    videoPlayerController.dispose();
+    super.dispose();
+  }
 }

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
+import 'package:civic_staff/models/grievances/grievance_detail_model.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/photo_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/text_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/video_comment_widget.dart';
-import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 
 class CommentList extends StatelessWidget {
   const CommentList({
@@ -17,12 +15,16 @@ class CommentList extends StatelessWidget {
   }) : super(key: key);
 
   // final int commentListIndex;
-  final List<dynamic> commentList;
+  final List<Comments> commentList;
 
   @override
   Widget build(BuildContext context) {
+    commentList.sort((a, b) {
+      return b.createdDate!.compareTo(a.createdDate!);
+    });
     return SizedBox(
       child: ListView.builder(
+        reverse: true,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         itemCount: commentList.length,
         itemBuilder: (context, index) => Column(
@@ -30,38 +32,38 @@ class CommentList extends StatelessWidget {
             SizedBox(
               height: 10.h,
             ),
-            commentList[index].text == ''
+            commentList[index].comment == ''
                 ? const SizedBox()
                 : TextCommentWidget(
-                    commentList: commentList as dynamic,
+                    commentList: commentList,
                     commentListIndex: index,
                   ),
-            commentList[index].imageUrl == ''
+            commentList[index].assets!.image == null
                 ? const SizedBox()
                 : PhotoCommentWidget(
-                    commentList: commentList as dynamic,
+                    commentList: commentList,
                     commentListIndex: index,
                   ),
-            commentList[index].videoUrl == ''
+            commentList[index].assets!.video == null
                 ? const SizedBox()
                 : VideoCommentWidget(
-                    commentList: commentList as dynamic,
+                    commentList: commentList,
                     commentListIndex: index,
                   ),
-            commentList[index].audioUrl == ''
+            commentList[index].assets!.audio == null
                 ? const SizedBox()
                 : AudioCommentWidget(
-                    commentList: commentList as dynamic,
+                    commentList: commentList,
                     commentListIndex: index,
                   ),
             SizedBox(
               height: 10.h,
             ),
-            index < commentList.length - 1
-                ? const Divider(
-                    color: AppColors.colorGreyLight,
-                  )
-                : const SizedBox(),
+            // index < commentList.length - 1
+            //     ? const Divider(
+            //         color: AppColors.colorGreyLight,
+            //       )
+            //     : const SizedBox(),
           ],
         ),
       ),

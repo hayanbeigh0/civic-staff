@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
+import 'package:civic_staff/main.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_detail.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -28,7 +31,9 @@ class GrievanceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<GrievancesBloc>(context).add(
-      LoadGrievancesEvent(),
+      LoadGrievancesEvent(
+          municipalityId:
+              AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
     );
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
@@ -117,7 +122,9 @@ class GrievanceList extends StatelessWidget {
                     onChanged: (value) {
                       if (value.isEmpty) {
                         return BlocProvider.of<GrievancesBloc>(context).add(
-                          LoadGrievancesEvent(),
+                          LoadGrievancesEvent(
+                              municipalityId: AuthBasedRouting
+                                  .afterLogin.userDetails!.municipalityID!),
                         );
                       }
                       if (value.isNotEmpty) {
@@ -269,13 +276,50 @@ class GrievanceList extends StatelessWidget {
                         );
                       }
                       if (state is GrievancesLoadedState) {
-                        return GrievanceListWidget(
-                          state: state,
-                        );
+                        if (state.grievanceList.isEmpty) {
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              return BlocProvider.of<GrievancesBloc>(context)
+                                  .add(
+                                LoadGrievancesEvent(
+                                    municipalityId: AuthBasedRouting
+                                        .afterLogin.userDetails!.municipalityID
+                                        .toString()),
+                              );
+                            },
+                            child: Stack(
+                              children: [
+                                ListView(),
+                                const Center(
+                                  child: Text('No Grievance Found'),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return GrievanceListWidget(
+                            state: state,
+                          );
+                        }
                       }
                       if (state is NoGrievanceFoundState) {
-                        return const Center(
-                          child: Text('No Grievance Found'),
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            return BlocProvider.of<GrievancesBloc>(context).add(
+                              LoadGrievancesEvent(
+                                  municipalityId: AuthBasedRouting
+                                      .afterLogin.userDetails!.municipalityID
+                                      .toString()),
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              ListView(),
+                              const Center(
+                                child: Text('No Grievance Found'),
+                              ),
+                            ],
+                          ),
                         );
                       }
                       return const SizedBox();
@@ -301,15 +345,24 @@ class GrievanceListWidget extends StatelessWidget {
   }) : super(key: key);
   final GrievancesLoadedState state;
   final Map<String, String> svgList = {
-    "roadmaintainance": 'assets/svg/roadmaintainance.svg',
-    "streetlighting": 'assets/svg/streetlighting.svg',
-    "watersupplyanddrainage": 'assets/svg/watersupplyanddrainage.svg',
-    "garbagecollection": 'assets/svg/garbagecollection.svg',
+    "road": 'assets/svg/roadmaintainance.svg',
+    "light": 'assets/svg/streetlighting.svg',
+    "water": 'assets/svg/watersupplyanddrainage.svg',
     "garb": 'assets/svg/garbagecollection.svg',
-    "certificaterequest": 'assets/svg/certificaterequest.svg',
+    "cert": 'assets/svg/certificaterequest.svg',
+    "house": 'assets/svg/houseplanapproval.svg',
+    "other": 'assets/svg/complaint.svg',
+    "elect": 'assets/svg/complaint.svg',
   };
   final Map<String, String> grievanceTypesMap = {
     "garb": 'Garbage Collection',
+    "road": 'Road maintenance / Construction',
+    "light": 'Street Lighting',
+    "cert": 'Certificate Request',
+    "house": 'House plan approval',
+    "water": 'Water supply / drainage',
+    "elect": 'Electricity',
+    "other": 'Other',
   };
 
   @override
@@ -317,7 +370,11 @@ class GrievanceListWidget extends StatelessWidget {
     return RefreshIndicator(
       color: AppColors.colorPrimary,
       onRefresh: () async {
-        BlocProvider.of<GrievancesBloc>(context).add(LoadGrievancesEvent());
+        BlocProvider.of<GrievancesBloc>(context).add(
+          LoadGrievancesEvent(
+              municipalityId:
+                  AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
+        );
       },
       child: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 5.h),
@@ -330,6 +387,7 @@ class GrievanceListWidget extends StatelessWidget {
                   .pushNamed(GrievanceDetail.routeName, arguments: {
                 "state": state,
                 "index": index,
+                "grievanceId": state.grievanceList[index].grievanceID
               });
             },
             child: Container(
@@ -406,7 +464,7 @@ class GrievanceListWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${LocaleKeys.grievancesScreen_date.tr()} - ${DateFormatter.formatTimeStamp(
+                          '${LocaleKeys.grievancesScreen_date.tr()} - ${DateFormatter.formatDate(
                             state.grievanceList[index].lastModifiedDate
                                 .toString(),
                           )}',

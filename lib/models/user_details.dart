@@ -4,6 +4,7 @@ class AfterLogin {
   UserDetails? userDetails;
   List<MasterData>? masterData;
   List<WardDetails>? wardDetails;
+  GrievanceTypes? grievanceTypes;
 
   AfterLogin({
     this.challengeParameters,
@@ -11,6 +12,7 @@ class AfterLogin {
     this.userDetails,
     this.masterData,
     this.wardDetails,
+    this.grievanceTypes,
   });
 
   AfterLogin.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,9 @@ class AfterLogin {
         wardDetails!.add(WardDetails.fromJson(v));
       });
     }
+    grievanceTypes = json['GrievanceTypes'] != null
+        ? GrievanceTypes.fromJson(json['GrievanceTypes'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -54,13 +59,14 @@ class AfterLogin {
     if (wardDetails != null) {
       data['WardDetails'] = wardDetails!.map((v) => v.toJson()).toList();
     }
+    if (grievanceTypes != null) {
+      data['GrievanceTypes'] = grievanceTypes!.toJson();
+    }
     return data;
   }
 }
 
 class ChallengeParameters {
-  ChallengeParameters();
-
   ChallengeParameters.fromJson(Map<String, dynamic> json);
 
   Map<String, dynamic> toJson() {
@@ -197,7 +203,12 @@ class MasterData {
   bool? active;
   String? name;
 
-  MasterData({this.sK, this.pK, this.active, this.name});
+  MasterData({
+    this.sK,
+    this.pK,
+    this.active,
+    this.name,
+  });
 
   MasterData.fromJson(Map<String, dynamic> json) {
     sK = json['SK'];
@@ -242,6 +253,131 @@ class WardDetails {
     data['WardName'] = wardName;
     data['WardNumber'] = wardNumber;
     data['MunicipalityID'] = municipalityID;
+    return data;
+  }
+}
+
+class GrievanceTypes {
+  List<MUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8>?
+      mUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8;
+  List<MUNCI647600d02e6e4bc28bb15b7edcf5a301>?
+      mUNCI647600d02e6e4bc28bb15b7edcf5a301;
+  List<MUNCI1>? mUNCI1;
+
+  GrievanceTypes({
+    this.mUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8,
+    this.mUNCI647600d02e6e4bc28bb15b7edcf5a301,
+    this.mUNCI1,
+  });
+
+  GrievanceTypes.fromJson(Map<String, dynamic> json) {
+    if (json['MUNCI-bd3cdc1a-c2f5-40b6-a76e-ae85c26ec1a8'] != null) {
+      mUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8 =
+          <MUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8>[];
+      json['MUNCI-bd3cdc1a-c2f5-40b6-a76e-ae85c26ec1a8'].forEach((v) {
+        mUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8!
+            .add(MUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8.fromJson(v));
+      });
+    }
+    if (json['MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301'] != null) {
+      mUNCI647600d02e6e4bc28bb15b7edcf5a301 =
+          <MUNCI647600d02e6e4bc28bb15b7edcf5a301>[];
+      json['MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301'].forEach((v) {
+        mUNCI647600d02e6e4bc28bb15b7edcf5a301!
+            .add(MUNCI647600d02e6e4bc28bb15b7edcf5a301.fromJson(v));
+      });
+    }
+    if (json['MUNCI-1'] != null) {
+      mUNCI1 = <MUNCI1>[];
+      json['MUNCI-1'].forEach((v) {
+        mUNCI1!.add(MUNCI1.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (mUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8 != null) {
+      data['MUNCI-bd3cdc1a-c2f5-40b6-a76e-ae85c26ec1a8'] =
+          mUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8!
+              .map((v) => v.toJson())
+              .toList();
+    }
+    if (mUNCI647600d02e6e4bc28bb15b7edcf5a301 != null) {
+      data['MUNCI-647600d0-2e6e-4bc2-8bb1-5b7edcf5a301'] =
+          mUNCI647600d02e6e4bc28bb15b7edcf5a301!
+              .map((v) => v.toJson())
+              .toList();
+    }
+    if (mUNCI1 != null) {
+      data['MUNCI-1'] = mUNCI1!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class MUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8 {
+  String? grievanceType;
+  String? grievanceTypeName;
+
+  MUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8({
+    this.grievanceType,
+    this.grievanceTypeName,
+  });
+
+  MUNCIBd3cdc1aC2f540b6A76eAe85c26ec1a8.fromJson(Map<String, dynamic> json) {
+    grievanceType = json['GrievanceType'];
+    grievanceTypeName = json['GrievanceTypeName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['GrievanceType'] = grievanceType;
+    data['GrievanceTypeName'] = grievanceTypeName;
+    return data;
+  }
+}
+
+class MUNCI647600d02e6e4bc28bb15b7edcf5a301 {
+  String? grievanceType;
+  String? grievanceTypeName;
+
+  MUNCI647600d02e6e4bc28bb15b7edcf5a301({
+    this.grievanceType,
+    this.grievanceTypeName,
+  });
+
+  MUNCI647600d02e6e4bc28bb15b7edcf5a301.fromJson(Map<String, dynamic> json) {
+    grievanceType = json['GrievanceType'];
+    grievanceTypeName = json['GrievanceTypeName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['GrievanceType'] = grievanceType;
+    data['GrievanceTypeName'] = grievanceTypeName;
+    return data;
+  }
+}
+
+class MUNCI1 {
+  String? grievanceType;
+  String? grievanceTypeName;
+
+  MUNCI1({
+    this.grievanceType,
+    this.grievanceTypeName,
+  });
+
+  MUNCI1.fromJson(Map<String, dynamic> json) {
+    grievanceType = json['GrievanceType'];
+    grievanceTypeName = json['GrievanceTypeName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['GrievanceType'] = grievanceType;
+    data['GrievanceTypeName'] = grievanceTypeName;
     return data;
   }
 }

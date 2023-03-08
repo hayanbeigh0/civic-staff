@@ -119,7 +119,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         } else if (responseBody['AuthenticationResult']['AccessToken'] !=
             null) {
           AfterLogin afterLogin = AfterLogin.fromJson(responseBody);
-
           emit(AuthenticationSuccessState(afterLogin: afterLogin));
         } else {
           log(error: response.data, '1');

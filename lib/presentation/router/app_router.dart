@@ -11,7 +11,7 @@ import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievanc
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_map.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_my_comments.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_photo_video.dart';
-import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_reporter_comments.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_comments.dart';
 import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart';
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/search_user.dart';
@@ -50,8 +50,9 @@ class AppRouter {
       case GrievanceDetail.routeName:
         return MaterialPageRoute(
           builder: (context) => GrievanceDetail(
-            state: args['state'],
-            grievanceListIndex: args['index'],
+            // state: args['state'],
+            // grievanceListIndex: args['index'],
+            grievanceId: args['grievanceId'],
           ),
         );
       case GrievancePhotoVideo.routeName:
@@ -68,10 +69,10 @@ class AppRouter {
             state: args['state'],
           ),
         );
-      case GrievanceReporterComments.routeName:
+      case AllComments.routeName:
         return MaterialPageRoute(
-          builder: (context) => GrievanceReporterComments(
-            reporterComments: args['reporterComments'],
+          builder: (context) => AllComments(
+            grievanceId: args['grievanceId'],
           ),
         );
       // case GrievanceMyComments.routeName:

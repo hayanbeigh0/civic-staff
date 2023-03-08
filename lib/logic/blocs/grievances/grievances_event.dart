@@ -6,8 +6,12 @@ abstract class GrievancesEvent extends Equatable {
 }
 
 class LoadGrievancesEvent extends GrievancesEvent {
+  final String municipalityId;
+  const LoadGrievancesEvent({
+    required this.municipalityId,
+  });
   @override
-  List<Object> get props => [];
+  List<Object> get props => [municipalityId];
 }
 
 // class GetGrievancesEvent extends GrievancesEvent {
@@ -36,9 +40,11 @@ class SearchGrievanceByTypeEvent extends GrievancesEvent {
 class UpdateGrievanceEvent extends GrievancesEvent {
   final Grievances newGrievance;
   final String grievanceId;
+  final String municipalityId;
   const UpdateGrievanceEvent({
     required this.grievanceId,
     required this.newGrievance,
+    required this.municipalityId,
   });
   @override
   List<Object> get props => [grievanceId, newGrievance];
@@ -53,4 +59,31 @@ class UpdateExpectedCompletionEvent extends GrievancesEvent {
   });
   @override
   List<Object> get props => [grievanceId, expectedCompletion];
+}
+
+class AddGrievanceCommentEvent extends GrievancesEvent {
+  final String grievanceId;
+  final String staffId;
+  final String name;
+  final String comment;
+  final Map assets;
+  const AddGrievanceCommentEvent(
+      {required this.grievanceId,
+      required this.staffId,
+      required this.name,
+      required this.assets,
+      required this.comment});
+  @override
+  List<Object> get props => [grievanceId, staffId, name, assets, comment];
+}
+
+class GetGrievanceByIdEvent extends GrievancesEvent {
+  final String municipalityId;
+  final String grievanceId;
+  const GetGrievanceByIdEvent({
+    required this.municipalityId,
+    required this.grievanceId,
+  });
+  @override
+  List<Object> get props => [municipalityId, grievanceId];
 }

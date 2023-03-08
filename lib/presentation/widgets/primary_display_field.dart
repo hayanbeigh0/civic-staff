@@ -32,31 +32,39 @@ class PrimaryDisplayField extends StatelessWidget {
         SizedBox(
           height: 5.h,
         ),
-        TextField(
-          enabled: false,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: fillColor,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.sp,
-              vertical: 10.sp,
+        Stack(
+          children: [
+            TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: fillColor,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16.sp,
+                  vertical: 10.sp,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.sp),
+                  borderSide: BorderSide.none,
+                ),
+                hintText: value,
+                hintMaxLines: maxLines,
+                hintStyle: TextStyle(
+                  overflow: TextOverflow.fade,
+                  color: AppColors.textColorDark,
+                  fontFamily: 'LexendDeca',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w300,
+                  height: 1.1,
+                ),
+                // suffixIcon: suffixIcon,
+              ),
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.sp),
-              borderSide: BorderSide.none,
-            ),
-            hintText: value,
-            hintMaxLines: maxLines,
-            hintStyle: TextStyle(
-              overflow: TextOverflow.fade,
-              color: AppColors.textColorDark,
-              fontFamily: 'LexendDeca',
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w300,
-              height: 1.1,
-            ),
-            suffixIcon: suffixIcon,
-          ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: suffixIcon,
+            )
+          ],
         ),
       ],
     );
