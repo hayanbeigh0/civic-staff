@@ -46,32 +46,27 @@ class GrievancesRepository {
     return grievanceList;
   }
 
-  Future<void> addGrievanceCommentFile({
-    required File commentFile,
+  Future<Response> addGrievanceCommentFile({
+    required String encodedCommentFile,
+    required String fileType,
+    required String grievanceId,
   }) async {
-    try {
-      // final response = await AwsS3.uploadFile(
-      //   accessKey: "AKIAY34HZENYIHMRUOMP",
-      //   secretKey: "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",
-      //   file: commentFile,
-      //   bucket: "dev-civic",
-      //   region: "ap-south-1",
-      // );
-      // returns url pointing to S3 file
-
-      SimpleS3 _simpleS3 = SimpleS3();
-      String response = await _simpleS3.uploadFile(
-        commentFile,
-        "dev-civic",
-        'ap-south-1_KZfVLAj1B',
-        AWSRegions.apSouth1,
-        s3FolderPath: "grievance",
-        debugLog: true,
-      );
-      log(response.toString());
-    } catch (e) {
-      log(e.toString());
-    }
+    final response = await Dio().post(
+      '$API_URL/general/upload-assets',
+      data: jsonEncode({
+        "File": encodedCommentFile,
+        "FileType": fileType,
+        "GrievanceID": grievanceId,
+        "Section": 'comments'
+      }),
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    log(response.data.toString());
+    return response;
   }
 
   Future<void> addGrievanceComment({

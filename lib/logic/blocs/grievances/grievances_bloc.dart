@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/grievances/grievance_detail_model.dart';
+import 'package:civic_staff/models/s3_upload_result.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +18,16 @@ part 'grievances_state.dart';
 class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
   final GrievancesRepository grievancesRepository;
   GrievancesBloc(this.grievancesRepository) : super(GrievancesLoadingState()) {
+    final Map<String, String> grievanceTypesMap = {
+      "garb": 'Garbage Collection',
+      "road": 'Road maintenance / Construction',
+      "light": 'Street Lighting',
+      "cert": 'Certificate Request',
+      "house": 'House plan approval',
+      "water": 'Water supply / drainage',
+      "elect": 'Electricity',
+      "other": 'Other',
+    };
     on<GrievancesEvent>((event, emit) {});
 
     on<LoadGrievancesEvent>((event, emit) async {
@@ -100,19 +111,29 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         );
       }
     });
-    on<UpdateExpectedCompletionEvent>((event, emit) async {
-      emit(UpdatingExpectedCompletionState());
-      await grievancesRepository.updateExpectedCompletion(
-        event.grievanceId,
-        event.expectedCompletion,
-      );
-      emit(const GrievanceUpdatedState(grievanceUpdated: true));
-      add(
-        LoadGrievancesEvent(
-          municipalityId:
-              AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
-        ),
-      );
+    on<UpdateGrievanceTypeEvent>((event, emit) async {
+      emit(UpdatingGrievanceStatusState());
+      try {
+        final response = await grievancesRepository.modifyGrieance(
+          event.grievanceId,
+          event.newGrievance,
+        );
+        if (response.statusCode == 200) {
+          emit(const GrievanceUpdatedState(grievanceUpdated: true));
+          emit(GrievanceTypeUpdatedState());
+        } else {
+          emit(UpdatingGrievanceStatusFailedState());
+        }
+      } on DioError catch (e) {
+        log('Updating grievane failed: ${e.response}');
+        emit(UpdatingGrievanceStatusFailedState());
+        add(
+          GetGrievanceByIdEvent(
+            municipalityId: event.municipalityId,
+            grievanceId: event.grievanceId,
+          ),
+        );
+      }
     });
     on<AddGrievanceCommentEvent>((event, emit) async {
       emit(AddingGrievanceCommentState());
@@ -124,13 +145,6 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           staffId: event.staffId,
           comment: event.comment,
         );
-        // emit(const GrievanceUpdatedState(grievanceUpdated: true));
-        // add(
-        //   LoadGrievancesEvent(
-        //     municipalityId:
-        //         AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
-        //   ),
-        // );
         emit(AddingGrievanceCommentSuccessState());
         add(
           GetGrievanceByIdEvent(
@@ -146,6 +160,63 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         emit(AddingGrievanceCommentFailedState());
       }
     });
+    on<AddGrievanceAudioCommentAssetsEvent>((event, emit) async {
+      emit(AddingGrievanceAudioCommentAssetState());
+      try {
+        final response = await grievancesRepository.addGrievanceCommentFile(
+          grievanceId: event.grievanceId,
+          encodedCommentFile: event.encodedCommentFile,
+          fileType: event.fileType,
+        );
+        log(response.data.toString());
+        S3UploadResult s3uploadResult = S3UploadResult.fromJson(response.data);
+        emit(AddingGrievanceAudioCommentAssetSuccessState(
+          s3uploadResult: s3uploadResult,
+        ));
+        log('Successfully added a comment!');
+      } on DioError catch (e) {
+        log('Adding comment failed: ${e.message}');
+        emit(AddingGrievanceAudioCommentAssetFailedState());
+      }
+    });
+    on<AddGrievanceImageCommentAssetsEvent>((event, emit) async {
+      emit(AddingGrievanceImageCommentAssetState());
+      try {
+        final response = await grievancesRepository.addGrievanceCommentFile(
+          grievanceId: event.grievanceId,
+          encodedCommentFile: event.encodedCommentFile,
+          fileType: event.fileType,
+        );
+        log(response.data.toString());
+        S3UploadResult s3uploadResult = S3UploadResult.fromJson(response.data);
+        emit(AddingGrievanceImageCommentAssetSuccessState(
+          s3uploadResult: s3uploadResult,
+        ));
+        log('Successfully added a comment!');
+      } on DioError catch (e) {
+        log('Adding comment failed: ${e.message}');
+        emit(AddingGrievanceImageCommentAssetFailedState());
+      }
+    });
+    on<AddGrievanceVideoCommentAssetsEvent>((event, emit) async {
+      emit(AddingGrievanceVideoCommentAssetState());
+      try {
+        final response = await grievancesRepository.addGrievanceCommentFile(
+          grievanceId: event.grievanceId,
+          encodedCommentFile: event.encodedCommentFile,
+          fileType: event.fileType,
+        );
+        log(response.data.toString());
+        S3UploadResult s3uploadResult = S3UploadResult.fromJson(response.data);
+        emit(AddingGrievanceVideoCommentAssetSuccessState(
+          s3uploadResult: s3uploadResult,
+        ));
+        log('Successfully added a comment!');
+      } on DioError catch (e) {
+        log('Adding comment failed: ${e.message}');
+        emit(AddingGrievanceVideoCommentAssetFailedState());
+      }
+    });
     on<SearchGrievanceByTypeEvent>((event, emit) async {
       emit(GrievancesLoadingState());
       // userRepository.loadUserJson();
@@ -154,16 +225,20 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
               AuthBasedRouting.afterLogin.userDetails!.municipalityID!);
       updatedGrievanceList = updatedGrievanceList
           .where(
-            (element) => element.grievanceType!
-                .toLowerCase()
-                .replaceAll(' ', '')
-                .startsWith(
-                  event.grievanceType.toLowerCase().replaceAll(' ', ''),
-                ),
+            (element) =>
+                grievanceTypesMap[element.grievanceType!.toLowerCase()]!
+                    .toLowerCase()
+                    .replaceAll(' ', '')
+                    .startsWith(
+                      event.grievanceType.toLowerCase().replaceAll(' ', ''),
+                    ),
           )
           .toList();
 
-      updatedGrievanceList.sort();
+      updatedGrievanceList.sort(
+        (a, b) => DateTime.parse(a.lastModifiedDate.toString())
+            .compareTo(DateTime.parse(b.lastModifiedDate.toString())),
+      );
       if (updatedGrievanceList.isEmpty) {
         emit(NoGrievanceFoundState());
       } else {

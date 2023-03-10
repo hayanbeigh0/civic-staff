@@ -28,6 +28,26 @@ class GrievanceList extends StatelessWidget {
   GlobalKey watersupplyanddrainage = GlobalKey();
   GlobalKey garbagecollection = GlobalKey();
   GlobalKey certificaterequest = GlobalKey();
+  final Map<String, String> svgList = {
+    "road": 'assets/svg/roadmaintainance.svg',
+    "light": 'assets/svg/streetlighting.svg',
+    "water": 'assets/svg/watersupplyanddrainage.svg',
+    "garb": 'assets/svg/garbagecollection.svg',
+    "cert": 'assets/svg/certificaterequest.svg',
+    "house": 'assets/svg/houseplanapproval.svg',
+    "other": 'assets/svg/complaint.svg',
+    "elect": 'assets/svg/complaint.svg',
+  };
+  final Map<String, String> grievanceTypesMap = {
+    "garb": 'Garbage Collection',
+    "road": 'Road maintenance / Construction',
+    "light": 'Street Lighting',
+    "cert": 'Certificate Request',
+    "house": 'House plan approval',
+    "water": 'Water supply / drainage',
+    "elect": 'Electricity',
+    "other": 'Other',
+  };
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<GrievancesBloc>(context).add(
@@ -57,21 +77,25 @@ class GrievanceList extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/arrowleft.svg',
-                                color: AppColors.colorWhite,
-                                height: 18.sp,
-                              ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                LocaleKeys.grievancesScreen_screenTitle.tr(),
-                                style: AppStyles.screenTitleStyle,
-                              )
-                            ],
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 5.sp),
+                            color: Colors.transparent,
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/arrowleft.svg',
+                                  color: AppColors.colorWhite,
+                                  height: 18.sp,
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  LocaleKeys.grievancesScreen_screenTitle.tr(),
+                                  style: AppStyles.screenTitleStyle,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         const Spacer(),
@@ -123,8 +147,9 @@ class GrievanceList extends StatelessWidget {
                       if (value.isEmpty) {
                         return BlocProvider.of<GrievancesBloc>(context).add(
                           LoadGrievancesEvent(
-                              municipalityId: AuthBasedRouting
-                                  .afterLogin.userDetails!.municipalityID!),
+                            municipalityId: AuthBasedRouting
+                                .afterLogin.userDetails!.municipalityID!,
+                          ),
                         );
                       }
                       if (value.isNotEmpty) {
@@ -297,8 +322,218 @@ class GrievanceList extends StatelessWidget {
                             ),
                           );
                         } else {
-                          return GrievanceListWidget(
-                            state: state,
+                          return RefreshIndicator(
+                            color: AppColors.colorPrimary,
+                            onRefresh: () async {
+                              BlocProvider.of<GrievancesBloc>(context).add(
+                                LoadGrievancesEvent(
+                                    municipalityId: AuthBasedRouting.afterLogin
+                                        .userDetails!.municipalityID!),
+                              );
+                            },
+                            child: ListView.builder(
+                              padding: EdgeInsets.symmetric(vertical: 5.h),
+                              itemCount: state.grievanceList.isEmpty
+                                  ? 8
+                                  : state.grievanceList.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  // borderRadius: BorderRadius.circular(20.r),
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                        GrievanceDetail.routeName,
+                                        arguments: {
+                                          "state": state,
+                                          "index": index,
+                                          "grievanceId": state
+                                              .grievanceList[index].grievanceID
+                                        });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10.w,
+                                      vertical: 15.h,
+                                    ),
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal: AppConstants.screenPadding,
+                                      vertical: 10.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.colorPrimaryLight,
+                                      borderRadius: BorderRadius.circular(20.r),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          offset: Offset(5, 5),
+                                          blurRadius: 10,
+                                          color: AppColors.cardShadowColor,
+                                        ),
+                                        BoxShadow(
+                                          offset: Offset(-5, -5),
+                                          blurRadius: 10,
+                                          color: AppColors.colorWhite,
+                                        ),
+                                      ],
+                                    ),
+                                    width: double.infinity,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 10.w,
+                                        ),
+                                        SvgPicture.asset(
+                                          svgList[state.grievanceList[index]
+                                                  .grievanceType!
+                                                  .replaceAll(' ', '')
+                                                  .toString()
+                                                  .toLowerCase()]
+                                              .toString(),
+                                          width: 60.w,
+                                        ),
+                                        SizedBox(
+                                          width: 15.w,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                grievanceTypesMap[state
+                                                        .grievanceList[index]
+                                                        .grievanceType!
+                                                        .toLowerCase()]
+                                                    .toString(),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: AppStyles.cardTextStyle,
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Transform.translate(
+                                                    offset: Offset(0, 2.h),
+                                                    child: Icon(
+                                                      Icons.location_pin,
+                                                      size: 16.sp,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5.w,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      // '${LocaleKeys.grievancesScreen_locaiton.tr()} - ${state.grievanceList[index].address}',
+                                                      '${state.grievanceList[index].address}',
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: AppStyles
+                                                          .cardTextStyle
+                                                          .copyWith(
+                                                        fontSize: 12.sp,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.person,
+                                                    size: 16.sp,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5.w,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '${state.grievanceList[index].createdByName}',
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: AppStyles
+                                                          .cardTextStyle
+                                                          .copyWith(
+                                                        fontSize: 12.sp,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.calendar_month,
+                                                    size: 16.sp,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5.w,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '${DateFormatter.formatDate(
+                                                        state
+                                                            .grievanceList[
+                                                                index]
+                                                            .lastModifiedDate
+                                                            .toString(),
+                                                      )}',
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: AppStyles
+                                                          .cardTextStyle
+                                                          .copyWith(
+                                                        fontSize: 12.sp,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          child: Container(
+                                            padding: EdgeInsets.all(14.sp),
+                                            decoration: const BoxDecoration(
+                                              color:
+                                                  AppColors.colorPrimaryLight,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  offset: Offset(5, 5),
+                                                  blurRadius: 10,
+                                                  color:
+                                                      AppColors.cardShadowColor,
+                                                ),
+                                                BoxShadow(
+                                                  offset: Offset(-5, -5),
+                                                  blurRadius: 10,
+                                                  color: AppColors.colorWhite,
+                                                ),
+                                              ],
+                                            ),
+                                            child: SvgPicture.asset(
+                                              'assets/icons/arrowright.svg',
+                                              color: AppColors.colorPrimary,
+                                              width: 20.sp,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           );
                         }
                       }
@@ -335,181 +570,182 @@ class GrievanceList extends StatelessWidget {
   }
 }
 
-class GrievanceListWidget extends StatelessWidget {
-  GrievanceListWidget({
-    Key? key,
-    this.state = const GrievancesLoadedState(
-      grievanceList: [],
-      selectedFilterNumber: 1,
-    ),
-  }) : super(key: key);
-  final GrievancesLoadedState state;
-  final Map<String, String> svgList = {
-    "road": 'assets/svg/roadmaintainance.svg',
-    "light": 'assets/svg/streetlighting.svg',
-    "water": 'assets/svg/watersupplyanddrainage.svg',
-    "garb": 'assets/svg/garbagecollection.svg',
-    "cert": 'assets/svg/certificaterequest.svg',
-    "house": 'assets/svg/houseplanapproval.svg',
-    "other": 'assets/svg/complaint.svg',
-    "elect": 'assets/svg/complaint.svg',
-  };
-  final Map<String, String> grievanceTypesMap = {
-    "garb": 'Garbage Collection',
-    "road": 'Road maintenance / Construction',
-    "light": 'Street Lighting',
-    "cert": 'Certificate Request',
-    "house": 'House plan approval',
-    "water": 'Water supply / drainage',
-    "elect": 'Electricity',
-    "other": 'Other',
-  };
+// class GrievanceListWidget extends StatelessWidget {
+//   GrievanceListWidget({
+//     Key? key,
+//     this.state = const GrievancesLoadedState(
+//       grievanceList: [],
+//       selectedFilterNumber: 1,
+//     ),
+//   }) : super(key: key);
+//   final GrievancesLoadedState state;
+//   final Map<String, String> svgList = {
+//     "road": 'assets/svg/roadmaintainance.svg',
+//     "light": 'assets/svg/streetlighting.svg',
+//     "water": 'assets/svg/watersupplyanddrainage.svg',
+//     "garb": 'assets/svg/garbagecollection.svg',
+//     "cert": 'assets/svg/certificaterequest.svg',
+//     "house": 'assets/svg/houseplanapproval.svg',
+//     "other": 'assets/svg/complaint.svg',
+//     "elect": 'assets/svg/complaint.svg',
+//   };
+//   final Map<String, String> grievanceTypesMap = {
+//     "garb": 'Garbage Collection',
+//     "road": 'Road maintenance / Construction',
+//     "light": 'Street Lighting',
+//     "cert": 'Certificate Request',
+//     "house": 'House plan approval',
+//     "water": 'Water supply / drainage',
+//     "elect": 'Electricity',
+//     "other": 'Other',
+//   };
 
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      color: AppColors.colorPrimary,
-      onRefresh: () async {
-        BlocProvider.of<GrievancesBloc>(context).add(
-          LoadGrievancesEvent(
-              municipalityId:
-                  AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
-        );
-      },
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 5.h),
-        itemCount: state.grievanceList.isEmpty ? 8 : state.grievanceList.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            // borderRadius: BorderRadius.circular(20.r),
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamed(GrievanceDetail.routeName, arguments: {
-                "state": state,
-                "index": index,
-                "grievanceId": state.grievanceList[index].grievanceID
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-                vertical: 15.h,
-              ),
-              margin: EdgeInsets.symmetric(
-                horizontal: AppConstants.screenPadding,
-                vertical: 10.h,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.colorPrimaryLight,
-                borderRadius: BorderRadius.circular(20.r),
-                boxShadow: const [
-                  BoxShadow(
-                    offset: Offset(5, 5),
-                    blurRadius: 10,
-                    color: AppColors.cardShadowColor,
-                  ),
-                  BoxShadow(
-                    offset: Offset(-5, -5),
-                    blurRadius: 10,
-                    color: AppColors.colorWhite,
-                  ),
-                ],
-              ),
-              width: double.infinity,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  SvgPicture.asset(
-                    svgList[state.grievanceList[index].grievanceType!
-                            .replaceAll(' ', '')
-                            .toString()
-                            .toLowerCase()]
-                        .toString(),
-                    width: 60.w,
-                  ),
-                  SizedBox(
-                    width: 15.w,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          grievanceTypesMap[state
-                                  .grievanceList[index].grievanceType!
-                                  .toLowerCase()]
-                              .toString(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppStyles.cardTextStyle,
-                        ),
-                        Text(
-                          '${LocaleKeys.grievancesScreen_locaiton.tr()} - ${state.grievanceList[index].address}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppStyles.cardTextStyle.copyWith(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Text(
-                          '${LocaleKeys.grievancesScreen_reporter.tr()} - ${state.grievanceList[index].createdByName}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppStyles.cardTextStyle.copyWith(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Text(
-                          '${LocaleKeys.grievancesScreen_date.tr()} - ${DateFormatter.formatDate(
-                            state.grievanceList[index].lastModifiedDate
-                                .toString(),
-                          )}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppStyles.cardTextStyle.copyWith(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    child: Container(
-                      padding: EdgeInsets.all(14.sp),
-                      decoration: const BoxDecoration(
-                        color: AppColors.colorPrimaryLight,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(5, 5),
-                            blurRadius: 10,
-                            color: AppColors.cardShadowColor,
-                          ),
-                          BoxShadow(
-                            offset: Offset(-5, -5),
-                            blurRadius: 10,
-                            color: AppColors.colorWhite,
-                          ),
-                        ],
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/icons/arrowright.svg',
-                        color: AppColors.colorPrimary,
-                        width: 20.sp,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return RefreshIndicator(
+//       color: AppColors.colorPrimary,
+//       onRefresh: () async {
+//         BlocProvider.of<GrievancesBloc>(context).add(
+//           LoadGrievancesEvent(
+//               municipalityId:
+//                   AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
+//         );
+//       },
+//       child: ListView.builder(
+//         padding: EdgeInsets.symmetric(vertical: 5.h),
+//         itemCount: state.grievanceList.isEmpty ? 8 : state.grievanceList.length,
+//         itemBuilder: (context, index) {
+//           return GestureDetector(
+//             // borderRadius: BorderRadius.circular(20.r),
+//             onTap: () {
+//               Navigator.of(context)
+//                   .pushNamed(GrievanceDetail.routeName, arguments: {
+//                 "state": state,
+//                 "index": index,
+//                 "grievanceId": state.grievanceList[index].grievanceID
+//               });
+//             },
+//             child: Container(
+//               padding: EdgeInsets.symmetric(
+//                 horizontal: 10.w,
+//                 vertical: 15.h,
+//               ),
+//               margin: EdgeInsets.symmetric(
+//                 horizontal: AppConstants.screenPadding,
+//                 vertical: 10.h,
+//               ),
+//               decoration: BoxDecoration(
+//                 color: AppColors.colorPrimaryLight,
+//                 borderRadius: BorderRadius.circular(20.r),
+//                 boxShadow: const [
+//                   BoxShadow(
+//                     offset: Offset(5, 5),
+//                     blurRadius: 10,
+//                     color: AppColors.cardShadowColor,
+//                   ),
+//                   BoxShadow(
+//                     offset: Offset(-5, -5),
+//                     blurRadius: 10,
+//                     color: AppColors.colorWhite,
+//                   ),
+//                 ],
+//               ),
+//               width: double.infinity,
+//               child: Row(
+//                 children: [
+//                   SizedBox(
+//                     width: 10.w,
+//                   ),
+//                   SvgPicture.asset(
+//                     svgList[state.grievanceList[index].grievanceType!
+//                             .replaceAll(' ', '')
+//                             .toString()
+//                             .toLowerCase()]
+//                         .toString(),
+//                     width: 60.w,
+//                   ),
+//                   SizedBox(
+//                     width: 15.w,
+//                   ),
+//                   Expanded(
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           grievanceTypesMap[state
+//                                   .grievanceList[index].grievanceType!
+//                                   .toLowerCase()]
+//                               .toString(),
+//                           maxLines: 1,
+//                           overflow: TextOverflow.ellipsis,
+//                           style: AppStyles.cardTextStyle,
+//                         ),
+//                         Text(
+//                           '📍 - ${state.grievanceList[index].address}',
+//                           // '${LocaleKeys.grievancesScreen_locaiton.tr()} - ${state.grievanceList[index].address}',
+//                           maxLines: 1,
+//                           overflow: TextOverflow.ellipsis,
+//                           style: AppStyles.cardTextStyle.copyWith(
+//                             fontSize: 12.sp,
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                         Text(
+//                           '${LocaleKeys.grievancesScreen_reporter.tr()} - ${state.grievanceList[index].createdByName}',
+//                           maxLines: 1,
+//                           overflow: TextOverflow.ellipsis,
+//                           style: AppStyles.cardTextStyle.copyWith(
+//                             fontSize: 12.sp,
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                         Text(
+//                           '${LocaleKeys.grievancesScreen_date.tr()} - ${DateFormatter.formatDate(
+//                             state.grievanceList[index].lastModifiedDate
+//                                 .toString(),
+//                           )}',
+//                           maxLines: 1,
+//                           overflow: TextOverflow.ellipsis,
+//                           style: AppStyles.cardTextStyle.copyWith(
+//                             fontSize: 12.sp,
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                   SizedBox(
+//                     child: Container(
+//                       padding: EdgeInsets.all(14.sp),
+//                       decoration: const BoxDecoration(
+//                         color: AppColors.colorPrimaryLight,
+//                         shape: BoxShape.circle,
+//                         boxShadow: [
+//                           BoxShadow(
+//                             offset: Offset(5, 5),
+//                             blurRadius: 10,
+//                             color: AppColors.cardShadowColor,
+//                           ),
+//                           BoxShadow(
+//                             offset: Offset(-5, -5),
+//                             blurRadius: 10,
+//                             color: AppColors.colorWhite,
+//                           ),
+//                         ],
+//                       ),
+//                       child: SvgPicture.asset(
+//                         'assets/icons/arrowright.svg',
+//                         color: AppColors.colorPrimary,
+//                         width: 20.sp,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

@@ -119,25 +119,69 @@ class AddingGrievanceCommentState extends GrievancesState {
   List<Object> get props => [];
 }
 
+class AddingGrievanceAudioCommentAssetState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddingGrievanceImageCommentAssetState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddingGrievanceVideoCommentAssetState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddingGrievanceAudioCommentAssetSuccessState extends GrievancesState {
+  final S3UploadResult s3uploadResult;
+  const AddingGrievanceAudioCommentAssetSuccessState({
+    required this.s3uploadResult,
+  });
+  @override
+  List<Object> get props => [s3uploadResult];
+}
+
+class AddingGrievanceImageCommentAssetSuccessState extends GrievancesState {
+  final S3UploadResult s3uploadResult;
+  const AddingGrievanceImageCommentAssetSuccessState({
+    required this.s3uploadResult,
+  });
+  @override
+  List<Object> get props => [s3uploadResult];
+}
+
+class AddingGrievanceVideoCommentAssetSuccessState extends GrievancesState {
+  final S3UploadResult s3uploadResult;
+  const AddingGrievanceVideoCommentAssetSuccessState({
+    required this.s3uploadResult,
+  });
+  @override
+  List<Object> get props => [s3uploadResult];
+}
+
+class AddingGrievanceAudioCommentAssetFailedState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddingGrievanceImageCommentAssetFailedState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddingGrievanceVideoCommentAssetFailedState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}
+
 class AddingGrievanceCommentSuccessState extends GrievancesState {
   @override
   List<Object> get props => [];
 }
 
-// § GrievancesLoadingState
-
-// § GrievancesLoadedState
-
-// § GrievancesLoadingFailedState
-
-// § UpdatingGrievanceStatusState
-
-// § UpdatingGrievanceStatusFailedState
-
-// § GrievanceUpdatedState
-
-// § ClosingGrievanceState
-
-// § GrievanceClosedState
-
-// § ClosingGrievanceFailedState
+class GrievanceTypeUpdatedState extends GrievancesState {
+  @override
+  List<Object> get props => [];
+}

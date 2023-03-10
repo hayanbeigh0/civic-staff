@@ -71,11 +71,7 @@ class AudioCommentWidget extends StatelessWidget {
                 Transform.translate(
                   offset: Offset(0, 5.h),
                   child: AudioComment(
-                    audioUrl: commentList[commentListIndex]
-                        .assets!
-                        .audio!
-                        .l![0]
-                        .toString(),
+                    audioUrl: commentList[commentListIndex].assets!.audio![0],
                   ),
                 ),
                 Container(
@@ -143,6 +139,8 @@ class AudioCommentState extends State<AudioComment> {
   }
 
   void play() async {
+    log('Playing url: ${widget.audioUrl}');
+
     await _audioPlayer.play(UrlSource(widget.audioUrl));
     setState(() {
       _isPlaying = true;

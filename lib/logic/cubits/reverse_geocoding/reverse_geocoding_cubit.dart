@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geocoding/geocoding.dart';
@@ -12,6 +14,7 @@ class ReverseGeocodingCubit extends Cubit<ReverseGeocodingState> {
     double longitude,
   ) async {
     emit(ReverseGeocodingLoading());
+    log('Latitude and Longitude: $latitude , $longitude');
     placemarks = await placemarkFromCoordinates(
       latitude,
       longitude,

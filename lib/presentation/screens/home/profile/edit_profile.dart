@@ -74,23 +74,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     height: 20.h,
                   ),
                   SafeArea(
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: SvgPicture.asset(
-                            'assets/icons/arrowleft.svg',
-                            color: AppColors.colorWhite,
-                          ),
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.sp),
+                        color: Colors.transparent,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icons/arrowleft.svg',
+                              color: AppColors.colorWhite,
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              LocaleKeys.profile_screenTitle.tr(),
+                              style: AppStyles.screenTitleStyle,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Text(
-                          LocaleKeys.profile_screenTitle.tr(),
-                          style: AppStyles.screenTitleStyle,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
@@ -167,12 +171,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         listener: (context, state) {
                           if (state is MyProfileEditingDoneState) {
                             SnackBars.sucessMessageSnackbar(
-                                context, 'Successfully updated the profile.');
+                                context, '✅ Profile updated successfully.');
                             Navigator.of(context).pop();
                           }
                           if (state is MyProfileEditingFailedState) {
                             SnackBars.errorMessageSnackbar(
-                                context, 'Something went wrong!');
+                                context, '⚠️Something went wrong!');
                           }
                         },
                         builder: (context, state) {
@@ -213,7 +217,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       streetName: '',
                                     ),
                                   );
-                                  // Navigator.of(context).pop();
                                 } else {}
                               },
                               buttonText: LocaleKeys.editProfile_submit.tr(),

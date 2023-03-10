@@ -15,31 +15,30 @@ class GrievanceDetail {
   String? createdBy;
   bool? mobileContactStatus;
   String? wardNumber;
-  Map? assets;
+  Assets? assets;
   String? grievanceType;
   List<Comments>? comments;
 
-  GrievanceDetail({
-    this.createdByName,
-    this.address,
-    this.priority,
-    this.locationLong,
-    this.grievanceID,
-    this.contactNumber,
-    this.description,
-    this.expectedCompletion,
-    this.status,
-    this.locationLat,
-    this.municipalityID,
-    this.lastModifiedDate,
-    this.location,
-    this.createdBy,
-    this.mobileContactStatus,
-    this.wardNumber,
-    this.assets,
-    this.grievanceType,
-    this.comments,
-  });
+  GrievanceDetail(
+      {this.createdByName,
+      this.address,
+      this.priority,
+      this.locationLong,
+      this.grievanceID,
+      this.contactNumber,
+      this.description,
+      this.expectedCompletion,
+      this.status,
+      this.locationLat,
+      this.municipalityID,
+      this.lastModifiedDate,
+      this.location,
+      this.createdBy,
+      this.mobileContactStatus,
+      this.wardNumber,
+      this.assets,
+      this.grievanceType,
+      this.comments});
 
   GrievanceDetail.fromJson(Map<String, dynamic> json) {
     createdByName = json['CreatedByName'];
@@ -58,10 +57,7 @@ class GrievanceDetail {
     createdBy = json['CreatedBy'];
     mobileContactStatus = json['MobileContactStatus'];
     wardNumber = json['WardNumber'];
-    assets = json['Assets'];
-    // assets = (json['Assets'] != null
-    //     ? GrievanceAssets.fromJson(json['Assets'])
-    //     : null) as Map?;
+    assets = json['Assets'] != null ? Assets.fromJson(json['Assets']) : null;
     grievanceType = json['GrievanceType'];
     if (json['Comments'] != null) {
       comments = <Comments>[];
@@ -90,7 +86,7 @@ class GrievanceDetail {
     data['MobileContactStatus'] = mobileContactStatus;
     data['WardNumber'] = wardNumber;
     if (assets != null) {
-      data['Assets'] = assets!;
+      data['Assets'] = assets!.toJson();
     }
     data['GrievanceType'] = grievanceType;
     if (comments != null) {
@@ -100,11 +96,24 @@ class GrievanceDetail {
   }
 }
 
-class GrievanceAssets {
-  GrievanceAssets.fromJson(Map<String, dynamic> json);
+class Assets {
+  List<String>? audio;
+  List<String>? image;
+  List<String>? video;
+
+  Assets({this.audio, this.image, this.video});
+
+  Assets.fromJson(Map<String, dynamic> json) {
+    audio = json['Audio'] != null ? json['Audio'].cast<String>() : null;
+    image = json['Image'] != null ? json['Image'].cast<String>() : null;
+    video = json['Video'] != null ? json['Video'].cast<String>() : null;
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['Audio'] = audio;
+    data['Image'] = image;
+    data['Video'] = video;
     return data;
   }
 }
@@ -112,27 +121,26 @@ class GrievanceAssets {
 class Comments {
   String? commentedBy;
   String? comment;
-  String? createdDate;
   String? grievanceID;
+  String? createdDate;
   String? commentID;
   String? commentedByName;
   Assets? assets;
 
-  Comments({
-    this.commentedBy,
-    this.comment,
-    this.createdDate,
-    this.grievanceID,
-    this.commentID,
-    this.commentedByName,
-    this.assets,
-  });
+  Comments(
+      {this.commentedBy,
+      this.comment,
+      this.grievanceID,
+      this.createdDate,
+      this.commentID,
+      this.commentedByName,
+      this.assets});
 
   Comments.fromJson(Map<String, dynamic> json) {
     commentedBy = json['CommentedBy'];
     comment = json['Comment'];
-    createdDate = json['CreatedDate'];
     grievanceID = json['GrievanceID'];
+    createdDate = json['CreatedDate'];
     commentID = json['CommentID'];
     commentedByName = json['CommentedByName'];
     assets = json['Assets'] != null ? Assets.fromJson(json['Assets']) : null;
@@ -142,80 +150,13 @@ class Comments {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['CommentedBy'] = commentedBy;
     data['Comment'] = comment;
-    data['CreatedDate'] = createdDate;
     data['GrievanceID'] = grievanceID;
+    data['CreatedDate'] = createdDate;
     data['CommentID'] = commentID;
     data['CommentedByName'] = commentedByName;
     if (assets != null) {
       data['Assets'] = assets!.toJson();
     }
-    return data;
-  }
-}
-
-class Assets {
-  Audio? audio;
-  Audio? image;
-  Audio? video;
-
-  Assets({this.audio, this.image, this.video});
-
-  Assets.fromJson(Map<String, dynamic> json) {
-    audio = json['Audio'] != null ? Audio.fromJson(json['Audio']) : null;
-    image = json['Image'] != null ? Audio.fromJson(json['Image']) : null;
-    video = json['Video'] != null ? Audio.fromJson(json['Video']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (audio != null) {
-      data['Audio'] = audio!.toJson();
-    }
-    if (image != null) {
-      data['Image'] = image!.toJson();
-    }
-    if (video != null) {
-      data['Video'] = video!.toJson();
-    }
-    return data;
-  }
-}
-
-class Audio {
-  List<L>? l;
-
-  Audio({this.l});
-
-  Audio.fromJson(Map<String, dynamic> json) {
-    if (json['L'] != null) {
-      l = <L>[];
-      json['L'].forEach((v) {
-        l!.add(L.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (l != null) {
-      data['L'] = l!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class L {
-  String? s;
-
-  L({this.s});
-
-  L.fromJson(Map<String, dynamic> json) {
-    s = json['S'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['S'] = s;
     return data;
   }
 }

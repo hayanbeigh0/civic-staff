@@ -25,6 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EnrollUser extends StatefulWidget {
@@ -161,7 +162,7 @@ class _EnrollUserState extends State<EnrollUser> {
             fieldValidator: (p0) {
               return validateFirstName(p0.toString());
             },
-            title: LocaleKeys.enrollUsers_firstName.tr(),
+            title: '${LocaleKeys.enrollUsers_firstName.tr()}*',
             hintText: LocaleKeys.enrollUsers_firstName.tr(),
             textEditingController: firstNameController,
           ),
@@ -172,7 +173,7 @@ class _EnrollUserState extends State<EnrollUser> {
             fieldValidator: (p0) {
               return validateLastName(p0.toString());
             },
-            title: LocaleKeys.enrollUsers_lastName.tr(),
+            title: '${LocaleKeys.enrollUsers_lastName.tr()}*',
             hintText: LocaleKeys.enrollUsers_lastName.tr(),
             textEditingController: lastNameController,
           ),
@@ -187,7 +188,7 @@ class _EnrollUserState extends State<EnrollUser> {
             fieldValidator: (p0) => validateMobileNumber(
               p0.toString(),
             ),
-            title: LocaleKeys.enrollUsers_contactNumber.tr(),
+            title: '${LocaleKeys.enrollUsers_contactNumber.tr()}*',
             hintText: LocaleKeys.enrollUsers_contactNumberHint.tr(),
             textEditingController: contactNumberController,
           ),
@@ -209,7 +210,7 @@ class _EnrollUserState extends State<EnrollUser> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                LocaleKeys.enrollUsers_ward.tr(),
+                '${LocaleKeys.enrollUsers_ward.tr()}*',
                 style: AppStyles.inputAndDisplayTitleStyle,
               ),
               SizedBox(
@@ -278,7 +279,7 @@ class _EnrollUserState extends State<EnrollUser> {
             height: 12.h,
           ),
           Text(
-            'Location',
+            'Location*',
             style: AppStyles.inputAndDisplayTitleStyle,
           ),
           SizedBox(
@@ -290,12 +291,17 @@ class _EnrollUserState extends State<EnrollUser> {
                 return Stack(
                   children: [
                     LocationMapField(
+                      textFieldsEnabled: true,
                       gesturesEnabled: true,
                       myLocationEnabled: true,
                       zoomEnabled: true,
                       mapController: _controller,
                       latitude: state.latitude,
                       longitude: state.longitude,
+                      addressFieldValidator: (p0) =>
+                          validateAddress(p0.toString()),
+                      countryFieldValidator: (p0) =>
+                          validateCountry(p0.toString()),
                     ),
                     Container(
                       height: 180.h,
@@ -342,20 +348,6 @@ class _EnrollUserState extends State<EnrollUser> {
                         return BlocConsumer<UsersBloc, SearchUsersState>(
                           listener: (context, userState) {
                             if (userState is UserEnrolledState) {
-                              // primaryPopupDialog(
-                              //   context: context,
-                              //   title: LocaleKeys
-                              //       .enrollUsers_dialogSuccessMessage
-                              //       .tr(),
-                              //   buttonText:
-                              //       LocaleKeys.enrollUsers_dialogOk.tr(),
-                              //   content:
-                              //       LocaleKeys.enrollUsers_dialogSuccessMessage,
-                              //   ontap: () => Navigator.of(context).pop(),
-                              // ).then(
-                              // (value) => FocusScope.of(context)
-                              //     .requestFocus(firstNameNode),
-                              // );
                               FocusScope.of(context)
                                   .requestFocus(firstNameNode);
                               SnackBars.sucessMessageSnackbar(context,
@@ -402,9 +394,10 @@ class _EnrollUserState extends State<EnrollUser> {
                                         user: User(
                                           about: '',
                                           active: true,
-                                          address: state.name,
+                                          address:
+                                              '${LocationMapField.addressLine1Controller.text}, ${LocationMapField.addressLine2Controller.text}',
                                           countryCode: '+91',
-                                          staffId: authenticationSuccessState
+                                          staffId: AuthBasedRouting
                                               .afterLogin.userDetails!.staffID,
                                           createdDate:
                                               DateTime.now().toString(),
@@ -495,6 +488,20 @@ class _EnrollUserState extends State<EnrollUser> {
   String? validateLastName(String value) {
     if (value.isEmpty) {
       return LocaleKeys.enrollUsers_lastNameValidaitonErrorMessage.tr();
+    }
+    return null;
+  }
+
+  String? validateAddress(String value) {
+    if (value.isEmpty) {
+      return 'Address is required!';
+    }
+    return null;
+  }
+
+  String? validateCountry(String value) {
+    if (value.isEmpty) {
+      return 'Country is required!';
     }
     return null;
   }

@@ -26,7 +26,6 @@ class PhotoCommentWidget extends StatelessWidget {
               ? Alignment.centerRight
               : Alignment.centerLeft,
           child: Container(
-            // height: 150.h,
             width: 200.w,
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
@@ -35,17 +34,77 @@ class PhotoCommentWidget extends StatelessWidget {
             child: Stack(
               children: [
                 SizedBox(
-                  // height: double.infinity,
                   child: AspectRatio(
                     aspectRatio: 1.8,
-                    child: Image.network(
-                      commentList[commentListIndex]
-                          .assets!
-                          .image!
-                          .l![0]
-                          .s
-                          .toString(),
-                      fit: BoxFit.cover,
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              contentPadding: EdgeInsets.all(0.sp),
+                              content: Container(
+                                clipBehavior: Clip.antiAlias,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                child: Image.network(
+                                  commentList[commentListIndex]
+                                      .assets!
+                                      .image![0],
+                                  cacheHeight: 700,
+                                  cacheWidth: 700,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
+                                    return const Icon(Icons.error);
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Image.network(
+                        cacheHeight: 700,
+                        cacheWidth: 700,
+                        commentList[commentListIndex].assets!.image![0],
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const Icon(Icons.error);
+                        },
+                      ),
                     ),
                   ),
                 ),

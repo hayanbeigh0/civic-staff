@@ -9,7 +9,6 @@ import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievanc
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_detail.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_map.dart';
-import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_my_comments.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_photo_video.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/comments/grievance_comments.dart';
 import 'package:civic_staff/presentation/screens/home/profile/edit_profile.dart';
@@ -96,7 +95,7 @@ class AppRouter {
           barrierColor: Colors.black54,
           barrierDismissible: true,
           opaque: false,
-          pageBuilder: (BuildContext context, _, __) => SearchUser(),
+          pageBuilder: (BuildContext context, _, __) => const SearchUser(),
           transitionsBuilder:
               (_, Animation<double> animation, __, Widget child) {
             return SlideTransition(

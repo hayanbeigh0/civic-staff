@@ -209,22 +209,26 @@ class GrievanceMap extends StatelessWidget {
                           InkWell(
                             radius: 30,
                             onTap: () => Navigator.of(context).pop(),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/arrowleft.svg',
-                                  color: AppColors.colorWhite,
-                                  height: 18.sp,
-                                ),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  LocaleKeys.map_screenTitle.tr(),
-                                  style: AppStyles.screenTitleStyle,
-                                ),
-                              ],
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.sp),
+                              color: Colors.transparent,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/arrowleft.svg',
+                                    color: AppColors.colorWhite,
+                                    height: 18.sp,
+                                  ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  Text(
+                                    LocaleKeys.map_screenTitle.tr(),
+                                    style: AppStyles.screenTitleStyle,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],

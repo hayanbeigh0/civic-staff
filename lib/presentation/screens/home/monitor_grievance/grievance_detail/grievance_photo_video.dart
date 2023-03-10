@@ -44,21 +44,26 @@ class GrievancePhotoVideo extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/arrowleft.svg',
-                                color: AppColors.colorWhite,
-                                height: 18.sp,
-                              ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                LocaleKeys.grievanceDetail_photosAndVideos.tr(),
-                                style: AppStyles.screenTitleStyle,
-                              ),
-                            ],
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 5.sp),
+                            color: Colors.transparent,
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/arrowleft.svg',
+                                  color: AppColors.colorWhite,
+                                  height: 18.sp,
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  LocaleKeys.grievanceDetail_photosAndVideos
+                                      .tr(),
+                                  style: AppStyles.screenTitleStyle,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const Spacer(),

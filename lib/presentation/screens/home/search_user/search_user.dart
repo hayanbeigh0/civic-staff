@@ -532,12 +532,18 @@ class _SearchUserState extends State<SearchUser> {
                       ),
                       shape: BoxShape.circle,
                     ),
-                    child: Center(
-                      child: Icon(
-                        Icons.person,
-                        size: 60.sp,
-                      ),
-                    ),
+                    child: state.userList[index].profilePicture == '' ||
+                            state.userList[index].profilePicture == null
+                        ? Center(
+                            child: Icon(
+                              Icons.person,
+                              size: 60.sp,
+                            ),
+                          )
+                        : Image.network(
+                            state.userList[index].profilePicture.toString(),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               ),
@@ -555,21 +561,51 @@ class _SearchUserState extends State<SearchUser> {
                     overflow: TextOverflow.ellipsis,
                     style: AppStyles.userCardTitleTextStyle,
                   ),
-                  Text(
-                    '${LocaleKeys.userDetails_location.tr()} - ${state.userList[index].address}',
-                    maxLines: 1,
-                    style: AppStyles.userCardTextStyle,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Transform.translate(
+                        offset: Offset(0, 2.h),
+                        child: Icon(
+                          Icons.location_pin,
+                          size: 16.sp,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      Expanded(
+                        child: Text(
+                          '${state.userList[index].address}',
+                          maxLines: 2,
+                          style: AppStyles.userCardTextStyle,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '${LocaleKeys.userDetails_mobile.tr()} - ${state.userList[index].mobileNumber}',
-                    maxLines: 1,
-                    style: AppStyles.userCardTextStyle,
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.phone,
+                        size: 16.sp,
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      Expanded(
+                        child: Text(
+                          '${state.userList[index].mobileNumber}',
+                          maxLines: 1,
+                          style: AppStyles.userCardTextStyle,
+                        ),
+                      ),
+                    ],
                   ),
                   Text(
                     state.userList[index].active! ? '' : '(User Disabled)',
                     maxLines: 1,
-                    style:
-                        AppStyles.userCardTextStyle.copyWith(fontSize: 10.sp),
+                    style: AppStyles.userCardTextStyle.copyWith(
+                        fontSize: 10.sp, color: AppColors.colorGreyLight),
                   ),
                 ],
               ),

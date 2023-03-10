@@ -34,35 +34,41 @@ class UserDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     log('${user.latitude},${user.longitude}');
     return Scaffold(
-      body: Stack(
-        children: [
-          userDetails(context),
-          BlocConsumer<UsersBloc, SearchUsersState>(
-            listener: (context, state) {
-              if (state is UserEditedState) {
-                user = state.user;
-              }
-              if (state is LoadedUserByIdState) {
-                log('Userr location: ${state.user.latitude},${state.user.longitude}');
-                Navigator.of(context).pushReplacementNamed(
-                  UserDetails.routeName,
-                  arguments: {'user': state.user},
-                );
-              }
-            },
-            builder: (context, state) {
-              if (state is EditingAUserState) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.colorPrimary,
-                  ),
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          )
-        ],
+      body: WillPopScope(
+        onWillPop: () async {
+          BlocProvider.of<UsersBloc>(context).add(const LoadAllUsersEvent(1));
+          return true;
+        },
+        child: Stack(
+          children: [
+            userDetails(context),
+            BlocConsumer<UsersBloc, SearchUsersState>(
+              listener: (context, state) {
+                if (state is UserEditedState) {
+                  user = state.user;
+                }
+                if (state is LoadedUserByIdState) {
+                  log('Userr location: ${state.user.latitude},${state.user.longitude}');
+                  Navigator.of(context).pushReplacementNamed(
+                    UserDetails.routeName,
+                    arguments: {'user': state.user},
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is EditingAUserState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            )
+          ],
+        ),
       ),
     );
   }
@@ -88,17 +94,25 @@ class UserDetails extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () => Navigator.of(context).pop(),
-                        child: SvgPicture.asset(
-                          'assets/icons/arrowleft.svg',
-                          color: AppColors.colorWhite,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 5.sp),
+                          color: Colors.transparent,
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/arrowleft.svg',
+                                color: AppColors.colorWhite,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                LocaleKeys.userDetails_screenTitle.tr(),
+                                style: AppStyles.screenTitleStyle,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Text(
-                        LocaleKeys.userDetails_screenTitle.tr(),
-                        style: AppStyles.screenTitleStyle,
                       ),
                       const Spacer(),
                       BlocListener<UsersBloc, SearchUsersState>(
@@ -110,27 +124,32 @@ class UserDetails extends StatelessWidget {
                             );
                           }
                         },
-                        child: InkWell(
-                          onTap: () async {
-                            await Navigator.of(context).pushNamed(
-                              EditUserScreen.routeName,
-                              arguments: {
-                                'user': user,
-                              },
-                            );
-                            // if(mounted){}
-                            // BlocProvider.of<UsersBloc>(context).add(
-                            //   const LoadUsersEvent(1),
-                            // );
-                            BlocProvider.of<UsersBloc>(context).add(
-                              GetUserByIdEvent(
-                                userId: user.userId.toString(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            LocaleKeys.profile_edit.tr(),
-                            style: AppStyles.appBarActionsTextStyle,
+                        child: SizedBox(
+                          width: 40.w,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 5.sp)),
+                            onPressed: () async {
+                              await Navigator.of(context).pushNamed(
+                                EditUserScreen.routeName,
+                                arguments: {
+                                  'user': user,
+                                },
+                              );
+                              // if(mounted){}
+                              // BlocProvider.of<UsersBloc>(context).add(
+                              //   const LoadUsersEvent(1),
+                              // );
+                              BlocProvider.of<UsersBloc>(context).add(
+                                GetUserByIdEvent(
+                                  userId: user.userId.toString(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              LocaleKeys.profile_edit.tr(),
+                              style: AppStyles.appBarActionsTextStyle,
+                            ),
                           ),
                         ),
                       ),
@@ -363,6 +382,7 @@ class UserDetails extends StatelessWidget {
                         latitude: double.parse(user.latitude.toString()),
                         longitude: double.parse(user.longitude.toString()),
                         mapController: _controller,
+                        address: user.address,
                       ),
                       Container(
                         height: 180.h,

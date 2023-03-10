@@ -55,7 +55,9 @@ class PrimaryTextField extends StatelessWidget {
           validator: fieldValidator,
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.colorPrimaryLight,
+            fillColor: enabled
+                ? AppColors.colorPrimaryLight
+                : AppColors.colorDisabledTextField,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 16.sp,
               vertical: 10.sp,

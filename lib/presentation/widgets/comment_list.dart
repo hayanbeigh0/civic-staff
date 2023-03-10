@@ -38,24 +38,36 @@ class CommentList extends StatelessWidget {
                     commentList: commentList,
                     commentListIndex: index,
                   ),
-            commentList[index].assets!.image == null
+            commentList[index].assets == null
                 ? const SizedBox()
-                : PhotoCommentWidget(
-                    commentList: commentList,
-                    commentListIndex: index,
-                  ),
-            commentList[index].assets!.video == null
+                : commentList[index].assets!.image == null ||
+                        commentList[index].assets!.image == [] ||
+                        commentList[index].assets!.image!.isEmpty
+                    ? const SizedBox()
+                    : PhotoCommentWidget(
+                        commentList: commentList,
+                        commentListIndex: index,
+                      ),
+            commentList[index].assets == null
                 ? const SizedBox()
-                : VideoCommentWidget(
-                    commentList: commentList,
-                    commentListIndex: index,
-                  ),
-            commentList[index].assets!.audio == null
+                : commentList[index].assets!.video == null ||
+                        commentList[index].assets!.video == [] ||
+                        commentList[index].assets!.video!.isEmpty
+                    ? const SizedBox()
+                    : VideoCommentWidget(
+                        commentList: commentList,
+                        commentListIndex: index,
+                      ),
+            commentList[index].assets == null
                 ? const SizedBox()
-                : AudioCommentWidget(
-                    commentList: commentList,
-                    commentListIndex: index,
-                  ),
+                : commentList[index].assets!.audio == null ||
+                        commentList[index].assets!.audio == [] ||
+                        commentList[index].assets!.audio!.isEmpty
+                    ? const SizedBox()
+                    : AudioCommentWidget(
+                        commentList: commentList,
+                        commentListIndex: index,
+                      ),
             SizedBox(
               height: 10.h,
             ),

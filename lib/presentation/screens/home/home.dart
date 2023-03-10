@@ -66,7 +66,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
     BlocProvider.of<HomeGridItemsCubit>(context).loadAllGridItems();
-    // BlocProvider.of<MyProfileCubit>(context).getMyProfile();
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: Column(

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
+import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,10 @@ class LocationMapField extends StatelessWidget {
     this.myLocationEnabled = true,
     this.gesturesEnabled = true,
     this.markerEnabled = false,
+    this.textFieldsEnabled = false,
+    this.addressFieldValidator,
+    this.countryFieldValidator,
+    this.address,
   });
 
   final double latitude;
@@ -31,6 +37,14 @@ class LocationMapField extends StatelessWidget {
   final bool myLocationEnabled;
   final bool gesturesEnabled;
   final bool markerEnabled;
+  final bool textFieldsEnabled;
+  final String? Function(String?)? addressFieldValidator;
+  final String? Function(String?)? countryFieldValidator;
+  static final TextEditingController addressLine1Controller =
+      TextEditingController();
+  static final TextEditingController addressLine2Controller =
+      TextEditingController();
+  String? address;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +106,7 @@ class LocationMapField extends StatelessWidget {
               },
               onCameraMove: (position) async {
                 pickedLoc = position.target;
+                address = null;
               },
               mapType: MapType.terrain,
             ),
@@ -103,18 +118,39 @@ class LocationMapField extends StatelessWidget {
         BlocBuilder<ReverseGeocodingCubit, ReverseGeocodingState>(
           builder: (context, state) {
             if (state is ReverseGeocodingLoaded) {
+              if (address == null) {
+                addressLine1Controller.text =
+                    '${state.street}, ${state.locality}';
+                addressLine2Controller.text = state.countryName;
+              }
+              if (address != null) {
+                log('Address loaded without getting it from location');
+                int lastCommaIndex = address!.lastIndexOf(", ");
+                addressLine1Controller.text =
+                    address!.substring(0, lastCommaIndex);
+                addressLine2Controller.text =
+                    address!.substring(lastCommaIndex + 2);
+              }
+              log('${addressLine1Controller.text}, ${addressLine2Controller.text}');
+
               return Column(
                 children: [
-                  PrimaryDisplayField(
+                  PrimaryTextField(
+                    fieldValidator: addressFieldValidator,
+                    enabled: textFieldsEnabled,
+                    hintText: 'Address',
+                    textEditingController: addressLine1Controller,
                     title: '',
-                    value: '${state.street}, ${state.locality}',
                   ),
                   SizedBox(
                     height: 12.h,
                   ),
-                  PrimaryDisplayField(
+                  PrimaryTextField(
+                    fieldValidator: countryFieldValidator,
+                    enabled: textFieldsEnabled,
+                    hintText: 'Country',
+                    textEditingController: addressLine2Controller,
                     title: '',
-                    value: state.countryName,
                   ),
                 ],
               );

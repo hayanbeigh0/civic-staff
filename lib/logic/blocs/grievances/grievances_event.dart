@@ -50,15 +50,17 @@ class UpdateGrievanceEvent extends GrievancesEvent {
   List<Object> get props => [grievanceId, newGrievance];
 }
 
-class UpdateExpectedCompletionEvent extends GrievancesEvent {
-  final String expectedCompletion;
+class UpdateGrievanceTypeEvent extends GrievancesEvent {
+  final Grievances newGrievance;
   final String grievanceId;
-  const UpdateExpectedCompletionEvent({
+  final String municipalityId;
+  const UpdateGrievanceTypeEvent({
     required this.grievanceId,
-    required this.expectedCompletion,
+    required this.newGrievance,
+    required this.municipalityId,
   });
   @override
-  List<Object> get props => [grievanceId, expectedCompletion];
+  List<Object> get props => [grievanceId, newGrievance, municipalityId];
 }
 
 class AddGrievanceCommentEvent extends GrievancesEvent {
@@ -75,6 +77,45 @@ class AddGrievanceCommentEvent extends GrievancesEvent {
       required this.comment});
   @override
   List<Object> get props => [grievanceId, staffId, name, assets, comment];
+}
+
+class AddGrievanceAudioCommentAssetsEvent extends GrievancesEvent {
+  final String encodedCommentFile;
+  final String fileType;
+  final String grievanceId;
+  const AddGrievanceAudioCommentAssetsEvent({
+    required this.grievanceId,
+    required this.fileType,
+    required this.encodedCommentFile,
+  });
+  @override
+  List<Object> get props => [grievanceId, fileType, encodedCommentFile];
+}
+
+class AddGrievanceImageCommentAssetsEvent extends GrievancesEvent {
+  final String encodedCommentFile;
+  final String fileType;
+  final String grievanceId;
+  const AddGrievanceImageCommentAssetsEvent({
+    required this.grievanceId,
+    required this.fileType,
+    required this.encodedCommentFile,
+  });
+  @override
+  List<Object> get props => [grievanceId, fileType, encodedCommentFile];
+}
+
+class AddGrievanceVideoCommentAssetsEvent extends GrievancesEvent {
+  final String encodedCommentFile;
+  final String fileType;
+  final String grievanceId;
+  const AddGrievanceVideoCommentAssetsEvent({
+    required this.grievanceId,
+    required this.fileType,
+    required this.encodedCommentFile,
+  });
+  @override
+  List<Object> get props => [grievanceId, fileType, encodedCommentFile];
 }
 
 class GetGrievanceByIdEvent extends GrievancesEvent {

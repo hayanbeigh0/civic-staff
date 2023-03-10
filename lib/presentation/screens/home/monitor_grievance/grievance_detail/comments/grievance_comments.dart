@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
@@ -13,6 +14,8 @@ import 'package:civic_staff/presentation/utils/functions/image_and_video_compres
 import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/comment_list.dart';
+import 'package:civic_staff/presentation/widgets/primary_button.dart';
+import 'package:civic_staff/presentation/widgets/primary_dialog_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:civic_staff/presentation/widgets/progress_dialog_widget.dart';
 import 'package:civic_staff/presentation/widgets/video_widget.dart';
@@ -41,6 +44,18 @@ class AllComments extends StatefulWidget {
 }
 
 class _AllCommentsState extends State<AllComments> {
+  @override
+  void initState() {
+    super.initState();
+    initAudioRecorder();
+  }
+
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    super.dispose();
+  }
+
   List<XFile> images = [];
   List<XFile> videos = [];
   List<XFile> audios = [];
@@ -49,6 +64,7 @@ class _AllCommentsState extends State<AllComments> {
   List<MediaInfo?> compressVideoInfo = [];
   final TextEditingController commentTextController = TextEditingController();
   List<Comments> comments = const [];
+  final recorder = FlutterSoundRecorder();
 
   @override
   Widget build(BuildContext context) {
@@ -74,27 +90,31 @@ class _AllCommentsState extends State<AllComments> {
                       children: [
                         InkWell(
                           onTap: () => Navigator.of(context).pop(),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/arrowleft.svg',
-                                color: AppColors.colorWhite,
-                                height: 18.sp,
-                              ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                'Comments',
-                                style: TextStyle(
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 5.sp),
+                            color: Colors.transparent,
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/arrowleft.svg',
                                   color: AppColors.colorWhite,
-                                  fontFamily: 'LexendDeca',
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.1,
+                                  height: 18.sp,
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  'Comments',
+                                  style: TextStyle(
+                                    color: AppColors.colorWhite,
+                                    fontFamily: 'LexendDeca',
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.1,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const Spacer(),
@@ -288,10 +308,14 @@ class _AllCommentsState extends State<AllComments> {
                             height: 1.1,
                           ),
                           suffixIcon:
-                              BlocBuilder<GrievancesBloc, GrievancesState>(
+                              BlocConsumer<GrievancesBloc, GrievancesState>(
+                            listener: (context, state) {
+                              if (mounted) {
+                                commentTextController.clear();
+                              }
+                            },
                             builder: (context, state) {
                               if (state is GrievanceByIdLoadedState) {
-                                commentTextController.clear();
                                 return IconButton(
                                   onPressed: () {
                                     if (commentTextController.text.isNotEmpty) {
@@ -336,14 +360,62 @@ class _AllCommentsState extends State<AllComments> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      InkWell(
-                        enableFeedback: true,
-                        onTap: () {
-                          _showPicker(context);
+                      BlocListener<GrievancesBloc, GrievancesState>(
+                        listener: (context, state) {
+                          if (state
+                              is AddingGrievanceImageCommentAssetSuccessState) {
+                            log('Adding grievance image to s3 done!');
+                            BlocProvider.of<GrievancesBloc>(context)
+                                .add(AddGrievanceCommentEvent(
+                              grievanceId: widget.grievanceId,
+                              staffId: AuthBasedRouting
+                                  .afterLogin.userDetails!.staffID!,
+                              name: AuthBasedRouting
+                                  .afterLogin.userDetails!.firstName!,
+                              assets: {
+                                'Audio': const [],
+                                'Image': [
+                                  state
+                                      .s3uploadResult.uploadResult!.presignedUrl
+                                  // 'https://dev-civic.s3.ap-south-1.amazonaws.com/${state.s3uploadResult.uploadResult!.key1}'
+                                ],
+                                'Video': const []
+                              },
+                              comment: '',
+                            ));
+                          }
+                          if (state
+                              is AddingGrievanceVideoCommentAssetSuccessState) {
+                            log('Adding grievance video to s3 done!');
+                            BlocProvider.of<GrievancesBloc>(context)
+                                .add(AddGrievanceCommentEvent(
+                              grievanceId: widget.grievanceId,
+                              staffId: AuthBasedRouting
+                                  .afterLogin.userDetails!.staffID!,
+                              name: AuthBasedRouting
+                                  .afterLogin.userDetails!.firstName!,
+                              assets: {
+                                'Audio': const [],
+                                'Image': const [],
+                                'Video': [
+                                  state
+                                      .s3uploadResult.uploadResult!.presignedUrl
+                                  // 'https://dev-civic.s3.ap-south-1.amazonaws.com/${state.s3uploadResult.uploadResult!.key1}'
+                                ]
+                              },
+                              comment: '',
+                            ));
+                          }
                         },
-                        child: const Icon(
-                          Icons.attach_file,
-                          color: AppColors.colorGreyLight,
+                        child: InkWell(
+                          enableFeedback: true,
+                          onTap: () {
+                            _showPicker(context);
+                          },
+                          child: const Icon(
+                            Icons.attach_file,
+                            color: AppColors.colorGreyLight,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -385,27 +457,53 @@ class _AllCommentsState extends State<AllComments> {
     setState(() {
       videos.add(pickedFile);
     });
+    log('Picking video');
+    log('Picked file size: ${pickedFile.length()}');
     generateThumbnail(file);
     getVideoSize(file);
-    compressVideo(file);
+    File compressedFile = await compressVideo(file);
+    final Uint8List videoBytes = await compressedFile.readAsBytes();
+    final String base64Video = base64Encode(videoBytes);
+    BlocProvider.of<GrievancesBloc>(context)
+        .add(AddGrievanceVideoCommentAssetsEvent(
+      grievanceId: widget.grievanceId,
+      fileType: 'video',
+      encodedCommentFile: base64Video,
+    ));
+    log('Compressed file size: ${compressedFile.length()}');
     if (mounted) {
       Navigator.of(context).pop();
     }
   }
 
   Future<void> recordVideo() async {
+    log('Opening recorder');
     final pickedFile = await ImagePicker().pickVideo(
       source: ImageSource.camera,
     );
-    if (pickedFile == null) return;
+    if (pickedFile == null) {
+      log('No file picked');
+      return;
+    }
     final file = File(pickedFile.path);
     setState(() {
       videos.add(pickedFile);
     });
+    log('done recording');
+    log('Picked file size: ${pickedFile.length()}');
     generateThumbnail(file);
     getVideoSize(file);
-    compressVideo(file);
-    log('Picked file size: ${pickedFile.length()}');
+    File compressedFile = await compressVideo(file);
+    final Uint8List videoBytes = await compressedFile.readAsBytes();
+    final String base64Video = base64Encode(videoBytes);
+    BlocProvider.of<GrievancesBloc>(context)
+        .add(AddGrievanceVideoCommentAssetsEvent(
+      grievanceId: widget.grievanceId,
+      fileType: 'video',
+      encodedCommentFile: base64Video,
+    ));
+
+    log('Compressed file size: ${compressedFile.length()}');
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -419,7 +517,7 @@ class _AllCommentsState extends State<AllComments> {
     log('Video Size: $videoSize');
   }
 
-  Future<void> compressVideo(File file) async {
+  Future<File> compressVideo(File file) async {
     showDialog(
       context: context,
       builder: (context) {
@@ -432,6 +530,7 @@ class _AllCommentsState extends State<AllComments> {
     setState(() {
       compressVideoInfo.add(info);
     });
+    return File(info!.file!.path.toString());
     // log(compressVideoInfo!.filesize.toString());
   }
 
@@ -498,13 +597,21 @@ class _AllCommentsState extends State<AllComments> {
   Future<void> pickPhoto() async {
     final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.gallery,
+      imageQuality: 50,
     );
     setState(() {
       images.add(pickedFile!);
     });
     log('Picking image');
-    await GrievancesRepository()
-        .addGrievanceCommentFile(commentFile: File(pickedFile!.path));
+    final Uint8List imageBytes = await pickedFile!.readAsBytes();
+    final String base64Image = base64Encode(imageBytes);
+    BlocProvider.of<GrievancesBloc>(context).add(
+      AddGrievanceImageCommentAssetsEvent(
+        grievanceId: widget.grievanceId,
+        fileType: 'image',
+        encodedCommentFile: base64Image,
+      ),
+    );
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -513,12 +620,25 @@ class _AllCommentsState extends State<AllComments> {
   Future<void> capturePhoto() async {
     final pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
+      imageQuality: 50,
     );
     setState(() {
       images.add(pickedFile!);
     });
-    await GrievancesRepository()
-        .addGrievanceCommentFile(commentFile: File(pickedFile!.path));
+    final Uint8List imageBytes = await pickedFile!.readAsBytes();
+    final String base64Image = base64Encode(imageBytes);
+    BlocProvider.of<GrievancesBloc>(context).add(
+      AddGrievanceImageCommentAssetsEvent(
+        grievanceId: widget.grievanceId,
+        fileType: 'image',
+        encodedCommentFile: base64Image,
+      ),
+    );
+    // await GrievancesRepository().addGrievanceCommentFile(
+    //   encodedCommentFile: base64Image,
+    //   fileType: 'image',
+    //   grievanceId: widget.grievanceId,
+    // );
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -623,7 +743,6 @@ class _AllCommentsState extends State<AllComments> {
                       leading: const Icon(Icons.record_voice_over),
                       title: const Text('Record Audio'),
                       onTap: () async {
-                        initAudioRecorder();
                         await recordAudio();
                       },
                     ),
@@ -650,15 +769,23 @@ class _AllCommentsState extends State<AllComments> {
           file.path.toString(),
         ),
       );
+      final Uint8List audioBytes =
+          await File(file.path.toString()).readAsBytes();
+      final String base64Audio = base64Encode(audioBytes);
+      BlocProvider.of<GrievancesBloc>(context).add(
+        AddGrievanceAudioCommentAssetsEvent(
+          encodedCommentFile: base64Audio,
+          fileType: 'audio',
+          grievanceId: widget.grievanceId,
+        ),
+      );
       // Do something with the selected audio file, e.g. play it
-      print('Selected audio file: ${file.path}');
+      log('Selected audio file: ${file.path}');
     } else {
       // User canceled the picker
-      print('No audio file selected');
+      log('No audio file selected');
     }
   }
-
-  final recorder = FlutterSoundRecorder();
 
   Future<void> recordAudio() async {
     File? audioFile;
@@ -667,86 +794,169 @@ class _AllCommentsState extends State<AllComments> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          content: StatefulBuilder(builder: (context, dialogState) {
-            return audioFile != null && recorder.isStopped
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Recording done!'),
-                      AudioComment(
-                        audioUrl: audioFile!.path,
-                      ),
-                    ],
-                  )
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      StreamBuilder<RecordingDisposition>(
-                        stream: recorder.onProgress,
-                        builder: (context, snapshot) {
-                          final duration = snapshot.hasData
-                              ? snapshot.data!.duration
-                              : Duration.zero;
-                          String twoDigits(int n) =>
-                              n.toString().padLeft(2, '0');
-                          final twoDigitMinutes =
-                              twoDigits(duration.inMinutes.remainder(60));
-                          final twoDigitSeconds =
-                              twoDigits(duration.inSeconds.remainder(60));
-
-                          return Text(
-                            '$twoDigitMinutes : $twoDigitSeconds',
-                            style: TextStyle(
-                              fontSize: 28.sp,
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          if (recorder.isRecording) {
-                            dialogState(() {
-                              recordingAudio = false;
-                            });
-                            audioFile = await stopAudioRecording();
-                          }
-                          if (!recorder.isRecording) {
-                            initAudioRecorder();
-                            recorder.startRecorder(
-                              codec: Codec.aacMP4,
-                              toFile: await getTemporaryFilePath(0),
-                            );
-                            dialogState(() {
-                              recordingAudio = true;
-                            });
-                          }
-                        },
-                        icon: recordingAudio
-                            ? Icon(
-                                Icons.stop_circle_outlined,
-                                color: AppColors.textColorRed,
-                                size: 50.sp,
-                              )
-                            : Icon(
-                                Icons.circle,
-                                color: AppColors.textColorRed,
-                                size: 50.sp,
+          content: StatefulBuilder(
+            builder: (context, dialogState) {
+              return audioFile != null && recorder.isStopped
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Recording done!',
+                          style: TextStyle(fontSize: 16.sp),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.r),
+                            color: AppColors.colorPrimaryLight,
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 5.h),
+                          child: AudioComment(
+                            audioUrl: audioFile!.path,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        BlocConsumer<GrievancesBloc, GrievancesState>(
+                          listener: (context, state) {
+                            if (state
+                                is AddingGrievanceAudioCommentAssetSuccessState) {
+                              Navigator.of(context).pop();
+                              BlocProvider.of<GrievancesBloc>(context)
+                                  .add(AddGrievanceCommentEvent(
+                                grievanceId: widget.grievanceId,
+                                staffId: AuthBasedRouting
+                                    .afterLogin.userDetails!.staffID!,
+                                name: AuthBasedRouting
+                                    .afterLogin.userDetails!.firstName!,
+                                assets: {
+                                  'Audio': [
+                                    state.s3uploadResult.uploadResult!
+                                        .presignedUrl
+                                  ],
+                                  'Image': const [],
+                                  'Video': const []
+                                },
+                                comment: '',
+                              ));
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state
+                                is AddingGrievanceAudioCommentAssetState) {
+                              return Align(
+                                alignment: Alignment.bottomRight,
+                                child: PrimaryDialogButton(
+                                  onTap: () {},
+                                  buttonText: 'Upload',
+                                  isLoading: true,
+                                ),
+                              );
+                            }
+                            return Align(
+                              alignment: Alignment.bottomRight,
+                              child: PrimaryDialogButton(
+                                onTap: () async {
+                                  final Uint8List audioBytes =
+                                      await File(audioFile!.path.toString())
+                                          .readAsBytes();
+                                  final String base64Audio =
+                                      base64Encode(audioBytes);
+                                  BlocProvider.of<GrievancesBloc>(context).add(
+                                    AddGrievanceAudioCommentAssetsEvent(
+                                      encodedCommentFile: base64Audio,
+                                      fileType: 'audio',
+                                      grievanceId: widget.grievanceId,
+                                    ),
+                                  );
+                                },
+                                buttonText: 'Upload',
+                                isLoading: false,
                               ),
-                      ),
-                      Text(
-                        recordingAudio
-                            ? LocaleKeys.addComment_stop.tr()
-                            : LocaleKeys.addComment_record.tr(),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                    ],
-                  );
-          }),
+                            );
+                          },
+                        ),
+                      ],
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        StreamBuilder<RecordingDisposition>(
+                          stream: recorder.onProgress,
+                          builder: (context, snapshot) {
+                            final duration = snapshot.hasData
+                                ? snapshot.data!.duration
+                                : Duration.zero;
+                            String twoDigits(int n) =>
+                                n.toString().padLeft(2, '0');
+                            final twoDigitMinutes =
+                                twoDigits(duration.inMinutes.remainder(60));
+                            final twoDigitSeconds =
+                                twoDigits(duration.inSeconds.remainder(60));
+
+                            return Text(
+                              '$twoDigitMinutes : $twoDigitSeconds',
+                              style: TextStyle(
+                                fontSize: 28.sp,
+                              ),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            if (recorder.isRecording) {
+                              dialogState(() {
+                                recordingAudio = false;
+                              });
+                              audioFile = await stopAudioRecording();
+                              recorder.closeRecorder();
+                              audios.add(XFile(audioFile!.path));
+                            }
+                            if (!recorder.isRecording) {
+                              initAudioRecorder();
+                              recorder.startRecorder(
+                                codec: Codec.aacMP4,
+                                toFile:
+                                    await getTemporaryFilePath(audios.length),
+                              );
+                              dialogState(() {
+                                recordingAudio = true;
+                              });
+                            }
+                          },
+                          icon: recordingAudio
+                              ? Icon(
+                                  Icons.stop_circle_outlined,
+                                  color: AppColors.textColorRed,
+                                  size: 50.sp,
+                                )
+                              : Icon(
+                                  Icons.circle,
+                                  color: AppColors.textColorRed,
+                                  size: 50.sp,
+                                ),
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Text(
+                          recordingAudio
+                              ? LocaleKeys.addComment_stop.tr()
+                              : LocaleKeys.addComment_record.tr(),
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                      ],
+                    );
+            },
+          ),
         );
       },
     );

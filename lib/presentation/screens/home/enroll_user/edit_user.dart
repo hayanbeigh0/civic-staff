@@ -118,11 +118,15 @@ class _EditUserScreenState extends State<EditUserScreen> {
                   SafeArea(
                     child: Row(
                       children: [
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: SvgPicture.asset(
-                            'assets/icons/arrowleft.svg',
-                            color: AppColors.colorWhite,
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 5.sp),
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: SvgPicture.asset(
+                              'assets/icons/arrowleft.svg',
+                              color: AppColors.colorWhite,
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -152,7 +156,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                         fieldValidator: (p0) {
                           return validateFirstName(p0.toString());
                         },
-                        title: LocaleKeys.editProfile_firstName.tr(),
+                        title: '${LocaleKeys.editProfile_firstName.tr()}*',
                         hintText: LocaleKeys.editProfile_firstName.tr(),
                         textEditingController: firstNameController,
                       ),
@@ -163,7 +167,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                         fieldValidator: (p0) {
                           return validateLastName(p0.toString());
                         },
-                        title: LocaleKeys.editProfile_lastName.tr(),
+                        title: '${LocaleKeys.editProfile_lastName.tr()}*',
                         hintText: LocaleKeys.editProfile_lastName.tr(),
                         textEditingController: lastNameController,
                       ),
@@ -183,13 +187,14 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       ),
                       PrimaryDisplayField(
                         fillColor: AppColors.colorDisabledTextField,
-                        title: LocaleKeys.editProfile_contactNumber.tr(),
+                        title: '${LocaleKeys.editProfile_contactNumber.tr()}*',
                         value: contactNumberController.text,
                       ),
                       SizedBox(
                         height: 12.h,
                       ),
                       PrimaryTextField(
+                        enabled: false,
                         maxLines: 8,
                         fieldValidator: (p0) => validateAbout(
                           p0.toString(),
@@ -202,7 +207,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
                         height: 12.h,
                       ),
                       PrimaryDisplayField(
-                        title: 'Municipality',
+                        fillColor: AppColors.colorDisabledTextField,
+                        title: 'Municipality*',
                         value: AuthBasedRouting.afterLogin.masterData!
                             .firstWhere((element) =>
                                 element.sK ==
@@ -211,77 +217,11 @@ class _EditUserScreenState extends State<EditUserScreen> {
                             .name
                             .toString(),
                       ),
-                      // Text(
-                      //   'Muncipality',
-                      //   style: AppStyles.inputAndDisplayTitleStyle,
-                      // ),
-                      // SizedBox(
-                      //   height: 5.h,
-                      // ),
-                      // Container(
-                      //   decoration: BoxDecoration(
-                      //     color: AppColors.colorPrimaryLight,
-                      //     borderRadius: BorderRadius.circular(10.r),
-                      //   ),
-                      //   padding: EdgeInsets.symmetric(horizontal: 15.sp),
-                      //   child: DropdownButtonFormField(
-                      //     value: muncipalityDropdownValue,
-                      //     isExpanded: true,
-                      //     iconSize: 24.sp,
-                      //     icon: const Icon(
-                      //       Icons.keyboard_arrow_down,
-                      //     ),
-                      //     hint: Text(
-                      //       'Select muncipality',
-                      //       style: AppStyles.dropdownTextStyle,
-                      //     ),
-                      //     decoration: InputDecoration(
-                      //       labelStyle: AppStyles.dropdownTextStyle,
-                      //       border: InputBorder.none,
-                      //     ),
-                      //     items: muncipality
-                      //         .map(
-                      //           (item) => DropdownMenuItem<String>(
-                      //             value: item,
-                      //             child: Text(
-                      //               item,
-                      //               maxLines: 1,
-                      //               style: AppStyles.dropdownTextStyle,
-                      //             ),
-                      //           ),
-                      //         )
-                      //         .toList(),
-                      //     onChanged: (value) {
-                      //       setState(() {
-                      //         muncipalityDropdownValue = value.toString();
-                      //         wardDropdownValue = null;
-                      //         wards = wardsAndMuncipality[value];
-                      //         showMuncipalityDropdownError = false;
-                      //       });
-                      //     },
-                      //     validator: (value) => validateWardNumber(
-                      //       value.toString(),
-                      //     ),
-                      //   ),
-                      // ),
-                      // showMuncipalityDropdownError
-                      //     ? Column(
-                      //         children: [
-                      //           SizedBox(
-                      //             height: 5.h,
-                      //           ),
-                      //           Text(
-                      //             LocaleKeys.enrollUsers_wardDropdownError.tr(),
-                      //             style: AppStyles.errorTextStyle,
-                      //           )
-                      //         ],
-                      //       )
-                      //     : const SizedBox(),
                       SizedBox(
                         height: 12.h,
                       ),
                       Text(
-                        LocaleKeys.enrollUsers_ward.tr(),
+                        '${LocaleKeys.enrollUsers_ward.tr()}*',
                         style: AppStyles.inputAndDisplayTitleStyle,
                       ),
                       SizedBox(
@@ -358,6 +298,11 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       Stack(
                         children: [
                           LocationMapField(
+                            addressFieldValidator: (p0) =>
+                                validateAddress(p0.toString()),
+                            countryFieldValidator: (p0) =>
+                                validateCountry(p0.toString()),
+                            textFieldsEnabled: true,
                             zoomEnabled: true,
                             mapController: _controller,
                             latitude: double.parse(
@@ -366,6 +311,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                             longitude: double.parse(
                               widget.user.longitude.toString(),
                             ),
+                            address: widget.user.address,
                           ),
                           Container(
                             height: 180.h,
@@ -403,8 +349,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                           'An unknown error occurred!');
                                     }
                                     if (userState is UserEditedState) {
-                                      SnackBars.sucessMessageSnackbar(
-                                          context, 'User has been edited!');
+                                      SnackBars.sucessMessageSnackbar(context,
+                                          '✅ Successfully edited the user.');
                                       Navigator.of(context)
                                           .pop({"user": userState.user});
                                     }
@@ -465,9 +411,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                                   mobileNumber:
                                                       contactNumberController
                                                           .text,
-                                                  address: state.street +
-                                                      state.locality +
-                                                      state.countryName,
+                                                  address:
+                                                      '${LocationMapField.addressLine1Controller.text}, ${LocationMapField.addressLine2Controller.text}',
                                                   wardNumber: wards
                                                       .firstWhere((element) =>
                                                           element.wardName ==
@@ -482,7 +427,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                                       DateTime.now().toString(),
                                                   notificationToken: widget
                                                       .user.notificationToken,
-                                                  profilePicture: '',
+                                                  profilePicture: widget
+                                                      .user.profilePicture,
                                                   staffId: AuthBasedRouting
                                                       .afterLogin
                                                       .userDetails!
@@ -580,6 +526,20 @@ class _EditUserScreenState extends State<EditUserScreen> {
     }
     if (!RegExp(r'^\d{10}$').hasMatch(value)) {
       return LocaleKeys.editProfile_mobileNumberInputTypeError.tr();
+    }
+    return null;
+  }
+
+  String? validateAddress(String value) {
+    if (value.isEmpty) {
+      return 'Address is required!';
+    }
+    return null;
+  }
+
+  String? validateCountry(String value) {
+    if (value.isEmpty) {
+      return 'Country is required!';
     }
     return null;
   }
