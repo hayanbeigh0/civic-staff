@@ -44,8 +44,10 @@ class GrievanceMap extends StatelessWidget {
   Widget build(BuildContext context) {
     BlocProvider.of<GrievancesBloc>(context).add(
       LoadGrievancesEvent(
-          municipalityId:
-              AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
+        staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
+        municipalityId:
+            AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
+      ),
     );
     return Scaffold(
       body: Stack(

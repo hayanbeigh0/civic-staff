@@ -18,7 +18,11 @@ class PhotoCommentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return
+        // commentList[commentListIndex].assets!.image == null
+        //     ? const SizedBox()
+        //     :
+        Column(
       children: [
         Align(
           alignment: commentList[commentListIndex].commentedBy ==
@@ -29,7 +33,20 @@ class PhotoCommentWidget extends StatelessWidget {
             width: 200.w,
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 2,
+                  offset: Offset(1, 1),
+                  color: AppColors.cardShadowColor,
+                ),
+                BoxShadow(
+                  blurRadius: 2,
+                  offset: Offset(-1, -1),
+                  color: AppColors.colorWhite,
+                ),
+              ],
               borderRadius: BorderRadius.circular(10.r),
+              color: AppColors.colorPrimaryLight,
             ),
             child: Stack(
               children: [

@@ -25,6 +25,25 @@ class MyProfileEditingFailedState extends MyProfileState {
   List<Object?> get props => [];
 }
 
+class ProfilePictureUploadingState extends MyProfileState {
+  @override
+  List<Object?> get props => [];
+}
+
+class ProfilePictureUploadingSuccessState extends MyProfileState {
+  final S3UploadResult s3uploadResult;
+  const ProfilePictureUploadingSuccessState({
+    required this.s3uploadResult,
+  });
+  @override
+  List<Object?> get props => [];
+}
+
+class ProfilePictureUploadingFailedState extends MyProfileState {
+  @override
+  List<Object?> get props => [];
+}
+
 class MyProfileLoaded extends MyProfileState {
   final UserDetails userDetails;
   final MyProfile myProfile;

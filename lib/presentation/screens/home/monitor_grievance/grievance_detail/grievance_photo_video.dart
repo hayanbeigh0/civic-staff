@@ -4,7 +4,7 @@ import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
-import 'package:civic_staff/presentation/widgets/video_widget.dart';
+import 'package:civic_staff/presentation/widgets/video_asset_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,7 +17,7 @@ class GrievancePhotoVideo extends StatelessWidget {
     required this.state,
     required this.grievanceListIndex,
   });
-  final GrievancesLoadedState state;
+  final GrievanceByIdLoadedState state;
   final int grievanceListIndex;
 
   @override
@@ -94,14 +94,11 @@ class GrievancePhotoVideo extends StatelessWidget {
                   crossAxisSpacing: 30.w,
                   mainAxisSpacing: 20.h,
                 ),
-                itemCount: state.grievanceList[grievanceListIndex]
-                        .assets!['photos']!.length +
-                    state.grievanceList[grievanceListIndex].assets!['videos']!
-                        .length,
+                itemCount: state.grievanceDetail.assets!.image!.length.toInt() +
+                    state.grievanceDetail.assets!.video!.length.toInt(),
                 itemBuilder: (context, index) {
                   if (index <
-                      state.grievanceList[grievanceListIndex].assets!['photos']!
-                          .length) {
+                      state.grievanceDetail.assets!.image!.length.toInt()) {
                     return Container(
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
@@ -110,10 +107,55 @@ class GrievancePhotoVideo extends StatelessWidget {
                           20.r,
                         ),
                       ),
-                      child: Image.network(
-                        state.grievanceList[grievanceListIndex]
-                            .assets!['photos']![index],
-                        fit: BoxFit.cover,
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                contentPadding: EdgeInsets.all(0.sp),
+                                content: Container(
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  child: Image.network(
+                                    state.grievanceDetail.assets!.image![index],
+                                    cacheHeight: 700,
+                                    cacheWidth: 700,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      return const Icon(Icons.error);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Image.network(
+                          state.grievanceDetail.assets!.image![index],
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   } else {
@@ -125,12 +167,13 @@ class GrievancePhotoVideo extends StatelessWidget {
                           20.r,
                         ),
                       ),
-                      child: VideoWidget(
-                        url: state.grievanceList[grievanceListIndex]
-                                .assets!['videos']![
-                            index -
-                                state.grievanceList[grievanceListIndex]
-                                    .assets!['photos']!.length],
+                      child: Stack(
+                        children: [
+                          VideoAssetWidget(
+                            url: state.grievanceDetail.assets!.video![index -
+                                state.grievanceDetail.assets!.image!.length],
+                          ),
+                        ],
                       ),
                     );
                   }

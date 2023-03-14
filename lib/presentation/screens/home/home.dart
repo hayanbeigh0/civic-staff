@@ -7,6 +7,7 @@ import 'package:civic_staff/logic/cubits/current_location/current_location_cubit
 import 'package:civic_staff/logic/cubits/home_grid_items/home_grid_items_cubit.dart';
 import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
+import 'package:civic_staff/main.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
@@ -80,54 +81,33 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 20.h,
+                    height: 30.h,
                   ),
                   SafeArea(
                     bottom: false,
                     child: Text(
                       LocaleKeys.appName.tr(),
-                      style: AppStyles.dashboardAppNameStyle,
+                      style: AppStyles.dashboardAppNameStyle
+                          .copyWith(fontSize: 24.sp),
                     ),
                   ),
                   SizedBox(
                     height: 30.h,
                   ),
-                  TextField(
-                    controller: _searchController,
-                    textInputAction: TextInputAction.go,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorPrimaryExtraLight,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16.sp,
-                        vertical: 10.sp,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.sp),
-                        borderSide: BorderSide.none,
-                      ),
-                      hintText: LocaleKeys.homeScreen_search.tr(),
-                      hintStyle: AppStyles.searchHintStyle,
-                      suffixIcon: Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 10.sp,
-                          horizontal: 20.sp,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/svg/searchfieldsuffix.svg',
-                          fit: BoxFit.contain,
-                          width: 20.w,
-                        ),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      if (value.isEmpty) {
-                        BlocProvider.of<HomeGridItemsCubit>(context)
-                            .loadAllGridItems();
-                      } else {
-                        BlocProvider.of<HomeGridItemsCubit>(context)
-                            .loadSearchedGridItems(value, true);
+                  BlocBuilder<LocalStorageCubit, LocalStorageState>(
+                    builder: (context, state) {
+                      if (state is LocalStorageFetchingDoneState) {
+                        return Text(
+                          state.afterLogin.masterData!
+                              .firstWhere((element) =>
+                                  element.sK ==
+                                  state.afterLogin.userDetails!.municipalityID!)
+                              .name!,
+                          style: AppStyles.dashboardAppNameStyle
+                              .copyWith(fontSize: 18.sp),
+                        );
                       }
+                      return const SizedBox();
                     },
                   ),
                   SizedBox(

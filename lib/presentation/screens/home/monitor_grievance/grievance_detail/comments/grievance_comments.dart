@@ -65,6 +65,7 @@ class _AllCommentsState extends State<AllComments> {
   final TextEditingController commentTextController = TextEditingController();
   List<Comments> comments = const [];
   final recorder = FlutterSoundRecorder();
+  bool showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -190,6 +191,53 @@ class _AllCommentsState extends State<AllComments> {
                 if (state is GrievanceByIdLoadedState) {
                   comments = state.grievanceDetail.comments!.toList();
                 }
+                if (state is AddingGrievanceImageCommentAssetSuccessState) {
+                  BlocProvider.of<GrievancesBloc>(context)
+                      .add(AddGrievanceCommentEvent(
+                    grievanceId: widget.grievanceId,
+                    staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
+                    name: AuthBasedRouting.afterLogin.userDetails!.firstName!,
+                    assets: {
+                      'Audio': const [],
+                      'Image': [
+                        'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}',
+                      ],
+                      'Video': const []
+                    },
+                    comment: '',
+                  ));
+                }
+                if (state is AddingGrievanceVideoCommentAssetSuccessState) {
+                  log('Adding grievance video to s3 done!');
+                  BlocProvider.of<GrievancesBloc>(context)
+                      .add(AddGrievanceCommentEvent(
+                    grievanceId: widget.grievanceId,
+                    staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
+                    name: AuthBasedRouting.afterLogin.userDetails!.firstName!,
+                    assets: {
+                      'Audio': const [],
+                      'Image': const [],
+                      'Video': [
+                        'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}'
+                      ]
+                    },
+                    comment: '',
+                  ));
+                }
+                if (state is GrievanceByIdLoadedState) {
+                  comments = state.grievanceDetail.comments!.toList();
+                }
+                if (state is LoadingGrievanceByIdFailedState) {
+                  SnackBars.errorMessageSnackbar(
+                      context, '⚠️Could not send the comment!');
+                  BlocProvider.of<GrievancesBloc>(context).add(
+                    GetGrievanceByIdEvent(
+                      municipalityId: AuthBasedRouting
+                          .afterLogin.userDetails!.municipalityID!,
+                      grievanceId: widget.grievanceId,
+                    ),
+                  );
+                }
               },
               builder: (context, state) {
                 if (state is GrievanceByIdLoadedState) {
@@ -200,10 +248,67 @@ class _AllCommentsState extends State<AllComments> {
                         ? const Center(
                             child: Text('No Comments Yet!'),
                           )
-                        : CommentList(commentList: comments),
+                        : showSpinner
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.colorPrimary,
+                                ),
+                              )
+                            : CommentList(commentList: comments),
                   );
                 }
+
+                if (state is AddingGrievanceCommentState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                }
+                if (state is AddingGrievanceVideoCommentAssetState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                }
+                if (state is AddingGrievanceAudioCommentAssetState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                }
+                if (state is AddingGrievanceImageCommentAssetState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                }
+
                 if (state is LoadingGrievanceByIdState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                }
+                if (state is AddingGrievanceVideoCommentAssetSuccessState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                }
+                if (state is AddingGrievanceImageCommentAssetSuccessState) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
+                    ),
+                  );
+                }
+                if (state is AddingGrievanceAudioCommentAssetSuccessState) {
                   return const Center(
                     child: CircularProgressIndicator(
                       color: AppColors.colorPrimary,
@@ -219,37 +324,6 @@ class _AllCommentsState extends State<AllComments> {
                       : Stack(
                           children: [
                             CommentList(commentList: comments),
-                            BlocConsumer<GrievancesBloc, GrievancesState>(
-                              listener: (context, state) {
-                                if (state is GrievanceByIdLoadedState) {
-                                  comments =
-                                      state.grievanceDetail.comments!.toList();
-                                }
-                                if (state is LoadingGrievanceByIdFailedState) {
-                                  SnackBars.errorMessageSnackbar(
-                                      context, '⚠️Could not send the comment!');
-                                  BlocProvider.of<GrievancesBloc>(context).add(
-                                    GetGrievanceByIdEvent(
-                                      municipalityId: AuthBasedRouting
-                                          .afterLogin
-                                          .userDetails!
-                                          .municipalityID!,
-                                      grievanceId: widget.grievanceId,
-                                    ),
-                                  );
-                                }
-                              },
-                              builder: (context, state) {
-                                if (state is LoadingGrievanceByIdState) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                      color: AppColors.colorPrimary,
-                                    ),
-                                  );
-                                }
-                                return const SizedBox();
-                              },
-                            ),
                           ],
                         ),
                 );
@@ -360,62 +434,14 @@ class _AllCommentsState extends State<AllComments> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      BlocListener<GrievancesBloc, GrievancesState>(
-                        listener: (context, state) {
-                          if (state
-                              is AddingGrievanceImageCommentAssetSuccessState) {
-                            log('Adding grievance image to s3 done!');
-                            BlocProvider.of<GrievancesBloc>(context)
-                                .add(AddGrievanceCommentEvent(
-                              grievanceId: widget.grievanceId,
-                              staffId: AuthBasedRouting
-                                  .afterLogin.userDetails!.staffID!,
-                              name: AuthBasedRouting
-                                  .afterLogin.userDetails!.firstName!,
-                              assets: {
-                                'Audio': const [],
-                                'Image': [
-                                  state
-                                      .s3uploadResult.uploadResult!.presignedUrl
-                                  // 'https://dev-civic.s3.ap-south-1.amazonaws.com/${state.s3uploadResult.uploadResult!.key1}'
-                                ],
-                                'Video': const []
-                              },
-                              comment: '',
-                            ));
-                          }
-                          if (state
-                              is AddingGrievanceVideoCommentAssetSuccessState) {
-                            log('Adding grievance video to s3 done!');
-                            BlocProvider.of<GrievancesBloc>(context)
-                                .add(AddGrievanceCommentEvent(
-                              grievanceId: widget.grievanceId,
-                              staffId: AuthBasedRouting
-                                  .afterLogin.userDetails!.staffID!,
-                              name: AuthBasedRouting
-                                  .afterLogin.userDetails!.firstName!,
-                              assets: {
-                                'Audio': const [],
-                                'Image': const [],
-                                'Video': [
-                                  state
-                                      .s3uploadResult.uploadResult!.presignedUrl
-                                  // 'https://dev-civic.s3.ap-south-1.amazonaws.com/${state.s3uploadResult.uploadResult!.key1}'
-                                ]
-                              },
-                              comment: '',
-                            ));
-                          }
+                      InkWell(
+                        enableFeedback: true,
+                        onTap: () {
+                          _showPicker(context);
                         },
-                        child: InkWell(
-                          enableFeedback: true,
-                          onTap: () {
-                            _showPicker(context);
-                          },
-                          child: const Icon(
-                            Icons.attach_file,
-                            color: AppColors.colorGreyLight,
-                          ),
+                        child: const Icon(
+                          Icons.attach_file,
+                          color: AppColors.colorGreyLight,
                         ),
                       ),
                       SizedBox(
@@ -454,13 +480,13 @@ class _AllCommentsState extends State<AllComments> {
     );
     if (pickedFile == null) return;
     final file = File(pickedFile.path);
-    setState(() {
-      videos.add(pickedFile);
-    });
-    log('Picking video');
+    // setState(() {
+    //   videos.add(pickedFile);
+    // });
     log('Picked file size: ${pickedFile.length()}');
     generateThumbnail(file);
-    getVideoSize(file);
+    final size = getVideoSize(file);
+    log('Video size $size');
     File compressedFile = await compressVideo(file);
     final Uint8List videoBytes = await compressedFile.readAsBytes();
     final String base64Video = base64Encode(videoBytes);
@@ -486,14 +512,18 @@ class _AllCommentsState extends State<AllComments> {
       return;
     }
     final file = File(pickedFile.path);
-    setState(() {
-      videos.add(pickedFile);
-    });
+    // setState(() {
+    //   videos.add(pickedFile);
+    // });
     log('done recording');
     log('Picked file size: ${pickedFile.length()}');
     generateThumbnail(file);
-    getVideoSize(file);
+    final videoSize = getVideoSize(file);
     File compressedFile = await compressVideo(file);
+    // setState(() {
+    //   showSpinner = true;
+    // });
+    log('Compressed file size: ${compressedFile.length()}');
     final Uint8List videoBytes = await compressedFile.readAsBytes();
     final String base64Video = base64Encode(videoBytes);
     BlocProvider.of<GrievancesBloc>(context)
@@ -502,19 +532,21 @@ class _AllCommentsState extends State<AllComments> {
       fileType: 'video',
       encodedCommentFile: base64Video,
     ));
-
-    log('Compressed file size: ${compressedFile.length()}');
+    // setState(() {
+    //   showSpinner = false;
+    // });
     if (mounted) {
       Navigator.of(context).pop();
     }
   }
 
-  Future<void> getVideoSize(File file) async {
+  Future<int> getVideoSize(File file) async {
     final size = await file.length();
     setState(() {
       videoSize = size;
     });
     log('Video Size: $videoSize');
+    return size;
   }
 
   Future<File> compressVideo(File file) async {
@@ -527,9 +559,9 @@ class _AllCommentsState extends State<AllComments> {
       },
     );
     final info = await VideoCompressApi.compressVideo(file);
-    setState(() {
-      compressVideoInfo.add(info);
-    });
+    // setState(() {
+    //   compressVideoInfo.add(info);
+    // });
     return File(info!.file!.path.toString());
     // log(compressVideoInfo!.filesize.toString());
   }
@@ -556,6 +588,7 @@ class _AllCommentsState extends State<AllComments> {
                         MaterialPageRoute(
                           builder: (context) => FullScreenVideoPlayer(
                             file: File(compressVideoInfo[index]!.file!.path),
+                            url: null,
                           ),
                         ),
                       );
@@ -834,8 +867,7 @@ class _AllCommentsState extends State<AllComments> {
                                     .afterLogin.userDetails!.firstName!,
                                 assets: {
                                   'Audio': [
-                                    state.s3uploadResult.uploadResult!
-                                        .presignedUrl
+                                    'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}'
                                   ],
                                   'Image': const [],
                                   'Video': const []

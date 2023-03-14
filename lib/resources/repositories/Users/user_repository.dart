@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:civic_staff/constants/env_variable.dart';
 import 'package:civic_staff/models/user_model.dart';
@@ -22,12 +21,10 @@ class UserRepository {
   Future<List<User>> loadUserJson() async {
     final list = json.decode(await getUserJson()) as List<dynamic>;
     List<User> usersList = list.map((e) => User.fromJson(e)).toList();
-    log('User loaded');
     return usersList;
   }
 
   Future<List<User>> getUser() async {
-    log('User list fetched!');
     return await loadUserJson();
   }
 
@@ -104,7 +101,6 @@ class UserRepository {
   }
 
   Future<dynamic> editUser(User user) async {
-    log(user.userId.toString());
     final response = Dio().put(
       '$API_URL/user/modify-user',
       data: jsonEncode({

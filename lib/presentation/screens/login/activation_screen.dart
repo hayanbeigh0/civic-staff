@@ -86,14 +86,20 @@ class _ActivationState extends State<Activation> {
                         children: [
                           Text(
                             LocaleKeys.appName.tr(),
-                            style: AppStyles.loginScreensAppNameTextStyle,
+                            style:
+                                AppStyles.loginScreensAppNameTextStyle.copyWith(
+                              color: AppColors.colorWhite,
+                            ),
                           ),
                           SizedBox(
                             height: 30.h,
                           ),
                           Text(
                             LocaleKeys.loginAndActivationScreen_welcome.tr(),
-                            style: AppStyles.loginScreensWelcomeTextStyle,
+                            style:
+                                AppStyles.loginScreensWelcomeTextStyle.copyWith(
+                              color: AppColors.colorWhite,
+                            ),
                           ),
                         ],
                       ),

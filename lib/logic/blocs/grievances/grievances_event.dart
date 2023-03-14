@@ -7,8 +7,10 @@ abstract class GrievancesEvent extends Equatable {
 
 class LoadGrievancesEvent extends GrievancesEvent {
   final String municipalityId;
+  final String staffId;
   const LoadGrievancesEvent({
     required this.municipalityId,
+    required this.staffId,
   });
   @override
   List<Object> get props => [municipalityId];

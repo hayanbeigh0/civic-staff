@@ -528,22 +528,24 @@ class _SearchUserState extends State<SearchUser> {
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: AppColors.colorPrimaryExtraLight,
-                        width: 5,
+                        width: 2,
                       ),
                       shape: BoxShape.circle,
                     ),
-                    child: state.userList[index].profilePicture == '' ||
-                            state.userList[index].profilePicture == null
-                        ? Center(
-                            child: Icon(
-                              Icons.person,
-                              size: 60.sp,
+                    child: ClipOval(
+                      child: state.userList[index].profilePicture == '' ||
+                              state.userList[index].profilePicture == null
+                          ? Center(
+                              child: Icon(
+                                Icons.person,
+                                size: 60.sp,
+                              ),
+                            )
+                          : Image.network(
+                              state.userList[index].profilePicture.toString(),
+                              fit: BoxFit.cover,
                             ),
-                          )
-                        : Image.network(
-                            state.userList[index].profilePicture.toString(),
-                            fit: BoxFit.cover,
-                          ),
+                    ),
                   ),
                 ),
               ),

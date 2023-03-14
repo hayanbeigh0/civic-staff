@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:civic_staff/constants/env_variable.dart';
 import 'package:dio/dio.dart';
@@ -17,7 +16,6 @@ class AuthenticationRepository {
       ),
       data: body,
     );
-    // log('Response: ${json.decode(response.data)} ${response.statusCode}');
     return response;
   }
 
@@ -31,7 +29,6 @@ class AuthenticationRepository {
       "user_type": userDetails['user_type'],
       "answer": otp
     });
-    // log(body);
 
     var response = await Dio().post(
       url,

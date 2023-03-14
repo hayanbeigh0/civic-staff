@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
 import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/models/user_details.dart';
@@ -145,18 +147,29 @@ class AuthBasedRouting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<LocalStorageCubit>(context).getUserDataFromLocalStorage();
-    return BlocBuilder<LocalStorageCubit, LocalStorageState>(
-      builder: (context, state) {
+    return BlocConsumer<LocalStorageCubit, LocalStorageState>(
+      listener: (context, state) {
         if (state is LocalStorageFetchingDoneState) {
-          afterLogin = state.afterLogin;
-          return HomeScreen();
+          AuthBasedRouting.afterLogin = state.afterLogin;
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            HomeScreen.routeName,
+            (route) => false,
+          );
         }
         if (state is LocalStorageUserNotPresentState) {
-          return Login();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Login.routeName,
+            (route) => false,
+          );
         }
         if (state is LocalStorageFetchingFailedState) {
-          return Login();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Login.routeName,
+            (route) => false,
+          );
         }
+      },
+      builder: (context, state) {
         return const Scaffold(
           backgroundColor: AppColors.colorWhite,
           body: Center(

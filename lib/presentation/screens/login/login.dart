@@ -49,6 +49,7 @@ class Login extends StatelessWidget {
                           LocaleKeys.appName.tr(),
                           style:
                               AppStyles.loginScreensAppNameTextStyle.copyWith(
+                            color: AppColors.colorWhite,
                             fontSize:
                                 constraints.maxWidth > 600 ? 28.sp : 34.sp,
                           ),
@@ -60,6 +61,7 @@ class Login extends StatelessWidget {
                           LocaleKeys.loginAndActivationScreen_welcome.tr(),
                           style:
                               AppStyles.loginScreensWelcomeTextStyle.copyWith(
+                            color: AppColors.colorWhite,
                             fontSize:
                                 constraints.maxWidth > 600 ? 16.sp : 20.sp,
                           ),

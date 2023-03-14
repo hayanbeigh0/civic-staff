@@ -22,7 +22,7 @@ class LoginShapeBottom extends StatelessWidget {
               curvatureWidth: constraints.maxWidth > 600 ? 0.5.w : 1.5.w,
             ),
             child: Container(
-              color: AppColors.colorPrimary,
+              color: AppColors.colorSecondary,
               height: 70.h,
               width: double.infinity,
             ),
@@ -35,7 +35,7 @@ class LoginShapeBottom extends StatelessWidget {
               curvatureWidth: constraints.maxWidth > 600 ? 0.45.w : 1.4.w,
             ),
             child: Container(
-              color: AppColors.colorPrimaryExtraLight,
+              color: AppColors.colorPrimary,
               height: 70.h,
               width: double.infinity,
             ),

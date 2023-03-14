@@ -199,6 +199,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   BlocProvider.of<MyProfileCubit>(context)
                                       .editMyProfile(
                                     MyProfile(
+                                      muncipality: widget.myProfile.muncipality,
+                                      profilePicture:
+                                          widget.myProfile.profilePicture,
                                       about: aboutController.text,
                                       allocatedWards: AuthBasedRouting
                                           .afterLogin

@@ -14,6 +14,7 @@ class MyProfile extends Equatable {
   String? city;
   String? country;
   String? muncipality;
+  String? profilePicture;
   List<AllocatedWards>? allocatedWards;
 
   MyProfile({
@@ -30,6 +31,7 @@ class MyProfile extends Equatable {
     this.country,
     this.allocatedWards,
     this.muncipality,
+    this.profilePicture,
   });
 
   MyProfile.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class MyProfile extends Equatable {
     city = json['city'];
     country = json['country'];
     muncipality = json['muncipality'];
+    profilePicture = json['profilePicture'];
     if (json['allocatedWards'] != null) {
       allocatedWards = <AllocatedWards>[];
       json['allocatedWards'].forEach((v) {
@@ -67,6 +70,7 @@ class MyProfile extends Equatable {
     data['city'] = city;
     data['country'] = country;
     data['muncipality'] = muncipality;
+    data['profilePicture'] = profilePicture;
     if (allocatedWards != null) {
       data['allocatedWards'] = allocatedWards!.map((v) => v.toJson()).toList();
     }
@@ -87,6 +91,7 @@ class MyProfile extends Equatable {
         city,
         country,
         muncipality,
+        profilePicture,
       ];
 }
 

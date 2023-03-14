@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/grievances/grievance_detail_model.dart';
 import 'package:civic_staff/models/s3_upload_result.dart';
@@ -33,8 +29,8 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
     on<LoadGrievancesEvent>((event, emit) async {
       emit(GrievancesLoadingState());
       try {
-        List<Grievances> updatedGrievanceList =
-            await grievancesRepository.loadGrievancesJson(event.municipalityId);
+        List<Grievances> updatedGrievanceList = await grievancesRepository
+            .loadGrievancesJson(event.municipalityId, event.staffId);
         updatedGrievanceList.sort((g1, g2) {
           DateTime timestamp1 = DateTime.parse(g1.lastModifiedDate.toString());
           DateTime timestamp2 = DateTime.parse(g2.lastModifiedDate.toString());
@@ -57,6 +53,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
       emit(GrievanceClosedState());
       add(
         LoadGrievancesEvent(
+            staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
             municipalityId:
                 AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
       );
@@ -75,8 +72,6 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
             ),
           ),
         );
-        // add(LoadGrievancesEvent(municipalityId: event.municipalityId));
-        log('Grievance by Id: ${response.data}');
       } on DioError catch (e) {
         emit(LoadingGrievanceByIdFailedState());
       }
@@ -101,7 +96,6 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           ),
         );
       } on DioError catch (e) {
-        log('Updating grievane failed: ${e.response}');
         emit(UpdatingGrievanceStatusFailedState());
         add(
           GetGrievanceByIdEvent(
@@ -125,7 +119,6 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           emit(UpdatingGrievanceStatusFailedState());
         }
       } on DioError catch (e) {
-        log('Updating grievane failed: ${e.response}');
         emit(UpdatingGrievanceStatusFailedState());
         add(
           GetGrievanceByIdEvent(
@@ -154,9 +147,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
             grievanceId: event.grievanceId,
           ),
         );
-        log('Successfully added a comment!');
       } on DioError catch (e) {
-        log('Adding comment failed: ${e.message}');
         emit(AddingGrievanceCommentFailedState());
       }
     });
@@ -168,14 +159,11 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           encodedCommentFile: event.encodedCommentFile,
           fileType: event.fileType,
         );
-        log(response.data.toString());
         S3UploadResult s3uploadResult = S3UploadResult.fromJson(response.data);
         emit(AddingGrievanceAudioCommentAssetSuccessState(
           s3uploadResult: s3uploadResult,
         ));
-        log('Successfully added a comment!');
       } on DioError catch (e) {
-        log('Adding comment failed: ${e.message}');
         emit(AddingGrievanceAudioCommentAssetFailedState());
       }
     });
@@ -187,14 +175,11 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           encodedCommentFile: event.encodedCommentFile,
           fileType: event.fileType,
         );
-        log(response.data.toString());
         S3UploadResult s3uploadResult = S3UploadResult.fromJson(response.data);
         emit(AddingGrievanceImageCommentAssetSuccessState(
           s3uploadResult: s3uploadResult,
         ));
-        log('Successfully added a comment!');
       } on DioError catch (e) {
-        log('Adding comment failed: ${e.message}');
         emit(AddingGrievanceImageCommentAssetFailedState());
       }
     });
@@ -206,14 +191,11 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           encodedCommentFile: event.encodedCommentFile,
           fileType: event.fileType,
         );
-        log(response.data.toString());
         S3UploadResult s3uploadResult = S3UploadResult.fromJson(response.data);
         emit(AddingGrievanceVideoCommentAssetSuccessState(
           s3uploadResult: s3uploadResult,
         ));
-        log('Successfully added a comment!');
       } on DioError catch (e) {
-        log('Adding comment failed: ${e.message}');
         emit(AddingGrievanceVideoCommentAssetFailedState());
       }
     });
@@ -222,7 +204,9 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
       // userRepository.loadUserJson();
       List<Grievances> updatedGrievanceList =
           await grievancesRepository.loadGrievancesJson(
-              AuthBasedRouting.afterLogin.userDetails!.municipalityID!);
+        AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
+        AuthBasedRouting.afterLogin.userDetails!.staffID!,
+      );
       updatedGrievanceList = updatedGrievanceList
           .where(
             (element) =>

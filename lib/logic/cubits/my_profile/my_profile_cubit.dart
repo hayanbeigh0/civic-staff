@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/my_profile.dart';
+import 'package:civic_staff/models/s3_upload_result.dart';
 import 'package:civic_staff/models/user_details.dart';
 import 'package:civic_staff/resources/repositories/my_profile/my_profile.dart';
 import 'package:dio/dio.dart';
@@ -61,10 +62,31 @@ class MyProfileCubit extends Cubit<MyProfileState> {
           mobileNumber: userDetails.mobileNumber,
           muncipality: userDetails.municipalityID,
           streetName: '',
+          profilePicture: userDetails.profilePicture,
         ),
         userDetails: userDetails,
       ),
     );
+  }
+
+  uploadProfilePicture({
+    required String encodedProfilePictureFile,
+    required String fileType,
+    required String staffId,
+  }) async {
+    emit(ProfilePictureUploadingState());
+    try {
+      final response = await myProfileRerpository.addProfilePictureFile(
+        encodedProfilePictureFile: encodedProfilePictureFile,
+        fileType: fileType,
+        staffId: staffId,
+      );
+      log(response.data.toString());
+      S3UploadResult s3uploadResult = S3UploadResult.fromJson(response.data);
+      emit(ProfilePictureUploadingSuccessState(s3uploadResult: s3uploadResult));
+    } on DioError catch (e) {
+      emit(ProfilePictureUploadingFailedState());
+    }
   }
 
   editMyProfile(MyProfile myProfile) async {
@@ -78,6 +100,10 @@ class MyProfileCubit extends Cubit<MyProfileState> {
       municipalityID: AuthBasedRouting.afterLogin.userDetails!.municipalityID,
       staffID: AuthBasedRouting.afterLogin.userDetails!.staffID,
       role: AuthBasedRouting.afterLogin.userDetails!.role,
+      profilePicture: myProfile.profilePicture,
+      createdBy: AuthBasedRouting.afterLogin.userDetails!.createdBy,
+      notificationToken:
+          AuthBasedRouting.afterLogin.userDetails!.notificationToken,
     );
     // emit(MyProfileLoading());
     try {

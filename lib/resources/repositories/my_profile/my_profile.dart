@@ -19,7 +19,30 @@ class MyProfileRerpository {
         },
       ),
     );
-    log('Repository response: $response');
+    // log('Repository response: $response');
+    return response;
+  }
+
+  Future<Response> addProfilePictureFile({
+    required String encodedProfilePictureFile,
+    required String fileType,
+    required String staffId,
+  }) async {
+    final response = await Dio().post(
+      '$API_URL/general/upload-assets',
+      data: jsonEncode({
+        "File": encodedProfilePictureFile,
+        "FileType": fileType,
+        "UserID": staffId,
+        "Section": 'profile'
+      }),
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    // log(response.data.toString());
     return response;
   }
 

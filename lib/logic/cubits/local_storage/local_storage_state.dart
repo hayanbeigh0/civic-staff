@@ -49,6 +49,16 @@ class LocalStorageUserNotPresentState extends LocalStorageState {
   List<Object> get props => [];
 }
 
+class LocalStorageClearingUserFailedState extends LocalStorageState {
+  @override
+  List<Object> get props => [];
+}
+
+class LocalStorageClearingUserSuccessState extends LocalStorageState {
+  @override
+  List<Object> get props => [];
+}
+
 class LocalStorageUserDataPresentState extends LocalStorageState {
   final bool userDataPresent;
   final AfterLogin? userData;

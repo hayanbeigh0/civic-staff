@@ -1,3 +1,7 @@
+import 'package:civic_staff/presentation/widgets/better_player_video.dart';
+import 'package:civic_staff/presentation/widgets/video_asset_widget.dart';
+import 'package:civic_staff/presentation/widgets/video_thumbnail.dart';
+import 'package:civic_staff/presentation/widgets/video_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -54,9 +58,32 @@ class CommentList extends StatelessWidget {
                         commentList[index].assets!.video == [] ||
                         commentList[index].assets!.video!.isEmpty
                     ? const SizedBox()
-                    : VideoCommentWidget(
-                        commentList: commentList,
-                        commentListIndex: index,
+                    :
+                    // BetterPlayerVideo(
+                    //     url: commentList[index].assets!.video![0],
+                    //   ),
+                    // VideoCommentWidget(
+                    //     commentList: commentList,
+                    //     commentListIndex: index,
+                    //   ),
+                    Stack(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => FullScreenVideoPlayer(
+                                  url: commentList[index].assets!.video![0],
+                                  file: null,
+                                ),
+                              ));
+                            },
+                            child: VideoThumbnail(
+                              url: commentList[index].assets!.video![0],
+                              commentList: commentList,
+                              commentListIndex: index,
+                            ),
+                          )
+                        ],
                       ),
             commentList[index].assets == null
                 ? const SizedBox()

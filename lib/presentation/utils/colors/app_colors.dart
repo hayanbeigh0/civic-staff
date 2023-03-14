@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const Color colorPrimary = Color(0xFF2862CC);
+  static const Color colorSecondary = Color.fromARGB(255, 162, 189, 240);
   static const Color colorPrimary200 = Color.fromARGB(255, 231, 237, 247);
   static const Color colorPrimaryDark = Color(0xFF00328E);
   static const Color colorSecondaryDark = Color(0xFF193D80);
@@ -12,7 +13,7 @@ class AppColors {
   static const Color colorBlack200 = Color.fromARGB(129, 0, 0, 0);
   static const Color colorGreyLight = Color(0xFF7B7373);
   static const Color colorDisabledTextField =
-      Color.fromARGB(255, 202, 202, 202);
+      Color.fromARGB(255, 228, 228, 228);
   static const Color cardColorLight = Color.fromARGB(255, 249, 252, 255);
   static const Color cardShadowColor = Color(0x2B2B75FC);
   static const Color cardTextColor = Color(0xFF15336A);

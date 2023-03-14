@@ -52,8 +52,10 @@ class GrievanceList extends StatelessWidget {
   Widget build(BuildContext context) {
     BlocProvider.of<GrievancesBloc>(context).add(
       LoadGrievancesEvent(
-          municipalityId:
-              AuthBasedRouting.afterLogin.userDetails!.municipalityID!),
+        staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
+        municipalityId:
+            AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
+      ),
     );
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
@@ -99,14 +101,45 @@ class GrievanceList extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pushNamed(
-                            GrievanceMap.routeName,
-                          ),
-                          child: Text(
-                            LocaleKeys.grievancesScreen_viewMap.tr(),
-                            style: AppStyles.appBarActionsTextStyle,
-                          ),
+                        BlocBuilder<GrievancesBloc, GrievancesState>(
+                          builder: (context, state) {
+                            if (state is GrievancesLoadedState) {
+                              return state.grievanceList.isEmpty
+                                  ? TextButton(
+                                      onPressed: null,
+                                      child: Text(
+                                        LocaleKeys.grievancesScreen_viewMap
+                                            .tr(),
+                                        style: AppStyles.appBarActionsTextStyle
+                                            .copyWith(
+                                          color:
+                                              AppColors.colorDisabledTextField,
+                                        ),
+                                      ),
+                                    )
+                                  : TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pushNamed(
+                                        GrievanceMap.routeName,
+                                      ),
+                                      child: Text(
+                                        LocaleKeys.grievancesScreen_viewMap
+                                            .tr(),
+                                        style: AppStyles.appBarActionsTextStyle,
+                                      ),
+                                    );
+                            }
+                            return TextButton(
+                              onPressed: null,
+                              child: Text(
+                                LocaleKeys.grievancesScreen_viewMap.tr(),
+                                style:
+                                    AppStyles.appBarActionsTextStyle.copyWith(
+                                  color: AppColors.colorDisabledTextField,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -147,6 +180,8 @@ class GrievanceList extends StatelessWidget {
                       if (value.isEmpty) {
                         return BlocProvider.of<GrievancesBloc>(context).add(
                           LoadGrievancesEvent(
+                            staffId: AuthBasedRouting
+                                .afterLogin.userDetails!.staffID!,
                             municipalityId: AuthBasedRouting
                                 .afterLogin.userDetails!.municipalityID!,
                           ),
@@ -307,9 +342,11 @@ class GrievanceList extends StatelessWidget {
                               return BlocProvider.of<GrievancesBloc>(context)
                                   .add(
                                 LoadGrievancesEvent(
-                                    municipalityId: AuthBasedRouting
-                                        .afterLogin.userDetails!.municipalityID
-                                        .toString()),
+                                  staffId: AuthBasedRouting
+                                      .afterLogin.userDetails!.staffID!,
+                                  municipalityId: AuthBasedRouting
+                                      .afterLogin.userDetails!.municipalityID!,
+                                ),
                               );
                             },
                             child: Stack(
@@ -327,8 +364,11 @@ class GrievanceList extends StatelessWidget {
                             onRefresh: () async {
                               BlocProvider.of<GrievancesBloc>(context).add(
                                 LoadGrievancesEvent(
-                                    municipalityId: AuthBasedRouting.afterLogin
-                                        .userDetails!.municipalityID!),
+                                  staffId: AuthBasedRouting
+                                      .afterLogin.userDetails!.staffID!,
+                                  municipalityId: AuthBasedRouting
+                                      .afterLogin.userDetails!.municipalityID!,
+                                ),
                               );
                             },
                             child: ListView.builder(
@@ -542,9 +582,11 @@ class GrievanceList extends StatelessWidget {
                           onRefresh: () async {
                             return BlocProvider.of<GrievancesBloc>(context).add(
                               LoadGrievancesEvent(
-                                  municipalityId: AuthBasedRouting
-                                      .afterLogin.userDetails!.municipalityID
-                                      .toString()),
+                                staffId: AuthBasedRouting
+                                    .afterLogin.userDetails!.staffID!,
+                                municipalityId: AuthBasedRouting
+                                    .afterLogin.userDetails!.municipalityID!,
+                              ),
                             );
                           },
                           child: Stack(

@@ -1,21 +1,18 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
-
-import 'package:aws_s3_upload/aws_s3_upload.dart';
 import 'package:dio/dio.dart';
 
 import 'package:civic_staff/constants/env_variable.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
-import 'package:simple_s3/simple_s3.dart';
 
 class GrievancesRepository {
   // static List<Grievances> grievanceList = [];
-  Future<String> getGrievancesJson(String municipalityId) async {
+  Future<String> getGrievancesJson(
+      String municipalityId, String staffId) async {
     final response = await Dio()
         .get(
-          '$API_URL/grievances/all-grievances',
-          data: jsonEncode({"municipalityId": municipalityId}),
+          '$API_URL/staff/allotted-grievances',
+          data: jsonEncode(
+              {"MunicipalityID": municipalityId, "StaffID": staffId}),
           options: Options(
             headers: {
               'Content-Type': 'application/json',
@@ -25,15 +22,15 @@ class GrievancesRepository {
         .timeout(
           const Duration(seconds: 10),
         );
-    // log(jsonEncode(response.data));
     return jsonEncode(response.data);
   }
 
-  Future<List<Grievances>> loadGrievancesJson(String municipalityId) async {
+  Future<List<Grievances>> loadGrievancesJson(
+      String municipalityId, String staffId) async {
     List<Grievances> grievanceList = [];
     try {
-      final list =
-          json.decode(await getGrievancesJson(municipalityId)) as List<dynamic>;
+      final list = json.decode(await getGrievancesJson(municipalityId, staffId))
+          as List<dynamic>;
       grievanceList = list.map((e) => Grievances.fromJson(e)).toList();
       grievanceList.sort((g1, g2) {
         DateTime timestamp1 = DateTime.parse(g1.lastModifiedDate.toString());
@@ -41,7 +38,7 @@ class GrievancesRepository {
         return timestamp2.compareTo(timestamp1);
       });
     } catch (e) {
-      log(e.toString());
+      print(e.toString());
     }
     return grievanceList;
   }
@@ -65,7 +62,6 @@ class GrievancesRepository {
         },
       ),
     );
-    log(response.data.toString());
     return response;
   }
 
@@ -90,9 +86,8 @@ class GrievancesRepository {
           },
         ),
       );
-      log(response.toString());
     } catch (e) {
-      log(e.toString());
+      print(e.toString());
     }
   }
 
@@ -112,19 +107,9 @@ class GrievancesRepository {
         },
       ),
     );
-    log(response.toString());
+
     return response;
   }
-
-  // Future<List<Grievances>> closeGrievance(String grievanceId) async {
-  //   await Future.delayed(const Duration(seconds: 2));
-  //   grievanceList
-  //           .firstWhere((element) => element.grievanceID == grievanceId)
-  //           .open ==
-  //       false;
-
-  //   return grievanceList;
-  // }
 
   Future<Response> modifyGrieance(
       String grievanceId, Grievances newGrievance) async {

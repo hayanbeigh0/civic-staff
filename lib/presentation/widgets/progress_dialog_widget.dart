@@ -35,6 +35,7 @@ class _ProgressDialogWidgetState extends State<ProgressDialogWidget> {
     return Padding(
       padding: EdgeInsets.all(12.sp),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Text('Compressing Video...'),
           SizedBox(

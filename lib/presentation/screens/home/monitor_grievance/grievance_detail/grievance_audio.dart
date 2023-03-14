@@ -18,7 +18,7 @@ class GrievanceAudio extends StatelessWidget {
     required this.state,
     required this.grievanceListIndex,
   });
-  final GrievancesLoadedState state;
+  final GrievanceByIdLoadedState state;
   final int grievanceListIndex;
 
   @override
@@ -94,8 +94,7 @@ class GrievanceAudio extends StatelessWidget {
                   crossAxisSpacing: 30.w,
                   mainAxisSpacing: 20.h,
                 ),
-                itemCount: state.grievanceList[grievanceListIndex]
-                    .assets!['audios']!.length,
+                itemCount: state.grievanceDetail.assets!.audio!.length,
                 //  +
                 //     state.grievanceList[grievanceListIndex].videos!.length,
                 itemBuilder: (context, index) {
@@ -113,9 +112,8 @@ class GrievanceAudio extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     AudioComment(
-                                      audioUrl: state
-                                          .grievanceList[grievanceListIndex]
-                                          .assets!['audios'][index],
+                                      audioUrl: state.grievanceDetail.assets!
+                                          .audio![index],
                                     ),
                                   ],
                                 ),

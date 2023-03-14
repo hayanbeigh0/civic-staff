@@ -165,8 +165,31 @@ class UserDetails extends StatelessWidget {
                       radius: 40.w,
                       backgroundColor: AppColors.colorPrimary,
                       child: CircleAvatar(
-                        radius: 38.w,
+                        radius: 35.w,
                         backgroundColor: AppColors.colorPrimaryExtraLight,
+                        child: ClipOval(
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white, width: 2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipOval(
+                              child: Image.network(
+                                user.profilePicture!,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Center(
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 60.sp,
+                                  ),
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(
