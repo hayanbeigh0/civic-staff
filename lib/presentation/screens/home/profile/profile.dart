@@ -185,75 +185,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Row(
                           children: [
-                            Stack(
-                              children: [
-                                InkWell(
-                                  onLongPress: () {
-                                    _showPicker(context);
-                                  },
-                                  child: CircleAvatar(
-                                    radius: 35.w,
-                                    backgroundColor:
-                                        AppColors.colorPrimaryExtraLight,
-                                    child: ClipOval(
-                                      child: Container(
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.white, width: 2),
-                                          shape: BoxShape.circle,
-                                        ),
+                            Container(
+                              child: Stack(
+                                children: [
+                                  InkWell(
+                                    onLongPress: () {
+                                      _showPicker(context);
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.all(10.sp),
+                                      child: CircleAvatar(
+                                        radius: 35.w,
+                                        backgroundColor:
+                                            AppColors.colorPrimaryExtraLight,
                                         child: ClipOval(
-                                          child: state.userDetails
-                                                          .profilePicture !=
-                                                      null ||
-                                                  state.userDetails
-                                                          .profilePicture ==
-                                                      ''
-                                              ? Image.network(
-                                                  state.userDetails
-                                                      .profilePicture!,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error,
-                                                          stackTrace) =>
-                                                      Center(
-                                                    child: Icon(
-                                                      Icons.person,
-                                                      size: 60.sp,
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 2),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: ClipOval(
+                                              child: state.userDetails
+                                                              .profilePicture !=
+                                                          null ||
+                                                      state.userDetails
+                                                              .profilePicture ==
+                                                          ''
+                                                  ? Image.network(
+                                                      state.userDetails
+                                                          .profilePicture!,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          Center(
+                                                        child: Icon(
+                                                          Icons.person,
+                                                          size: 60.sp,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Center(
+                                                      child: IconButton(
+                                                        icon: Icon(
+                                                          Icons.photo_camera,
+                                                          size: 30.sp,
+                                                        ),
+                                                        onPressed: () {
+                                                          _showPicker(context);
+                                                        },
+                                                      ),
                                                     ),
-                                                  ),
-                                                )
-                                              : Center(
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.photo_camera,
-                                                      size: 30.sp,
-                                                    ),
-                                                    onPressed: () {
-                                                      _showPicker(context);
-                                                    },
-                                                  ),
-                                                ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-
-                                // Positioned(
-                                //   right: 0,
-                                //   top: 0,
-                                //   child: IconButton(
-                                //     icon: Icon(
-                                //       Icons.edit,
-                                //       size: 24.sp,
-                                //       color: AppColors.textColorLight,
-                                //     ),
-                                //     onPressed: () {},
-                                //   ),
-                                // ),
-                              ],
+                                  Positioned(
+                                    right: 10,
+                                    bottom: 10,
+                                    child: InkWell(
+                                      onTap: () => _showPicker(context),
+                                      child: CircleAvatar(
+                                        radius: 14.sp,
+                                        backgroundColor: AppColors.colorWhite,
+                                        child: IconButton(
+                                          padding: EdgeInsets.zero,
+                                          icon: Icon(
+                                            Icons.edit,
+                                            size: 20.sp,
+                                            color: AppColors.colorPrimary,
+                                          ),
+                                          onPressed: () {
+                                            _showPicker(context);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(
                               width: 15.w,

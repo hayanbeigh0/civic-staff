@@ -21,7 +21,7 @@ class LoginShapeTop extends StatelessWidget {
             rightVerticalOffset: 150.h,
           ),
           child: Container(
-            color: AppColors.colorSecondary,
+            color: AppColors.colorPrimary,
             height: 300.h,
             width: double.infinity,
           ),
@@ -32,7 +32,7 @@ class LoginShapeTop extends StatelessWidget {
             rightVerticalOffset: 190.h,
           ),
           child: Container(
-            color: AppColors.colorPrimary,
+            color: AppColors.colorPrimaryLight,
             height: 300.h,
             width: double.infinity,
             child: child,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:chewie/chewie.dart';
 import 'package:civic_staff/constants/app_constants.dart';
@@ -34,7 +33,6 @@ import 'package:civic_staff/presentation/widgets/photo_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:civic_staff/presentation/widgets/secondary_button.dart';
 import 'package:civic_staff/presentation/widgets/text_comment_widget.dart';
-import 'package:civic_staff/presentation/widgets/video_comment_widget.dart';
 import 'package:video_player/video_player.dart';
 
 class GrievanceDetail extends StatelessWidget {
@@ -105,6 +103,22 @@ class GrievanceDetail extends StatelessWidget {
               listener: (context, state) {
                 if (state is GrievanceTypeUpdatedState) {
                   Navigator.of(context).maybePop();
+                }
+                if (state is GrievancesLoadedState) {
+                  BlocProvider.of<GrievancesBloc>(context)
+                      .add(GetGrievanceByIdEvent(
+                    municipalityId: AuthBasedRouting
+                        .afterLogin.userDetails!.municipalityID!,
+                    grievanceId: grievanceId,
+                  ));
+                }
+                if (state is LoadingGrievanceByIdFailedState) {
+                  BlocProvider.of<GrievancesBloc>(context)
+                      .add(GetGrievanceByIdEvent(
+                    municipalityId: AuthBasedRouting
+                        .afterLogin.userDetails!.municipalityID!,
+                    grievanceId: grievanceId,
+                  ));
                 }
               },
               builder: (context, state) {
@@ -621,6 +635,7 @@ class GrievanceDetail extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(8.r),
+                                        color: AppColors.colorPrimaryLight,
                                       ),
                                       child: Image.network(
                                         state.grievanceDetail.assets!
@@ -674,8 +689,8 @@ class GrievanceDetail extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   child: Center(
-                                    child: InkWell(
-                                      onTap: () {
+                                    child: TextButton(
+                                      onPressed: () {
                                         Navigator.of(context).pushNamed(
                                           GrievancePhotoVideo.routeName,
                                           arguments: {
@@ -782,8 +797,8 @@ class GrievanceDetail extends StatelessWidget {
                                       ),
                                     ),
                                     child: Center(
-                                      child: InkWell(
-                                        onTap: () {
+                                      child: TextButton(
+                                        onPressed: () {
                                           Navigator.of(context).pushNamed(
                                             GrievanceAudio.routeName,
                                             arguments: {
@@ -888,8 +903,8 @@ class GrievanceDetail extends StatelessWidget {
                     style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   const Spacer(),
-                  InkWell(
-                    onTap: () {
+                  TextButton(
+                    onPressed: () {
                       Navigator.of(context).pushNamed(
                         AllComments.routeName,
                         arguments: {

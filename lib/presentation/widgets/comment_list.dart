@@ -1,5 +1,5 @@
-import 'package:civic_staff/presentation/widgets/better_player_video.dart';
-import 'package:civic_staff/presentation/widgets/video_asset_widget.dart';
+import 'package:civic_staff/main.dart';
+import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/widgets/video_thumbnail.dart';
 import 'package:civic_staff/presentation/widgets/video_widget.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,6 @@ import 'package:civic_staff/models/grievances/grievance_detail_model.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/photo_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/text_comment_widget.dart';
-import 'package:civic_staff/presentation/widgets/video_comment_widget.dart';
 
 class CommentList extends StatelessWidget {
   const CommentList({
@@ -58,15 +57,7 @@ class CommentList extends StatelessWidget {
                         commentList[index].assets!.video == [] ||
                         commentList[index].assets!.video!.isEmpty
                     ? const SizedBox()
-                    :
-                    // BetterPlayerVideo(
-                    //     url: commentList[index].assets!.video![0],
-                    //   ),
-                    // VideoCommentWidget(
-                    //     commentList: commentList,
-                    //     commentListIndex: index,
-                    //   ),
-                    Stack(
+                    : Stack(
                         children: [
                           InkWell(
                             onTap: () {
@@ -77,10 +68,37 @@ class CommentList extends StatelessWidget {
                                 ),
                               ));
                             },
-                            child: VideoThumbnail(
-                              url: commentList[index].assets!.video![0],
-                              commentList: commentList,
-                              commentListIndex: index,
+                            child: Align(
+                              alignment: commentList[index].commentedBy ==
+                                      AuthBasedRouting
+                                          .afterLogin.userDetails!.staffID
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: Container(
+                                width: 200.w,
+                                height: 150.h,
+                                decoration: BoxDecoration(
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      blurRadius: 2,
+                                      offset: Offset(1, 1),
+                                      color: AppColors.cardShadowColor,
+                                    ),
+                                    BoxShadow(
+                                      blurRadius: 2,
+                                      offset: Offset(-1, -1),
+                                      color: AppColors.colorWhite,
+                                    ),
+                                  ],
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  color: AppColors.colorPrimaryLight,
+                                ),
+                                child: VideoThumbnail(
+                                  url: commentList[index].assets!.video![0],
+                                  commentList: commentList,
+                                  commentListIndex: index,
+                                ),
+                              ),
                             ),
                           )
                         ],

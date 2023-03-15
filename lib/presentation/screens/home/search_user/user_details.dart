@@ -422,7 +422,9 @@ class UserDetails extends StatelessWidget {
                     child: PrimaryButton(
                       buttonText: LocaleKeys.userDetails_contact.tr(),
                       isLoading: false,
-                      onTap: () {},
+                      onTap: () async {
+                        _showPicker(context);
+                      },
                       enabled: true,
                     ),
                   ),
@@ -443,5 +445,110 @@ class UserDetails extends StatelessWidget {
       return LocaleKeys.enrollUsers_wardDropdownError.tr();
     }
     return null;
+  }
+
+  void _showPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 5.h,
+              ),
+              SizedBox(
+                width: 100.w,
+                child: const Divider(
+                  thickness: 2,
+                  color: AppColors.textColorDark,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10.sp),
+                child: Wrap(
+                  children: <Widget>[
+                    ListTile(
+                      leading: const Icon(Icons.call),
+                      title: const Text('Phone'),
+                      onTap: () async {
+                        makePhoneCall(user.mobileNumber!);
+                      },
+                    ),
+                    user.emailId == null
+                        ? const SizedBox()
+                        : ListTile(
+                            leading: const Icon(Icons.email),
+                            title: const Text('Email'),
+                            onTap: () {
+                              launchEmailApp(user.emailId!);
+                            },
+                          ),
+                    ListTile(
+                      leading: const Icon(Icons.message),
+                      title: const Text('SMS'),
+                      onTap: () {
+                        launchSmsApp(user.mobileNumber!);
+                      },
+                    ),
+                    // ListTile(
+                    //   leading: const Icon(Icons.whatsapp),
+                    //   title: const Text('Whatsapp'),
+                    //   onTap: () async {
+                    //     String phoneNumber = '+91${user.mobileNumber}';
+                    //     String url = 'https://wa.me/$phoneNumber';
+
+                    //     if (await canLaunchUrl(Uri.parse(url))) {
+                    //       await launchUrl(Uri.parse(url));
+                    //     } else {
+                    //       throw 'Could not launch $url';
+                    //     }
+                    //   },
+                    // ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void makePhoneCall(String phoneNumber) async {
+    final Uri params = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    String url = params.toString();
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void launchEmailApp(String path) async {
+    final Uri params = Uri(
+      scheme: 'mailto',
+      path: path,
+    );
+    String url = params.toString();
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void launchSmsApp(String mobileNumber) async {
+    final smsUrl = 'sms:$mobileNumber';
+
+    if (await canLaunchUrl(Uri.parse(smsUrl))) {
+      await launchUrl(Uri.parse(smsUrl));
+    } else {
+      throw 'Could not launch $smsUrl';
+    }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/grievances/grievance_detail_model.dart';
 import 'package:civic_staff/models/s3_upload_result.dart';
@@ -73,6 +75,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           ),
         );
       } on DioError catch (e) {
+        log('Grievance loading failed');
         emit(LoadingGrievanceByIdFailedState());
       }
     });

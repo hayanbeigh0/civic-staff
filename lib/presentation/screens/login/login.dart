@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:civic_staff/constants/app_constants.dart';
@@ -8,7 +7,6 @@ import 'package:civic_staff/presentation/screens/login/activation_screen.dart';
 import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
-import 'package:civic_staff/services/auth_api.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +16,6 @@ import 'package:civic_staff/presentation/utils/shapes/login_shape_bottom.dart';
 import 'package:civic_staff/presentation/utils/shapes/login_shape_top.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
 
 class Login extends StatelessWidget {
   static const routeName = '/login';
@@ -49,7 +46,7 @@ class Login extends StatelessWidget {
                           LocaleKeys.appName.tr(),
                           style:
                               AppStyles.loginScreensAppNameTextStyle.copyWith(
-                            color: AppColors.colorWhite,
+                            color: AppColors.colorPrimary,
                             fontSize:
                                 constraints.maxWidth > 600 ? 28.sp : 34.sp,
                           ),
@@ -61,7 +58,7 @@ class Login extends StatelessWidget {
                           LocaleKeys.loginAndActivationScreen_welcome.tr(),
                           style:
                               AppStyles.loginScreensWelcomeTextStyle.copyWith(
-                            color: AppColors.colorWhite,
+                            color: AppColors.colorPrimary,
                             fontSize:
                                 constraints.maxWidth > 600 ? 16.sp : 20.sp,
                           ),
@@ -147,25 +144,8 @@ class Login extends StatelessWidget {
                                 );
                               }
                               if (state is AuthenticationLoginErrorState) {
-                                log('hello from login');
                                 SnackBars.errorMessageSnackbar(
                                     context, state.error);
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (context) => AlertDialog(
-                                //     actions: [
-                                //       ElevatedButton(
-                                //         onPressed: () =>
-                                //             Navigator.of(context).pop(),
-                                //         child: const Text('Ok'),
-                                //       ),
-                                //     ],
-                                //     contentPadding: EdgeInsets.all(20.sp),
-                                //     content: Text(
-                                //       state.error,
-                                //     ),
-                                //   ),
-                                // );
                               }
                             },
                             builder: (context, state) {
@@ -191,20 +171,10 @@ class Login extends StatelessWidget {
                                       .tr(),
                                   onTap: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      // Map signIn_repsonse =  await Auth_Api().signIn(_mobileNumberController.text);
-                                      // Map<String, dynamic> userDetails = jsonDecode(signIn_repsonse['body']);
                                       BlocProvider.of<AuthenticationCubit>(
                                               context)
                                           .signIn(_mobileNumberController.text,
                                               false);
-                                      // Navigator.of(context).pushNamed(
-                                      //   '/activation',
-                                      //   arguments: {
-                                      //     'mobileNumber':
-                                      //         _mobileNumberController.text,
-                                      //     'userDetails':userDetails
-                                      //   },
-                                      // );
                                     } else {}
                                   },
                                 ),

@@ -70,406 +70,418 @@ class _AllCommentsState extends State<AllComments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PrimaryTopShape(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: AppConstants.screenPadding,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  SafeArea(
-                    bottom: false,
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 5.sp),
-                            color: Colors.transparent,
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/arrowleft.svg',
-                                  color: AppColors.colorWhite,
-                                  height: 18.sp,
-                                ),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  'Comments',
-                                  style: TextStyle(
+      body: WillPopScope(
+        onWillPop: () async {
+          BlocProvider.of<GrievancesBloc>(context).add(GetGrievanceByIdEvent(
+              municipalityId:
+                  AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
+              grievanceId: widget.grievanceId));
+          return true;
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PrimaryTopShape(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppConstants.screenPadding,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    SafeArea(
+                      bottom: false,
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.sp),
+                              color: Colors.transparent,
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/icons/arrowleft.svg',
                                     color: AppColors.colorWhite,
-                                    fontFamily: 'LexendDeca',
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.1,
+                                    height: 18.sp,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
+                                  Text(
+                                    'Comments',
+                                    style: TextStyle(
+                                      color: AppColors.colorWhite,
+                                      fontFamily: 'LexendDeca',
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.1,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const Spacer(),
-                      ],
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    ),
+                    SizedBox(
+                      height: 50.h,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppConstants.screenPadding),
+              child: Row(
+                children: [
+                  Text(
+                    'All Comments',
+                    style: TextStyle(
+                      color: AppColors.textColorDark,
+                      fontFamily: 'LexendDeca',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  SizedBox(
-                    height: 50.h,
+                  const Spacer(),
+                  BlocBuilder<GrievancesBloc, GrievancesState>(
+                    builder: (context, state) {
+                      if (state is LoadingGrievanceByIdState) {
+                        return IconButton(
+                          onPressed: () {},
+                          icon: SizedBox(
+                            height: 24.sp,
+                            width: 24.sp,
+                            child: const Icon(
+                              Icons.refresh,
+                              color: AppColors.colorDisabledTextField,
+                            ),
+                          ),
+                        );
+                      }
+                      return IconButton(
+                        onPressed: () {
+                          BlocProvider.of<GrievancesBloc>(context).add(
+                            GetGrievanceByIdEvent(
+                              municipalityId: AuthBasedRouting
+                                  .afterLogin.userDetails!.municipalityID!,
+                              grievanceId: widget.grievanceId,
+                            ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.refresh,
+                          color: AppColors.colorPrimary,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: AppConstants.screenPadding),
-            child: Row(
-              children: [
-                Text(
-                  'All Comments',
-                  style: TextStyle(
-                    color: AppColors.textColorDark,
-                    fontFamily: 'LexendDeca',
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const Spacer(),
-                BlocBuilder<GrievancesBloc, GrievancesState>(
-                  builder: (context, state) {
-                    if (state is LoadingGrievanceByIdState) {
-                      return IconButton(
-                        onPressed: () {},
-                        icon: SizedBox(
-                          height: 24.sp,
-                          width: 24.sp,
-                          child: const Icon(
-                            Icons.refresh,
-                            color: AppColors.colorDisabledTextField,
-                          ),
-                        ),
-                      );
-                    }
-                    return IconButton(
-                      onPressed: () {
-                        BlocProvider.of<GrievancesBloc>(context).add(
-                          GetGrievanceByIdEvent(
-                            municipalityId: AuthBasedRouting
-                                .afterLogin.userDetails!.municipalityID!,
-                            grievanceId: widget.grievanceId,
-                          ),
-                        );
+            SizedBox(
+              height: 10.h,
+            ),
+            Expanded(
+              child: BlocConsumer<GrievancesBloc, GrievancesState>(
+                listener: (context, state) {
+                  if (state is GrievanceByIdLoadedState) {
+                    comments = state.grievanceDetail.comments!.toList();
+                  }
+                  if (state is AddingGrievanceImageCommentAssetSuccessState) {
+                    BlocProvider.of<GrievancesBloc>(context)
+                        .add(AddGrievanceCommentEvent(
+                      grievanceId: widget.grievanceId,
+                      staffId:
+                          AuthBasedRouting.afterLogin.userDetails!.staffID!,
+                      name: AuthBasedRouting.afterLogin.userDetails!.firstName!,
+                      assets: {
+                        'Audio': const [],
+                        'Image': [
+                          'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}',
+                        ],
+                        'Video': const []
                       },
-                      icon: const Icon(
-                        Icons.refresh,
+                      comment: '',
+                    ));
+                  }
+                  if (state is AddingGrievanceVideoCommentAssetSuccessState) {
+                    log('Adding grievance video to s3 done!');
+                    BlocProvider.of<GrievancesBloc>(context)
+                        .add(AddGrievanceCommentEvent(
+                      grievanceId: widget.grievanceId,
+                      staffId:
+                          AuthBasedRouting.afterLogin.userDetails!.staffID!,
+                      name: AuthBasedRouting.afterLogin.userDetails!.firstName!,
+                      assets: {
+                        'Audio': const [],
+                        'Image': const [],
+                        'Video': [
+                          'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}'
+                        ]
+                      },
+                      comment: '',
+                    ));
+                  }
+                  if (state is GrievanceByIdLoadedState) {
+                    comments = state.grievanceDetail.comments!.toList();
+                  }
+                  if (state is LoadingGrievanceByIdFailedState) {
+                    SnackBars.errorMessageSnackbar(
+                        context, '⚠️Could not send the comment!');
+                    BlocProvider.of<GrievancesBloc>(context).add(
+                      GetGrievanceByIdEvent(
+                        municipalityId: AuthBasedRouting
+                            .afterLogin.userDetails!.municipalityID!,
+                        grievanceId: widget.grievanceId,
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is GrievanceByIdLoadedState) {
+                    comments = state.grievanceDetail.comments!.toList();
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.0.w),
+                      child: state.grievanceDetail.comments!.isEmpty
+                          ? const Center(
+                              child: Text('No Comments Yet!'),
+                            )
+                          : showSpinner
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.colorPrimary,
+                                  ),
+                                )
+                              : CommentList(commentList: comments),
+                    );
+                  }
+
+                  if (state is AddingGrievanceCommentState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
                         color: AppColors.colorPrimary,
                       ),
                     );
-                  },
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Expanded(
-            child: BlocConsumer<GrievancesBloc, GrievancesState>(
-              listener: (context, state) {
-                if (state is GrievanceByIdLoadedState) {
-                  comments = state.grievanceDetail.comments!.toList();
-                }
-                if (state is AddingGrievanceImageCommentAssetSuccessState) {
-                  BlocProvider.of<GrievancesBloc>(context)
-                      .add(AddGrievanceCommentEvent(
-                    grievanceId: widget.grievanceId,
-                    staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
-                    name: AuthBasedRouting.afterLogin.userDetails!.firstName!,
-                    assets: {
-                      'Audio': const [],
-                      'Image': [
-                        'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}',
-                      ],
-                      'Video': const []
-                    },
-                    comment: '',
-                  ));
-                }
-                if (state is AddingGrievanceVideoCommentAssetSuccessState) {
-                  log('Adding grievance video to s3 done!');
-                  BlocProvider.of<GrievancesBloc>(context)
-                      .add(AddGrievanceCommentEvent(
-                    grievanceId: widget.grievanceId,
-                    staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
-                    name: AuthBasedRouting.afterLogin.userDetails!.firstName!,
-                    assets: {
-                      'Audio': const [],
-                      'Image': const [],
-                      'Video': [
-                        'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}'
-                      ]
-                    },
-                    comment: '',
-                  ));
-                }
-                if (state is GrievanceByIdLoadedState) {
-                  comments = state.grievanceDetail.comments!.toList();
-                }
-                if (state is LoadingGrievanceByIdFailedState) {
-                  SnackBars.errorMessageSnackbar(
-                      context, '⚠️Could not send the comment!');
-                  BlocProvider.of<GrievancesBloc>(context).add(
-                    GetGrievanceByIdEvent(
-                      municipalityId: AuthBasedRouting
-                          .afterLogin.userDetails!.municipalityID!,
-                      grievanceId: widget.grievanceId,
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is GrievanceByIdLoadedState) {
-                  comments = state.grievanceDetail.comments!.toList();
+                  }
+                  if (state is AddingGrievanceVideoCommentAssetState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    );
+                  }
+                  if (state is AddingGrievanceAudioCommentAssetState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    );
+                  }
+                  if (state is AddingGrievanceImageCommentAssetState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    );
+                  }
+
+                  if (state is LoadingGrievanceByIdState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    );
+                  }
+                  if (state is AddingGrievanceVideoCommentAssetSuccessState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    );
+                  }
+                  if (state is AddingGrievanceImageCommentAssetSuccessState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    );
+                  }
+                  if (state is AddingGrievanceAudioCommentAssetSuccessState) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    );
+                  }
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.0.w),
-                    child: state.grievanceDetail.comments!.isEmpty
+                    child: comments.isEmpty
                         ? const Center(
                             child: Text('No Comments Yet!'),
                           )
-                        : showSpinner
-                            ? const Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.colorPrimary,
-                                ),
-                              )
-                            : CommentList(commentList: comments),
-                  );
-                }
-
-                if (state is AddingGrievanceCommentState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-                if (state is AddingGrievanceVideoCommentAssetState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-                if (state is AddingGrievanceAudioCommentAssetState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-                if (state is AddingGrievanceImageCommentAssetState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-
-                if (state is LoadingGrievanceByIdState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-                if (state is AddingGrievanceVideoCommentAssetSuccessState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-                if (state is AddingGrievanceImageCommentAssetSuccessState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-                if (state is AddingGrievanceAudioCommentAssetSuccessState) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorPrimary,
-                    ),
-                  );
-                }
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18.0.w),
-                  child: comments.isEmpty
-                      ? const Center(
-                          child: Text('No Comments Yet!'),
-                        )
-                      : Stack(
-                          children: [
-                            CommentList(commentList: comments),
-                          ],
-                        ),
-                );
-              },
-            ),
-          ),
-          Container(
-            height: 70.h,
-            decoration: const BoxDecoration(
-              color: AppColors.colorWhite,
-            ),
-            child: Center(
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.colorPrimaryLight,
-                        borderRadius: BorderRadius.circular(10.r),
-                        boxShadow: const [
-                          BoxShadow(
-                            offset: Offset(2, 2),
-                            blurRadius: 4,
-                            color: AppColors.cardShadowColor,
+                        : Stack(
+                            children: [
+                              CommentList(commentList: comments),
+                            ],
                           ),
-                          BoxShadow(
-                            offset: Offset(-2, -2),
-                            blurRadius: 4,
-                            color: AppColors.colorWhite,
-                          ),
-                        ],
-                      ),
-                      child: TextField(
-                        controller: commentTextController,
-                        textInputAction: TextInputAction.go,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: AppColors.colorPrimaryExtraLight,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.sp,
-                            vertical: 10.sp,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: "Type your comment...",
-                          hintStyle: TextStyle(
-                            color: AppColors.textColorLight,
-                            fontFamily: 'LexendDeca',
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            height: 1.1,
-                          ),
-                          suffixIcon:
-                              BlocConsumer<GrievancesBloc, GrievancesState>(
-                            listener: (context, state) {
-                              if (mounted) {
-                                commentTextController.clear();
-                              }
-                            },
-                            builder: (context, state) {
-                              if (state is GrievanceByIdLoadedState) {
-                                return IconButton(
-                                  onPressed: () {
-                                    if (commentTextController.text.isNotEmpty) {
-                                      BlocProvider.of<GrievancesBloc>(context)
-                                          .add(
-                                        AddGrievanceCommentEvent(
-                                          grievanceId: widget.grievanceId,
-                                          staffId: AuthBasedRouting
-                                              .afterLogin.userDetails!.staffID
-                                              .toString(),
-                                          name: AuthBasedRouting
-                                              .afterLogin.userDetails!.firstName
-                                              .toString(),
-                                          assets: const {},
-                                          comment: commentTextController.text,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.send,
-                                    color: AppColors.colorPrimary,
-                                  ),
-                                );
-                              }
-                              return IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.send,
-                                  color: AppColors.colorDisabledTextField,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        enableFeedback: true,
-                        onTap: () {
-                          _showPicker(context);
-                        },
-                        child: const Icon(
-                          Icons.attach_file,
-                          color: AppColors.colorGreyLight,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      InkWell(
-                        enableFeedback: true,
-                        onTap: () {
-                          _showAudioPicker(context);
-                        },
-                        child: const Icon(
-                          Icons.mic,
-                          color: AppColors.colorGreyLight,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                ],
+                  );
+                },
               ),
             ),
-          ),
-        ],
+            Container(
+              height: 70.h,
+              decoration: const BoxDecoration(
+                color: AppColors.colorWhite,
+              ),
+              child: Center(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 10.w,
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.colorPrimaryLight,
+                          borderRadius: BorderRadius.circular(10.r),
+                          boxShadow: const [
+                            BoxShadow(
+                              offset: Offset(2, 2),
+                              blurRadius: 4,
+                              color: AppColors.cardShadowColor,
+                            ),
+                            BoxShadow(
+                              offset: Offset(-2, -2),
+                              blurRadius: 4,
+                              color: AppColors.colorWhite,
+                            ),
+                          ],
+                        ),
+                        child: TextField(
+                          controller: commentTextController,
+                          textInputAction: TextInputAction.go,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: AppColors.colorPrimaryExtraLight,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.sp,
+                              vertical: 10.sp,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: "Type your comment...",
+                            hintStyle: TextStyle(
+                              color: AppColors.textColorLight,
+                              fontFamily: 'LexendDeca',
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              height: 1.1,
+                            ),
+                            suffixIcon:
+                                BlocConsumer<GrievancesBloc, GrievancesState>(
+                              listener: (context, state) {
+                                if (mounted) {
+                                  commentTextController.clear();
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is GrievanceByIdLoadedState) {
+                                  return IconButton(
+                                    onPressed: () {
+                                      if (commentTextController
+                                          .text.isNotEmpty) {
+                                        BlocProvider.of<GrievancesBloc>(context)
+                                            .add(
+                                          AddGrievanceCommentEvent(
+                                            grievanceId: widget.grievanceId,
+                                            staffId: AuthBasedRouting
+                                                .afterLogin.userDetails!.staffID
+                                                .toString(),
+                                            name: AuthBasedRouting.afterLogin
+                                                .userDetails!.firstName
+                                                .toString(),
+                                            assets: const {},
+                                            comment: commentTextController.text,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    icon: const Icon(
+                                      Icons.send,
+                                      color: AppColors.colorPrimary,
+                                    ),
+                                  );
+                                }
+                                return IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.send,
+                                    color: AppColors.colorDisabledTextField,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10.w,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          enableFeedback: true,
+                          onTap: () {
+                            _showPicker(context);
+                          },
+                          child: const Icon(
+                            Icons.attach_file,
+                            color: AppColors.colorGreyLight,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                        InkWell(
+                          enableFeedback: true,
+                          onTap: () {
+                            _showAudioPicker(context);
+                          },
+                          child: const Icon(
+                            Icons.mic,
+                            color: AppColors.colorGreyLight,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10.w,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

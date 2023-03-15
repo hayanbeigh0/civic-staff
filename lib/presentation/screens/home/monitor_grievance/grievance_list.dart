@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
@@ -36,7 +34,7 @@ class GrievanceList extends StatelessWidget {
     "cert": 'assets/svg/certificaterequest.svg',
     "house": 'assets/svg/houseplanapproval.svg',
     "other": 'assets/svg/complaint.svg',
-    "elect": 'assets/svg/complaint.svg',
+    "elect": 'assets/svg/noelectricity.svg',
   };
   final Map<String, String> grievanceTypesMap = {
     "garb": 'Garbage Collection',

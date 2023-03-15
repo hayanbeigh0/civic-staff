@@ -114,7 +114,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fieldValidator: (p0) {
                           return validateFirstName(p0.toString());
                         },
-                        title: LocaleKeys.editProfile_firstName.tr(),
+                        title: '${LocaleKeys.editProfile_firstName.tr()}*',
                         hintText: LocaleKeys.editProfile_firstName.tr(),
                         textEditingController: firstNameController,
                       ),
@@ -125,7 +125,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fieldValidator: (p0) {
                           return validateLastName(p0.toString());
                         },
-                        title: LocaleKeys.editProfile_lastName.tr(),
+                        title: '${LocaleKeys.editProfile_lastName.tr()}*',
                         hintText: LocaleKeys.editProfile_lastName.tr(),
                         textEditingController: lastNameController,
                       ),

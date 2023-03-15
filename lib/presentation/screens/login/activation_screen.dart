@@ -9,9 +9,7 @@ import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/presentation/screens/home/home.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
-import 'package:civic_staff/services/auth_api.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -88,7 +86,7 @@ class _ActivationState extends State<Activation> {
                             LocaleKeys.appName.tr(),
                             style:
                                 AppStyles.loginScreensAppNameTextStyle.copyWith(
-                              color: AppColors.colorWhite,
+                              color: AppColors.colorPrimary,
                             ),
                           ),
                           SizedBox(
@@ -98,7 +96,7 @@ class _ActivationState extends State<Activation> {
                             LocaleKeys.loginAndActivationScreen_welcome.tr(),
                             style:
                                 AppStyles.loginScreensWelcomeTextStyle.copyWith(
-                              color: AppColors.colorWhite,
+                              color: AppColors.colorPrimary,
                             ),
                           ),
                         ],
