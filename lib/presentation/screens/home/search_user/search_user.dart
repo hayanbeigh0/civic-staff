@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
-import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -215,8 +212,8 @@ class _SearchUserState extends State<SearchUser> {
                           ],
                         ),
                       ),
-                      const Expanded(
-                        child: Text('Unable to find the user!'),
+                      Expanded(
+                        child: Text(LocaleKeys.searchUsers_userNotFound.tr()),
                       ),
                     ],
                   );
@@ -604,7 +601,9 @@ class _SearchUserState extends State<SearchUser> {
                     ],
                   ),
                   Text(
-                    state.userList[index].active! ? '' : '(User Disabled)',
+                    state.userList[index].active!
+                        ? ''
+                        : '(${LocaleKeys.searchUsers_userDisabled.tr()})',
                     maxLines: 1,
                     style: AppStyles.userCardTextStyle.copyWith(
                         fontSize: 10.sp, color: AppColors.colorGreyLight),

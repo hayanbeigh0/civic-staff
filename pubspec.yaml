@@ -76,14 +76,14 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/nammaoorsplash.png
+  image: assets/images/nammapallathur.png
   android: true
   ios: true
 
   android_12:
-    image: assets/images/nammaoorsplash.png
+    image: assets/images/nammapallathur.png
     icon_background_color: "#FFFFFF"
-    image_dark: assets/images/nammaoorsplash.png
+    image_dark: assets/images/nammapallathur.png
     icon_background_color_dark: "#FFFFFF"
 
   web: false

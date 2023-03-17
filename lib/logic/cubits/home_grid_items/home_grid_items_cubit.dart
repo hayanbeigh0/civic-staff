@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/models/grid_tile_model.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
 import 'package:civic_staff/presentation/screens/home/search_user/search_user.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,7 +20,7 @@ class HomeGridItemsCubit extends Cubit<HomeGridItemsState> {
         aspectRatio: 3.5,
         child: SvgPicture.asset('assets/svg/enrolluser.svg'),
       ),
-      gridTileTitle: 'Enroll User',
+      gridTileTitle: LocaleKeys.homeScreen_enrollUser.tr(),
     ),
     HomeGridTile(
       routeName: GrievanceList.routeName,
@@ -26,7 +28,7 @@ class HomeGridItemsCubit extends Cubit<HomeGridItemsState> {
         aspectRatio: 3,
         child: SvgPicture.asset('assets/svg/monitorgrievances.svg'),
       ),
-      gridTileTitle: 'Monitor Grievances',
+      gridTileTitle: LocaleKeys.homeScreen_monitorGrievances.tr(),
     ),
     HomeGridTile(
       routeName: SearchUser.routeName,
@@ -34,7 +36,7 @@ class HomeGridItemsCubit extends Cubit<HomeGridItemsState> {
         aspectRatio: 3.5,
         child: SvgPicture.asset('assets/svg/search.svg'),
       ),
-      gridTileTitle: 'Search User',
+      gridTileTitle: LocaleKeys.homeScreen_searchUser.tr(),
     ),
     HomeGridTile(
       routeName: ProfileScreen.routeName,
@@ -42,7 +44,7 @@ class HomeGridItemsCubit extends Cubit<HomeGridItemsState> {
         aspectRatio: 3,
         child: SvgPicture.asset('assets/svg/profile.svg'),
       ),
-      gridTileTitle: 'Profile',
+      gridTileTitle: LocaleKeys.homeScreen_profile.tr(),
     ),
   ];
   HomeGridItemsCubit() : super(HomeGridItemsLoading());

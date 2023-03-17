@@ -190,8 +190,14 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Chewie(
-              controller: chewieController,
+            Align(
+              alignment: Alignment.center,
+              child: AspectRatio(
+                aspectRatio: videoPlayerController.value.aspectRatio,
+                child: Chewie(
+                  controller: chewieController,
+                ),
+              ),
             ),
             IconButton(
               icon: Icon(

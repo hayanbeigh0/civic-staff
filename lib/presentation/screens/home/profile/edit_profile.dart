@@ -1,15 +1,12 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
-import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/my_profile.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
-import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
@@ -171,12 +168,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         listener: (context, state) {
                           if (state is MyProfileEditingDoneState) {
                             SnackBars.sucessMessageSnackbar(
-                                context, '✅ Profile updated successfully.');
+                                context,
+                                LocaleKeys
+                                    .editProfile_profileUpdatedSuccessMessage
+                                    .tr());
                             Navigator.of(context).pop();
                           }
                           if (state is MyProfileEditingFailedState) {
                             SnackBars.errorMessageSnackbar(
-                                context, '⚠️Something went wrong!');
+                                context,
+                                LocaleKeys
+                                    .editProfile_profileUpdatedErrorMessage
+                                    .tr());
                           }
                         },
                         builder: (context, state) {

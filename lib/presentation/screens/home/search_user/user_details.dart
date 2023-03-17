@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
@@ -21,6 +20,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class UserDetails extends StatelessWidget {
   static const routeName = '/userDetails';
   UserDetails({
@@ -32,7 +32,6 @@ class UserDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('${user.latitude},${user.longitude}');
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
@@ -48,7 +47,6 @@ class UserDetails extends StatelessWidget {
                   user = state.user;
                 }
                 if (state is LoadedUserByIdState) {
-                  log('Userr location: ${state.user.latitude},${state.user.longitude}');
                   Navigator.of(context).pushReplacementNamed(
                     UserDetails.routeName,
                     arguments: {'user': state.user},
@@ -93,7 +91,7 @@ class UserDetails extends StatelessWidget {
                   child: Row(
                     children: [
                       InkWell(
-                        onTap: () => Navigator.of(context).pop(),
+                        onTap: () => Navigator.of(context).maybePop(),
                         child: Container(
                           margin: EdgeInsets.symmetric(vertical: 5.sp),
                           color: Colors.transparent,
@@ -246,12 +244,13 @@ class UserDetails extends StatelessWidget {
                                   ),
                                 ),
                               );
-                              log('Useer location: ${user.latitude},${user.longitude}');
                             },
                             style:
                                 TextButton.styleFrom(padding: EdgeInsets.zero),
                             child: Text(
-                              user.active! ? 'Disable User' : 'Enable User',
+                              user.active!
+                                  ? LocaleKeys.userDetails_disableUser.tr()
+                                  : LocaleKeys.userDetails_enableUser.tr(),
                               style:
                                   AppStyles.userDetailsCallTextStyle.copyWith(
                                 color: AppColors.colorPrimary200,
@@ -321,11 +320,16 @@ class UserDetails extends StatelessWidget {
                           SizedBox(
                             width: 8.w,
                           ),
-                          Text(
-                            user.emailId.toString(),
-                            style:
-                                AppStyles.userContactDetailsMobileNumberStyle,
-                          )
+                          InkWell(
+                            onTap: () {
+                              launchEmailApp(user.emailId.toString());
+                            },
+                            child: Text(
+                              user.emailId.toString(),
+                              style:
+                                  AppStyles.userContactDetailsMobileNumberStyle,
+                            ),
+                          ),
                         ],
                       )
                     : const SizedBox(),
@@ -366,7 +370,7 @@ class UserDetails extends StatelessWidget {
                     height: 12.h,
                   ),
                   PrimaryDisplayField(
-                    title: 'Muncipality',
+                    title: LocaleKeys.userDetails_municipality.tr(),
                     value: AuthBasedRouting.afterLogin.masterData!
                         .firstWhere((element) =>
                             element.sK ==
@@ -379,7 +383,7 @@ class UserDetails extends StatelessWidget {
                     height: 12.h,
                   ),
                   PrimaryDisplayField(
-                    title: 'Ward',
+                    title: LocaleKeys.userDetails_ward.tr(),
                     value: AuthBasedRouting.afterLogin.wardDetails!
                         .firstWhere(
                             (element) => element.wardNumber == user.wardNumber)
@@ -471,7 +475,7 @@ class UserDetails extends StatelessWidget {
                   children: <Widget>[
                     ListTile(
                       leading: const Icon(Icons.call),
-                      title: const Text('Phone'),
+                      title: Text(LocaleKeys.userDetails_phone.tr()),
                       onTap: () async {
                         makePhoneCall(user.mobileNumber!);
                       },
@@ -480,32 +484,18 @@ class UserDetails extends StatelessWidget {
                         ? const SizedBox()
                         : ListTile(
                             leading: const Icon(Icons.email),
-                            title: const Text('Email'),
+                            title: Text(LocaleKeys.userDetails_email.tr()),
                             onTap: () {
-                              launchEmailApp(user.emailId!);
+                              launchEmailApp(user.emailId.toString());
                             },
                           ),
                     ListTile(
                       leading: const Icon(Icons.message),
-                      title: const Text('SMS'),
+                      title: Text(LocaleKeys.userDetails_sms.tr()),
                       onTap: () {
                         launchSmsApp(user.mobileNumber!);
                       },
                     ),
-                    // ListTile(
-                    //   leading: const Icon(Icons.whatsapp),
-                    //   title: const Text('Whatsapp'),
-                    //   onTap: () async {
-                    //     String phoneNumber = '+91${user.mobileNumber}';
-                    //     String url = 'https://wa.me/$phoneNumber';
-
-                    //     if (await canLaunchUrl(Uri.parse(url))) {
-                    //       await launchUrl(Uri.parse(url));
-                    //     } else {
-                    //       throw 'Could not launch $url';
-                    //     }
-                    //   },
-                    // ),
                   ],
                 ),
               ),

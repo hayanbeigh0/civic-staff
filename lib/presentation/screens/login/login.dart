@@ -48,7 +48,7 @@ class Login extends StatelessWidget {
                               AppStyles.loginScreensAppNameTextStyle.copyWith(
                             color: AppColors.colorPrimary,
                             fontSize:
-                                constraints.maxWidth > 600 ? 28.sp : 34.sp,
+                                constraints.maxWidth > 600 ? 28.sp : 30.sp,
                           ),
                         ),
                         SizedBox(

@@ -258,13 +258,13 @@ class GrievanceDetail extends StatelessWidget {
                 onFieldSubmitted: (value) {},
                 title: LocaleKeys.grievanceDetail_reporter.tr(),
                 textEditingController: reporterController,
-                hintText: 'Reporter name',
+                hintText: '',
               ),
               SizedBox(
                 height: 12.h,
               ),
               PrimaryDisplayField(
-                title: 'Status',
+                title: LocaleKeys.grievanceDetail_status.tr(),
                 value: statusList
                     .firstWhere((element) => element.sK == statusDropdownValue)
                     .name
@@ -320,7 +320,7 @@ class GrievanceDetail extends StatelessWidget {
                               height: 12.h,
                             ),
                             PrimaryTextField(
-                              title: 'Comment',
+                              title: LocaleKeys.grievanceDetail_comment.tr(),
                               hintText: 'The status has been changed.',
                               textEditingController: commentTextController,
                             ),
@@ -339,7 +339,9 @@ class GrievanceDetail extends StatelessWidget {
                                   return Align(
                                     alignment: Alignment.bottomRight,
                                     child: PrimaryDialogButton(
-                                      buttonText: 'Submit',
+                                      buttonText: LocaleKeys
+                                          .grievanceDetail_submitCommentButton
+                                          .tr(),
                                       isLoading: false,
                                       onTap: () {
                                         BlocProvider.of<GrievancesBloc>(context)
@@ -421,7 +423,9 @@ class GrievanceDetail extends StatelessWidget {
                                   return Align(
                                     alignment: Alignment.bottomRight,
                                     child: PrimaryDialogButton(
-                                      buttonText: 'Submit',
+                                      buttonText: LocaleKeys
+                                          .grievanceDetail_submitCommentButton
+                                          .tr(),
                                       isLoading: true,
                                       onTap: () {},
                                     ),
@@ -430,7 +434,9 @@ class GrievanceDetail extends StatelessWidget {
                                 return Align(
                                   alignment: Alignment.bottomRight,
                                   child: PrimaryDialogButton(
-                                    buttonText: 'Submit',
+                                    buttonText: LocaleKeys
+                                        .grievanceDetail_submitCommentButton
+                                        .tr(),
                                     isLoading: false,
                                     onTap: () {},
                                   ),
@@ -443,7 +449,7 @@ class GrievanceDetail extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    'Change Status',
+                    LocaleKeys.grievanceDetail_changeStatus.tr(),
                     style: TextStyle(
                       color: AppColors.textColorRed,
                       fontSize: 10.sp,
@@ -892,14 +898,14 @@ class GrievanceDetail extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    'Comments',
+                    LocaleKeys.grievanceDetail_comments.tr(),
                     style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   SizedBox(
                     width: 5.w,
                   ),
                   Text(
-                    '(Latest 6)',
+                    '(${LocaleKeys.grievanceDetail_latest6Comments.tr()})',
                     style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   const Spacer(),
@@ -930,8 +936,9 @@ class GrievanceDetail extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: grievanceComments!.isEmpty
-                    ? const Center(
-                        child: Text('No Comments Yet!'),
+                    ? Center(
+                        child: Text(
+                            LocaleKeys.grievanceDetail_noCommentsMessage.tr()),
                       )
                     : Column(
                         children: grievanceComments!.mapIndexed((i, e) {
@@ -1027,12 +1034,6 @@ class GrievanceDetail extends StatelessWidget {
                                           )
                                         ],
                                       ),
-                            // : VideoCommentWidget(
-                            //     // commentList: [],
-                            //     commentList:
-                            //         grievanceComments as List<Comments>,
-                            //     commentListIndex: i,
-                            //   ),
                             e.assets == null
                                 ? const SizedBox()
                                 : e.assets!.audio == null ||
@@ -1048,14 +1049,6 @@ class GrievanceDetail extends StatelessWidget {
                             SizedBox(
                               height: 10.h,
                             ),
-                            // i <
-                            //         state.grievanceDetail
-                            //                 .comments!.length -
-                            //             1
-                            //     ? const Divider(
-                            //         color: AppColors.colorGreyLight,
-                            //       )
-                            //     : const SizedBox(),
                           ],
                         );
                       }).toList()),
@@ -1099,7 +1092,9 @@ class GrievanceDetail extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Close Grievance',
+                                          LocaleKeys
+                                              .grievanceDetail_closeGrievance
+                                              .tr(),
                                           style: AppStyles
                                               .inputAndDisplayTitleStyle,
                                         ),
@@ -1107,7 +1102,9 @@ class GrievanceDetail extends StatelessWidget {
                                           height: 12.h,
                                         ),
                                         PrimaryTextField(
-                                          title: 'Comment',
+                                          title: LocaleKeys
+                                              .grievanceDetail_comment
+                                              .tr(),
                                           hintText:
                                               'Your grievance was closed.',
                                           textEditingController:
@@ -1131,7 +1128,9 @@ class GrievanceDetail extends StatelessWidget {
                                                 alignment:
                                                     Alignment.bottomRight,
                                                 child: PrimaryDialogButton(
-                                                  buttonText: 'Submit',
+                                                  buttonText: LocaleKeys
+                                                      .grievanceDetail_submitCommentButton
+                                                      .tr(),
                                                   isLoading: false,
                                                   onTap: () {
                                                     BlocProvider.of<
@@ -1234,7 +1233,9 @@ class GrievanceDetail extends StatelessWidget {
                                                 alignment:
                                                     Alignment.bottomRight,
                                                 child: PrimaryDialogButton(
-                                                  buttonText: 'Submit',
+                                                  buttonText: LocaleKeys
+                                                      .grievanceDetail_submitCommentButton
+                                                      .tr(),
                                                   isLoading: true,
                                                   onTap: () {},
                                                 ),
@@ -1243,7 +1244,9 @@ class GrievanceDetail extends StatelessWidget {
                                             return Align(
                                               alignment: Alignment.bottomRight,
                                               child: PrimaryDialogButton(
-                                                buttonText: 'Submit',
+                                                buttonText: LocaleKeys
+                                                    .grievanceDetail_submitCommentButton
+                                                    .tr(),
                                                 isLoading: false,
                                                 onTap: () {},
                                               ),
@@ -1254,12 +1257,6 @@ class GrievanceDetail extends StatelessWidget {
                                     ),
                                   ),
                                 );
-                                // BlocProvider.of<GrievancesBloc>(context).add(
-                                //   CloseGrievanceEvent(
-                                //     grievanceId:
-                                //         state.grievanceDetail.grievanceID.toString(),
-                                //   ),
-                                // );
                               },
                             );
                           }
@@ -1276,15 +1273,13 @@ class GrievanceDetail extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // Text(
-                                      //   'Closing comment',
-                                      //   style: AppStyles.inputAndDisplayTitleStyle,
-                                      // ),
                                       SizedBox(
                                         height: 12.h,
                                       ),
                                       PrimaryTextField(
-                                        title: 'Closing message',
+                                        title: LocaleKeys
+                                            .grievanceDetail_closingMessage
+                                            .tr(),
                                         hintText: 'Your grievance is closed.',
                                         textEditingController:
                                             commentTextController,
@@ -1306,7 +1301,9 @@ class GrievanceDetail extends StatelessWidget {
                                             return Align(
                                               alignment: Alignment.bottomRight,
                                               child: PrimaryDialogButton(
-                                                buttonText: 'Submit',
+                                                buttonText: LocaleKeys
+                                                    .grievanceDetail_submitCommentButton
+                                                    .tr(),
                                                 isLoading: false,
                                                 onTap: () {
                                                   BlocProvider.of<
@@ -1402,7 +1399,9 @@ class GrievanceDetail extends StatelessWidget {
                                             return Align(
                                               alignment: Alignment.bottomRight,
                                               child: PrimaryDialogButton(
-                                                buttonText: 'Submit',
+                                                buttonText: LocaleKeys
+                                                    .grievanceDetail_submitCommentButton
+                                                    .tr(),
                                                 isLoading: true,
                                                 onTap: () {},
                                               ),
@@ -1411,7 +1410,9 @@ class GrievanceDetail extends StatelessWidget {
                                           return Align(
                                             alignment: Alignment.bottomRight,
                                             child: PrimaryDialogButton(
-                                              buttonText: 'Submit',
+                                              buttonText: LocaleKeys
+                                                  .grievanceDetail_submitCommentButton
+                                                  .tr(),
                                               isLoading: false,
                                               onTap: () {},
                                             ),
@@ -1422,12 +1423,6 @@ class GrievanceDetail extends StatelessWidget {
                                   ),
                                 ),
                               );
-                              // BlocProvider.of<GrievancesBloc>(context).add(
-                              //   CloseGrievanceEvent(
-                              //     grievanceId:
-                              //         state.grievanceDetail.grievanceID.toString(),
-                              //   ),
-                              // );
                             },
                           );
                         },

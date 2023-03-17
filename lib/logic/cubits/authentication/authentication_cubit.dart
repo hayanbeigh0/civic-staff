@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
 import 'package:civic_staff/models/user_details.dart';
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:civic_staff/resources/repositories/auth/authentication_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -70,22 +72,22 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           e.type == DioErrorType.receiveTimeout ||
           e.type == DioErrorType.sendTimeout) {
         emit(
-          const AuthenticationLoginErrorState(
-            error: 'Connection Timeout!',
+          AuthenticationLoginErrorState(
+            error: LocaleKeys.loginAndActivationScreen_timeoutErrorMessage.tr(),
           ),
         );
       }
       if (e.type == DioErrorType.unknown) {
         return emit(
-          const AuthenticationLoginErrorState(
-            error: 'Unknown error occurred!',
+          AuthenticationLoginErrorState(
+            error: LocaleKeys.loginAndActivationScreen_unknownErrorMessage.tr(),
           ),
         );
       }
       if (e.response!.data == "User Phone number is not yet registered") {
         return emit(
-          const AuthenticationLoginErrorState(
-            error: 'Provided mobile number is not yet registered!',
+          AuthenticationLoginErrorState(
+            error: LocaleKeys.loginAndActivationScreen_phoneNotRegistered.tr(),
           ),
         );
       }
@@ -138,15 +140,15 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           e.type == DioErrorType.receiveTimeout ||
           e.type == DioErrorType.sendTimeout) {
         emit(
-          const AuthenticationOtpErrorState(
-            error: 'Connection Timeout!',
+          AuthenticationOtpErrorState(
+            error: LocaleKeys.loginAndActivationScreen_timeoutErrorMessage.tr(),
           ),
         );
       }
       if (e.type == DioErrorType.unknown) {
         emit(
-          const AuthenticationOtpErrorState(
-            error: 'Unknown error occurred!',
+          AuthenticationOtpErrorState(
+            error: LocaleKeys.loginAndActivationScreen_unknownErrorMessage.tr(),
           ),
         );
         emit(
@@ -157,13 +159,13 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
           ),
         );
       }
-      log(error: e.toString(), '3');
+      log(error: e.message, '3');
       try {
         if (e.response!.data['message'] == 'Unrecognizable lambda output') {
           emit(
-            const AuthenticationOtpErrorState(
+            AuthenticationOtpErrorState(
               error:
-                  'You have exceeded 3 attempts.\nPlease use "Resend OTP" to try again.',
+                  LocaleKeys.loginAndActivationScreen_unknownErrorMessage.tr(),
             ),
           );
           emit(
@@ -177,8 +179,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         }
       } catch (e) {
         emit(
-          const AuthenticationOtpErrorState(
-            error: 'Unknown error occurred!',
+          AuthenticationOtpErrorState(
+            error: LocaleKeys.loginAndActivationScreen_unknownErrorMessage.tr(),
           ),
         );
         emit(
@@ -192,9 +194,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       }
       if (e.response!.data['message'] == "Invalid session for the user.") {
         emit(
-          const AuthenticationOtpErrorState(
-            error:
-                'You have exceeded 3 attempts.\nPlease use "Resend OTP" to try again.',
+          AuthenticationOtpErrorState(
+            error: LocaleKeys.loginAndActivationScreen_unknownErrorMessage.tr(),
           ),
         );
         emit(
@@ -208,8 +209,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       }
       if (e.type == DioErrorType.unknown) {
         emit(
-          const AuthenticationOtpErrorState(
-            error: 'Unknown error occurred!',
+          AuthenticationOtpErrorState(
+            error: LocaleKeys.loginAndActivationScreen_unknownErrorMessage.tr(),
           ),
         );
         emit(
@@ -223,8 +224,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       }
       log(error: e.toString(), '3');
       emit(
-        const AuthenticationOtpErrorState(
-          error: 'Unknown error occurred!',
+        AuthenticationOtpErrorState(
+          error: LocaleKeys.loginAndActivationScreen_unknownErrorMessage.tr(),
         ),
       );
       emit(

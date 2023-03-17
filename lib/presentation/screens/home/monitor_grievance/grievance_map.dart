@@ -20,6 +20,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+// ignore: must_be_immutable
 class GrievanceMap extends StatelessWidget {
   static const routeName = 'grievanceMap';
   GrievanceMap({super.key});

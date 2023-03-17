@@ -1,4 +1,4 @@
-package com.example.civic_staff
+package com.nammapallathur.staff
 
 import io.flutter.embedding.android.FlutterActivity
 

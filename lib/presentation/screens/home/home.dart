@@ -1,13 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
-import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
-import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/home_grid_items/home_grid_items_cubit.dart';
 import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
-import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
-import 'package:civic_staff/main.dart';
 import 'package:civic_staff/presentation/screens/home/enroll_user/enroll_user.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:civic_staff/presentation/screens/home/profile/profile.dart';
@@ -26,7 +22,6 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';
-  final TextEditingController _searchController = TextEditingController();
   HomeScreen({super.key});
   final List<HomeGridTile> gridItems = [
     HomeGridTile(

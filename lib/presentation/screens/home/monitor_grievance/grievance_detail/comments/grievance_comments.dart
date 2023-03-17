@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:civic_staff/constants/app_constants.dart';
+import 'package:civic_staff/constants/env_variable.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 import 'package:civic_staff/main.dart';
@@ -14,12 +15,10 @@ import 'package:civic_staff/presentation/utils/functions/image_and_video_compres
 import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/comment_list.dart';
-import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_dialog_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:civic_staff/presentation/widgets/progress_dialog_widget.dart';
 import 'package:civic_staff/presentation/widgets/video_widget.dart';
-import 'package:civic_staff/resources/repositories/grievances/grievances_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +112,7 @@ class _AllCommentsState extends State<AllComments> {
                                     width: 10.w,
                                   ),
                                   Text(
-                                    'Comments',
+                                    LocaleKeys.comments_screenTitle.tr(),
                                     style: TextStyle(
                                       color: AppColors.colorWhite,
                                       fontFamily: 'LexendDeca',
@@ -146,7 +145,7 @@ class _AllCommentsState extends State<AllComments> {
               child: Row(
                 children: [
                   Text(
-                    'All Comments',
+                    LocaleKeys.comments_allComments.tr(),
                     style: TextStyle(
                       color: AppColors.textColorDark,
                       fontFamily: 'LexendDeca',
@@ -209,7 +208,7 @@ class _AllCommentsState extends State<AllComments> {
                       assets: {
                         'Audio': const [],
                         'Image': [
-                          'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}',
+                          '$CLOUDFRONT_URL/${state.s3uploadResult.uploadResult!.key1}',
                         ],
                         'Video': const []
                       },
@@ -228,7 +227,7 @@ class _AllCommentsState extends State<AllComments> {
                         'Audio': const [],
                         'Image': const [],
                         'Video': [
-                          'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}'
+                          '$CLOUDFRONT_URL/${state.s3uploadResult.uploadResult!.key1}'
                         ]
                       },
                       comment: '',
@@ -239,7 +238,7 @@ class _AllCommentsState extends State<AllComments> {
                   }
                   if (state is LoadingGrievanceByIdFailedState) {
                     SnackBars.errorMessageSnackbar(
-                        context, '⚠️Could not send the comment!');
+                        context, LocaleKeys.addComment_addCommentFailed.tr());
                     BlocProvider.of<GrievancesBloc>(context).add(
                       GetGrievanceByIdEvent(
                         municipalityId: AuthBasedRouting
@@ -255,8 +254,9 @@ class _AllCommentsState extends State<AllComments> {
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.0.w),
                       child: state.grievanceDetail.comments!.isEmpty
-                          ? const Center(
-                              child: Text('No Comments Yet!'),
+                          ? Center(
+                              child:
+                                  Text(LocaleKeys.addComment_noComments.tr()),
                             )
                           : showSpinner
                               ? const Center(
@@ -328,8 +328,8 @@ class _AllCommentsState extends State<AllComments> {
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.0.w),
                     child: comments.isEmpty
-                        ? const Center(
-                            child: Text('No Comments Yet!'),
+                        ? Center(
+                            child: Text(LocaleKeys.addComment_noComments.tr()),
                           )
                         : Stack(
                             children: [
@@ -383,7 +383,8 @@ class _AllCommentsState extends State<AllComments> {
                               borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: "Type your comment...",
+                            hintText:
+                                LocaleKeys.addComment_commentTexthint.tr(),
                             hintStyle: TextStyle(
                               color: AppColors.textColorLight,
                               fontFamily: 'LexendDeca',
@@ -713,21 +714,21 @@ class _AllCommentsState extends State<AllComments> {
                   children: <Widget>[
                     ListTile(
                       leading: const Icon(Icons.photo_library),
-                      title: const Text('Photo Library'),
+                      title: Text(LocaleKeys.addComment_photoLibrary.tr()),
                       onTap: () async {
                         await pickPhoto();
                       },
                     ),
                     ListTile(
                       leading: const Icon(Icons.photo_camera),
-                      title: const Text('Camera'),
+                      title: Text(LocaleKeys.addComment_camera.tr()),
                       onTap: () async {
                         await capturePhoto();
                       },
                     ),
                     ListTile(
                       leading: const Icon(Icons.videocam),
-                      title: const Text('Video Library'),
+                      title: Text(LocaleKeys.addComment_videoLibrary.tr()),
                       onTap: () async {
                         await pickVideo();
                         if (mounted) {
@@ -737,7 +738,7 @@ class _AllCommentsState extends State<AllComments> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.videocam),
-                      title: const Text('Record Video'),
+                      title: Text(LocaleKeys.addComment_recordVideo.tr()),
                       onTap: () async {
                         await recordVideo();
                         if (mounted) {
@@ -779,14 +780,14 @@ class _AllCommentsState extends State<AllComments> {
                   children: <Widget>[
                     ListTile(
                       leading: const Icon(Icons.audio_file),
-                      title: const Text('Choose audio'),
+                      title: Text(LocaleKeys.addComment_chooseAudio.tr()),
                       onTap: () async {
                         await chooseAudio();
                       },
                     ),
                     ListTile(
                       leading: const Icon(Icons.record_voice_over),
-                      title: const Text('Record Audio'),
+                      title: Text(LocaleKeys.addComment_recordAudio.tr()),
                       onTap: () async {
                         await recordAudio();
                       },
@@ -846,7 +847,7 @@ class _AllCommentsState extends State<AllComments> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Recording done!',
+                          LocaleKeys.addComment_recordingDoneMessage.tr(),
                           style: TextStyle(fontSize: 16.sp),
                         ),
                         SizedBox(
@@ -879,7 +880,7 @@ class _AllCommentsState extends State<AllComments> {
                                     .afterLogin.userDetails!.firstName!,
                                 assets: {
                                   'Audio': [
-                                    'https://d1zwm96bdz9d2w.cloudfront.net/${state.s3uploadResult.uploadResult!.key1}'
+                                    '$CLOUDFRONT_URL/${state.s3uploadResult.uploadResult!.key1}'
                                   ],
                                   'Image': const [],
                                   'Video': const []
@@ -917,7 +918,8 @@ class _AllCommentsState extends State<AllComments> {
                                     ),
                                   );
                                 },
-                                buttonText: 'Upload',
+                                buttonText:
+                                    LocaleKeys.addComment_uploadRecoding.tr(),
                                 isLoading: false,
                               ),
                             );

@@ -106,8 +106,6 @@ class GrievanceAudio extends StatelessWidget {
                     mainAxisSpacing: 20.h,
                   ),
                   itemCount: state.grievanceDetail.assets!.audio!.length,
-                  //  +
-                  //     state.grievanceList[grievanceListIndex].videos!.length,
                   itemBuilder: (context, index) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.center,

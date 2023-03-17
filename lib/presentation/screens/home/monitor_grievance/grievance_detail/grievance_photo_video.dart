@@ -6,7 +6,6 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/asset_video_thumbnail.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
-import 'package:civic_staff/presentation/widgets/video_asset_widget.dart';
 import 'package:civic_staff/presentation/widgets/video_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -142,8 +141,9 @@ class GrievancePhotoVideo extends StatelessWidget {
                                       loadingBuilder: (BuildContext context,
                                           Widget child,
                                           ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null)
+                                        if (loadingProgress == null) {
                                           return child;
+                                        }
                                         return Center(
                                           child: CircularProgressIndicator(
                                             value: loadingProgress
@@ -183,16 +183,7 @@ class GrievancePhotoVideo extends StatelessWidget {
                             20.r,
                           ),
                         ),
-                        child:
-                            // Stack(
-                            //   children: [
-                            //     VideoAssetWidget(
-                            //       url: state.grievanceDetail.assets!.video![index -
-                            //           state.grievanceDetail.assets!.image!.length],
-                            //     ),
-                            //   ],
-                            // ),
-                            Stack(
+                        child: Stack(
                           children: [
                             InkWell(
                               onTap: () {
@@ -253,9 +244,6 @@ class GrievancePhotoVideo extends StatelessWidget {
           ],
         ),
       ),
-      // bottomNavigationBar: PrimaryBottomShape(
-      //   height: 80.h,
-      // ),
     );
   }
 }

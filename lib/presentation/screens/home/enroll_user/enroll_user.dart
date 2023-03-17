@@ -3,16 +3,13 @@ import 'dart:developer';
 
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
-import 'package:civic_staff/logic/cubits/authentication/authentication_cubit.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
 import 'package:civic_staff/logic/cubits/local_storage/local_storage_cubit.dart';
-import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/user_details.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
-import 'package:civic_staff/presentation/utils/functions/popups.dart';
 import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/location_map_field.dart';
@@ -25,7 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EnrollUser extends StatefulWidget {
@@ -127,10 +123,6 @@ class _EnrollUserState extends State<EnrollUser> {
             child: BlocBuilder<LocalStorageCubit, LocalStorageState>(
               builder: (context, state) {
                 if (state is LocalStorageFetchingDoneState) {
-                  // wards = wardsAndMunicipality[
-                  //     state.afterLogin.userDetails!.municipalityID];
-                  // // wards = wardsAndMuncipality[state.afterLogin.masterData];
-                  // wards.sort();
                   return SingleChildScrollView(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
@@ -279,7 +271,7 @@ class _EnrollUserState extends State<EnrollUser> {
             height: 12.h,
           ),
           Text(
-            'Location*',
+            '${LocaleKeys.enrollUsers_location.tr()}*',
             style: AppStyles.inputAndDisplayTitleStyle,
           ),
           SizedBox(
@@ -350,8 +342,11 @@ class _EnrollUserState extends State<EnrollUser> {
                             if (userState is UserEnrolledState) {
                               FocusScope.of(context)
                                   .requestFocus(firstNameNode);
-                              SnackBars.sucessMessageSnackbar(context,
-                                  'User has been added to the system!');
+                              SnackBars.sucessMessageSnackbar(
+                                  context,
+                                  LocaleKeys
+                                      .enrollUsers_userEnrolledSuccessMessage
+                                      .tr());
 
                               firstNameController.text = '';
                               lastNameController.text = '';
@@ -361,7 +356,10 @@ class _EnrollUserState extends State<EnrollUser> {
                             }
                             if (state is EnrollingAUserFailedState) {
                               SnackBars.errorMessageSnackbar(
-                                  context, 'Enrolling user failed!');
+                                  context,
+                                  LocaleKeys
+                                      .enrollUsers_userEnrolledFailedMessage
+                                      .tr());
                             }
                           },
                           builder: (context, userState) {
@@ -434,7 +432,7 @@ class _EnrollUserState extends State<EnrollUser> {
                                   log('Not Working');
                                 }
                               },
-                              buttonText: 'Submit',
+                              buttonText: LocaleKeys.enrollUsers_submit.tr(),
                             );
                           },
                         );
@@ -494,14 +492,14 @@ class _EnrollUserState extends State<EnrollUser> {
 
   String? validateAddress(String value) {
     if (value.isEmpty) {
-      return 'Address is required!';
+      return LocaleKeys.editUserDetails_addressRequiredMessage.tr();
     }
     return null;
   }
 
   String? validateCountry(String value) {
     if (value.isEmpty) {
-      return 'Country is required!';
+      return LocaleKeys.editUserDetails_countryRequiredMessage.tr();
     }
     return null;
   }

@@ -4,10 +4,8 @@ import 'dart:developer';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
-import 'package:civic_staff/logic/cubits/my_profile/my_profile_cubit.dart';
 import 'package:civic_staff/logic/cubits/reverse_geocoding/reverse_geocoding_cubit.dart';
 import 'package:civic_staff/main.dart';
-import 'package:civic_staff/models/my_profile.dart';
 import 'package:civic_staff/models/user_details.dart';
 import 'package:civic_staff/models/user_model.dart';
 import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
@@ -39,9 +37,7 @@ class EditUserScreen extends StatefulWidget {
 
 class _EditUserScreenState extends State<EditUserScreen> {
   final TextEditingController firstNameController = TextEditingController();
-
   final TextEditingController lastNameController = TextEditingController();
-
   final TextEditingController contactNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController aboutController = TextEditingController();
@@ -49,29 +45,9 @@ class _EditUserScreenState extends State<EditUserScreen> {
   final Completer<GoogleMapController> _controller = Completer();
 
   final _formKey = GlobalKey<FormState>();
-
   late List<WardDetails> wards;
-  // late List<dynamic> muncipality;
-  // final Map wardsAndMuncipality = {
-  //   '1': ['10', '11', '12', '13', '14'],
-  //   '2': ['15', '16', '17', '18', '19'],
-  //   '3': ['20', '21', '22', '23', '24'],
-  //   '4': ['30', '31', '32', '33', '34'],
-  //   'MUNCI-de7f8138-7ce5-4a91-a21a-98dd0b2de9f9': [
-  //     '35',
-  //     '36',
-  //     '37',
-  //     '38',
-  //     '39',
-  //     '2',
-  //     '3',
-  //     '4',
-  //   ],
-  // };
-
   String? wardDropdownValue;
   String? muncipalityDropdownValue;
-
   bool showWardDropdownError = false;
   bool showMuncipalityDropdownError = false;
 
@@ -98,8 +74,6 @@ class _EditUserScreenState extends State<EditUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log('Hello');
-    log('Created Date: ${widget.user.createdDate.toString()}');
     return Scaffold(
       body: Column(
         children: [
@@ -133,7 +107,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                           width: 10.w,
                         ),
                         Text(
-                          'Edit User',
+                          LocaleKeys.editUserDetails_screenTitle.tr(),
                           style: AppStyles.screenTitleStyle,
                         ),
                       ],
@@ -208,7 +182,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       ),
                       PrimaryDisplayField(
                         fillColor: AppColors.colorDisabledTextField,
-                        title: 'Municipality*',
+                        title:
+                            '${LocaleKeys.editUserDetails_municipality.tr()}*',
                         value: AuthBasedRouting.afterLogin.masterData!
                             .firstWhere((element) =>
                                 element.sK ==
@@ -345,12 +320,20 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                     SearchUsersState>(
                                   listener: (context, userState) {
                                     if (userState is EditingUserFailedState) {
-                                      SnackBars.errorMessageSnackbar(context,
-                                          'An unknown error occurred!');
+                                      SnackBars.errorMessageSnackbar(
+                                        context,
+                                        LocaleKeys
+                                            .editUserDetails_editUserFailed
+                                            .tr(),
+                                      );
                                     }
                                     if (userState is UserEditedState) {
-                                      SnackBars.sucessMessageSnackbar(context,
-                                          '✅ Successfully edited the user.');
+                                      SnackBars.sucessMessageSnackbar(
+                                        context,
+                                        LocaleKeys
+                                            .editUserDetails_editUserSuccess
+                                            .tr(),
+                                      );
                                       Navigator.of(context)
                                           .pop({"user": userState.user});
                                     }
@@ -532,14 +515,14 @@ class _EditUserScreenState extends State<EditUserScreen> {
 
   String? validateAddress(String value) {
     if (value.isEmpty) {
-      return 'Address is required!';
+      return LocaleKeys.editUserDetails_addressRequiredMessage.tr();
     }
     return null;
   }
 
   String? validateCountry(String value) {
     if (value.isEmpty) {
-      return 'Country is required!';
+      return LocaleKeys.editUserDetails_countryRequiredMessage.tr();
     }
     return null;
   }

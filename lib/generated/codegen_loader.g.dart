@@ -15,7 +15,7 @@ class CodegenLoader extends AssetLoader{
   }
 
   static const Map<String,dynamic> en = {
-  "appName": "NammaOor",
+  "appName": "NammaPallathur",
   "loginAndActivationScreen": {
     "login": "Login",
     "mobileNumber": "Mobile Number",
@@ -27,11 +27,15 @@ class CodegenLoader extends AssetLoader{
     "welcome": "Welcome\nBack",
     "enterOtp": "Enter OTP",
     "otpNotRecieved": "Didn’t receive the OTP yet?",
-    "resendOtp": "Resend OTP"
+    "resendOtp": "Resend OTP",
+    "timeoutErrorMessage": "Connection Timeout!",
+    "unknownErrorMessage": "Unknown error occurred!",
+    "phoneNotRegistered": "Provided mobile number is not yet registered!",
+    "exeeded3attemptsError": "You have exceeded 3 attempts.\nPlease use \"Resend OTP\" to try again."
   },
   "homeScreen": {
     "enrollUser": "Enroll Users",
-    "monitorGrievances": "Monitor Geievances",
+    "monitorGrievances": "Monitor Grievances",
     "searchUser": "Search User",
     "profile": "Profile",
     "search": "Search"
@@ -51,6 +55,8 @@ class CodegenLoader extends AssetLoader{
     "submit": "Submit",
     "dialogSucess": "Success",
     "dialogOk": "Ok",
+    "userEnrolledSuccessMessage": "User has been added to the system!",
+    "userEnrolledFailedMessage": "Enrolling user failed!",
     "dialogSuccessMessage": "User has been added!",
     "wardValidationErrorMessage": "Please select a value!",
     "firstNameValidationErrorMessage": "First name is required",
@@ -66,7 +72,8 @@ class CodegenLoader extends AssetLoader{
     "grievanceSearchHint": "Search grievance by type",
     "locaiton": "Location",
     "reporter": "Reporter",
-    "date": "Date"
+    "date": "Date",
+    "noGrievanceErrorMessage": "No Grievance Found"
   },
   "grievanceDetail": {
     "screenTitle": "Grievance Detail",
@@ -85,9 +92,13 @@ class CodegenLoader extends AssetLoader{
     "contactByPhoneEnabled": "Contact by phone enabled?",
     "commentsByReporter": "Comments by the reporter",
     "viewAll": "View all",
-    "myComments": "My Comments",
-    "addComment": "Add Comment",
-    "closeGrievance": "Close grievance"
+    "comments": "Comments",
+    "latest6Comments": "Latest 6",
+    "closeGrievance": "Close grievance",
+    "comment": "Comment",
+    "noCommentsMessage": "No Comments Yet!",
+    "closingMessage": "Closing message",
+    "submitCommentButton": "Submit"
   },
   "reporterComments": {
     "screenTitle": "Reporter Comments",
@@ -97,17 +108,29 @@ class CodegenLoader extends AssetLoader{
     "screenTitle": "My Comments",
     "allComments": "All Comments"
   },
+  "comments": {
+    "screenTitle": "Comments",
+    "allComments": "All Comments"
+  },
   "addComment": {
     "screenTitle": "Add Comment",
     "comment": "Comment",
-    "commentTexthint": "Your text goes here...",
+    "commentTexthint": "Type your comment...",
     "attachments": "Attachments",
     "noAttachments": "No Attachments!",
     "addCommentButton": "Add Comment",
-    "useCamera": "Use Camera",
-    "uploadFromGallery": "Upload from gallery",
     "stop": "Tap the icon to stop recording",
-    "record": "Tap the icon to start recording"
+    "record": "Tap the icon to start recording",
+    "recordAudio": "Record Audio",
+    "chooseAudio": "Choose audio",
+    "recordingDoneMessage": "Recording done!",
+    "addCommentFailed": "⚠️Could not send the comment!",
+    "noComments": "No Comments Yet!",
+    "videoLibrary": "Video Library",
+    "recordVideo": "Record Video",
+    "camera": "Camera",
+    "uploadRecoding": "Upload",
+    "photoLibrary": "Photo Library"
   },
   "map": {
     "screenTitle": "Map"
@@ -121,6 +144,8 @@ class CodegenLoader extends AssetLoader{
     "apply": "Apply",
     "name": "Name",
     "streetName": "Street Name",
+    "userNotFound": "Unable to find the user!",
+    "userDisabled": "User Disabled",
     "mobileNumber": "Mobile Number"
   },
   "userDetails": {
@@ -128,9 +153,23 @@ class CodegenLoader extends AssetLoader{
     "call": "Call",
     "about": "About",
     "ward": "Ward",
+    "municipality": "Municipality",
     "contact": "Contact",
     "location": "Location",
+    "disableUser": "Disable User",
+    "enableUser": "Enable User",
+    "phone": "Phone",
+    "email": "Email",
+    "sms": "SMS",
     "mobile": "Mobile"
+  },
+  "editUserDetails": {
+    "screenTitle": "Edit User",
+    "municipality": "Municipality",
+    "editUserFailed": "An unknown error occurred!",
+    "editUserSuccess": "✅ Successfully edited the user.",
+    "addressRequiredMessage": "Address is required!",
+    "countryRequiredMessage": "Country is required!"
   },
   "profile": {
     "screenTitle": "Profile",
@@ -138,6 +177,7 @@ class CodegenLoader extends AssetLoader{
     "about": "About",
     "location": "Location",
     "allocatedGrievancesAndWards": "Allocated grievances and wards",
+    "logoutFailed": "Logout failed!",
     "logout": "Logout"
   },
   "editProfile": {
@@ -155,29 +195,35 @@ class CodegenLoader extends AssetLoader{
     "lastNameError": "Last name is required",
     "aboutError": "This field is required",
     "emailError": "Email is required",
+    "profileUpdatedErrorMessage": "⚠️Something went wrong!",
+    "profileUpdatedSuccessMessage": "✅ Profile updated successfully.",
     "mobileNumberRequiredErrorMessage": "Mobile number is required",
     "mobileNumberLengthErrorMessage": "Mobile number must be 10 digits long",
     "mobileNumberInputTypeError": "Mobile number can only contain digits"
   }
 };
 static const Map<String,dynamic> es = {
-  "appName": "NammaOor",
+  "appName": "NammaPallathur",
   "loginAndActivationScreen": {
-    "login": "Acceso",
-    "mobileNumber": "Número de teléfono móvil",
-    "continue": "Continuar",
+    "login": "Login",
+    "mobileNumber": "Mobile Number",
+    "continue": "Continue",
     "textFieldHint": "888 999 7777",
-    "mobileNumberRequiredError": "Se requiere número de móvil",
-    "mobileNumberLengthError": "El número de móvil debe tener 10 dígitos",
-    "mobileNumberInputTypeError": "El número de móvil solo puede contener dígitos",
-    "welcome": "Bienvenido\nde nuevo",
-    "enterOtp": "Ingresar OTP",
-    "otpNotRecieved": "¿Aún no recibiste la OTP?",
-    "resendOtp": "Reenviar OTP"
+    "mobileNumberRequiredError": "Mobile number is required",
+    "mobileNumberLengthError": "Mobile number must be 10 digits long",
+    "mobileNumberInputTypeError": "Mobile number can only contain digits",
+    "welcome": "Welcome\nBack",
+    "enterOtp": "Enter OTP",
+    "otpNotRecieved": "Didn’t receive the OTP yet?",
+    "resendOtp": "Resend OTP",
+    "timeoutErrorMessage": "Connection Timeout!",
+    "unknownErrorMessage": "Unknown error occurred!",
+    "phoneNotRegistered": "Provided mobile number is not yet registered!",
+    "exeeded3attemptsError": "You have exceeded 3 attempts.\nPlease use \"Resend OTP\" to try again."
   },
   "homeScreen": {
     "enrollUser": "Enroll Users",
-    "monitorGrievances": "Monitor Geievances",
+    "monitorGrievances": "Monitor Grievances",
     "searchUser": "Search User",
     "profile": "Profile",
     "search": "Search"
@@ -197,6 +243,8 @@ static const Map<String,dynamic> es = {
     "submit": "Submit",
     "dialogSucess": "Success",
     "dialogOk": "Ok",
+    "userEnrolledSuccessMessage": "User has been added to the system!",
+    "userEnrolledFailedMessage": "Enrolling user failed!",
     "dialogSuccessMessage": "User has been added!",
     "wardValidationErrorMessage": "Please select a value!",
     "firstNameValidationErrorMessage": "First name is required",
@@ -212,7 +260,8 @@ static const Map<String,dynamic> es = {
     "grievanceSearchHint": "Search grievance by type",
     "locaiton": "Location",
     "reporter": "Reporter",
-    "date": "Date"
+    "date": "Date",
+    "noGrievanceErrorMessage": "No Grievance Found"
   },
   "grievanceDetail": {
     "screenTitle": "Grievance Detail",
@@ -231,9 +280,13 @@ static const Map<String,dynamic> es = {
     "contactByPhoneEnabled": "Contact by phone enabled?",
     "commentsByReporter": "Comments by the reporter",
     "viewAll": "View all",
-    "myComments": "My Comments",
-    "addComment": "Add Comment",
-    "closeGrievance": "Close grievance"
+    "comments": "Comments",
+    "latest6Comments": "Latest 6",
+    "closeGrievance": "Close grievance",
+    "comment": "Comment",
+    "noCommentsMessage": "No Comments Yet!",
+    "closingMessage": "Closing message",
+    "submitCommentButton": "Submit"
   },
   "reporterComments": {
     "screenTitle": "Reporter Comments",
@@ -243,17 +296,29 @@ static const Map<String,dynamic> es = {
     "screenTitle": "My Comments",
     "allComments": "All Comments"
   },
+  "comments": {
+    "screenTitle": "Comments",
+    "allComments": "All Comments"
+  },
   "addComment": {
     "screenTitle": "Add Comment",
     "comment": "Comment",
-    "commentTexthint": "Your text goes here...",
+    "commentTexthint": "Type your comment...",
     "attachments": "Attachments",
     "noAttachments": "No Attachments!",
     "addCommentButton": "Add Comment",
-    "useCamera": "Use Camera",
-    "uploadFromGallery": "Upload from gallery",
     "stop": "Tap the icon to stop recording",
-    "record": "Tap the icon to start recording"
+    "record": "Tap the icon to start recording",
+    "recordAudio": "Record Audio",
+    "chooseAudio": "Choose audio",
+    "recordingDoneMessage": "Recording done!",
+    "addCommentFailed": "⚠️Could not send the comment!",
+    "noComments": "No Comments Yet!",
+    "videoLibrary": "Video Library",
+    "recordVideo": "Record Video",
+    "camera": "Camera",
+    "uploadRecoding": "Upload",
+    "photoLibrary": "Photo Library"
   },
   "map": {
     "screenTitle": "Map"
@@ -267,6 +332,8 @@ static const Map<String,dynamic> es = {
     "apply": "Apply",
     "name": "Name",
     "streetName": "Street Name",
+    "userNotFound": "Unable to find the user!",
+    "userDisabled": "User Disabled",
     "mobileNumber": "Mobile Number"
   },
   "userDetails": {
@@ -274,9 +341,23 @@ static const Map<String,dynamic> es = {
     "call": "Call",
     "about": "About",
     "ward": "Ward",
+    "municipality": "Municipality",
     "contact": "Contact",
     "location": "Location",
+    "disableUser": "Disable User",
+    "enableUser": "Enable User",
+    "phone": "Phone",
+    "email": "Email",
+    "sms": "SMS",
     "mobile": "Mobile"
+  },
+  "editUserDetails": {
+    "screenTitle": "Edit User",
+    "municipality": "Municipality",
+    "editUserFailed": "An unknown error occurred!",
+    "editUserSuccess": "✅ Successfully edited the user.",
+    "addressRequiredMessage": "Address is required!",
+    "countryRequiredMessage": "Country is required!"
   },
   "profile": {
     "screenTitle": "Profile",
@@ -284,6 +365,7 @@ static const Map<String,dynamic> es = {
     "about": "About",
     "location": "Location",
     "allocatedGrievancesAndWards": "Allocated grievances and wards",
+    "logoutFailed": "Logout failed!",
     "logout": "Logout"
   },
   "editProfile": {
@@ -301,6 +383,8 @@ static const Map<String,dynamic> es = {
     "lastNameError": "Last name is required",
     "aboutError": "This field is required",
     "emailError": "Email is required",
+    "profileUpdatedErrorMessage": "⚠️Something went wrong!",
+    "profileUpdatedSuccessMessage": "✅ Profile updated successfully.",
     "mobileNumberRequiredErrorMessage": "Mobile number is required",
     "mobileNumberLengthErrorMessage": "Mobile number must be 10 digits long",
     "mobileNumberInputTypeError": "Mobile number can only contain digits"
