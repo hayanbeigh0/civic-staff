@@ -61,6 +61,7 @@ dependencies:
   video_compress: ^3.1.2
   file_picker: ^5.2.5
   video_thumbnail: ^0.5.3
+  images_picker: ^1.2.11
 
 dev_dependencies:
   flutter_test:
@@ -76,14 +77,14 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/nammapallathur.png
+  image: assets/images/pallathurstaff.png
   android: true
   ios: true
 
   android_12:
-    image: assets/images/nammapallathur.png
+    image: assets/images/pallathurstaff.png
     icon_background_color: "#FFFFFF"
-    image_dark: assets/images/nammapallathur.png
+    image_dark: assets/images/pallathurstaff.png
     icon_background_color_dark: "#FFFFFF"
 
   web: false

@@ -15,7 +15,7 @@ class CodegenLoader extends AssetLoader{
   }
 
   static const Map<String,dynamic> en = {
-  "appName": "NammaPallathur",
+  "appName": "Pallathur Staff",
   "loginAndActivationScreen": {
     "login": "Login",
     "mobileNumber": "Mobile Number",
@@ -203,7 +203,7 @@ class CodegenLoader extends AssetLoader{
   }
 };
 static const Map<String,dynamic> es = {
-  "appName": "NammaPallathur",
+  "appName": "Pallathur Staff",
   "loginAndActivationScreen": {
     "login": "Login",
     "mobileNumber": "Mobile Number",

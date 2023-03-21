@@ -1,4 +1,4 @@
-package com.nammaooru.staff
+package com.nammaooru.civic_staff
 
 import io.flutter.embedding.android.FlutterActivity
 

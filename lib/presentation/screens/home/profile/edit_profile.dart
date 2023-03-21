@@ -167,11 +167,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       BlocConsumer<MyProfileCubit, MyProfileState>(
                         listener: (context, state) {
                           if (state is MyProfileEditingDoneState) {
-                            SnackBars.sucessMessageSnackbar(
-                                context,
-                                LocaleKeys
-                                    .editProfile_profileUpdatedSuccessMessage
-                                    .tr());
+                            // SnackBars.sucessMessageSnackbar(
+                            //     context,
+                            //     LocaleKeys
+                            //         .editProfile_profileUpdatedSuccessMessage
+                            //         .tr());
                             Navigator.of(context).pop();
                           }
                           if (state is MyProfileEditingFailedState) {

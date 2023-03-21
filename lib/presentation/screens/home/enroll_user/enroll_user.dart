@@ -58,6 +58,9 @@ class _EnrollUserState extends State<EnrollUser> {
             element.municipalityID ==
             AuthBasedRouting.afterLogin.userDetails!.municipalityID!)
         .toList();
+    wards.sort(
+      (a, b) => int.parse(a.wardNumber!).compareTo(int.parse(b.wardNumber!)),
+    );
     super.initState();
   }
 
@@ -258,9 +261,12 @@ class _EnrollUserState extends State<EnrollUser> {
                         SizedBox(
                           height: 5.h,
                         ),
-                        Text(
-                          LocaleKeys.enrollUsers_wardDropdownError.tr(),
-                          style: AppStyles.errorTextStyle,
+                        Padding(
+                          padding: EdgeInsets.only(left: 16.0.sp),
+                          child: Text(
+                            LocaleKeys.enrollUsers_wardDropdownError.tr(),
+                            style: AppStyles.errorTextStyle,
+                          ),
                         )
                       ],
                     )
@@ -376,8 +382,7 @@ class _EnrollUserState extends State<EnrollUser> {
                             return PrimaryButton(
                               isLoading: false,
                               onTap: () {
-                                if (wardDropdownValue == null &&
-                                    muncipalityDropdownValue != null) {
+                                if (wardDropdownValue == null) {
                                   setState(() {
                                     showWardDropdownError = true;
                                   });

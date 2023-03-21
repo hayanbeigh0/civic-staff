@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -13,8 +14,10 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 import 'package:civic_staff/presentation/utils/functions/get_temporary_directory.dart';
 import 'package:civic_staff/presentation/utils/functions/image_and_video_compress.dart';
 import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
+import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/audio_comment_widget.dart';
 import 'package:civic_staff/presentation/widgets/comment_list.dart';
+import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_dialog_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
 import 'package:civic_staff/presentation/widgets/progress_dialog_widget.dart';
@@ -29,6 +32,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:images_picker/images_picker.dart';
 
 class AllComments extends StatefulWidget {
   final String grievanceId;
@@ -65,6 +69,7 @@ class _AllCommentsState extends State<AllComments> {
   List<Comments> comments = const [];
   final recorder = FlutterSoundRecorder();
   bool showSpinner = false;
+  late StreamSubscription audioDurationSubscription;
 
   @override
   Widget build(BuildContext context) {
@@ -233,6 +238,24 @@ class _AllCommentsState extends State<AllComments> {
                       comment: '',
                     ));
                   }
+                  if (state is AddingGrievanceAudioCommentAssetSuccessState) {
+                    Navigator.of(context).pop();
+                    BlocProvider.of<GrievancesBloc>(context)
+                        .add(AddGrievanceCommentEvent(
+                      grievanceId: widget.grievanceId,
+                      staffId:
+                          AuthBasedRouting.afterLogin.userDetails!.staffID!,
+                      name: AuthBasedRouting.afterLogin.userDetails!.firstName!,
+                      assets: {
+                        'Audio': [
+                          '$CLOUDFRONT_URL/${state.s3uploadResult.uploadResult!.key1}'
+                        ],
+                        'Image': const [],
+                        'Video': const []
+                      },
+                      comment: '',
+                    ));
+                  }
                   if (state is GrievanceByIdLoadedState) {
                     comments = state.grievanceDetail.comments!.toList();
                   }
@@ -246,6 +269,10 @@ class _AllCommentsState extends State<AllComments> {
                         grievanceId: widget.grievanceId,
                       ),
                     );
+                  }
+                  if (state is AddingGrievanceVideoCommentAssetFailedState) {
+                    SnackBars.errorMessageSnackbar(
+                        context, 'Uploading video failed.');
                   }
                 },
                 builder: (context, state) {
@@ -325,6 +352,7 @@ class _AllCommentsState extends State<AllComments> {
                       ),
                     );
                   }
+
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.0.w),
                     child: comments.isEmpty
@@ -488,19 +516,51 @@ class _AllCommentsState extends State<AllComments> {
   }
 
   Future<void> pickVideo() async {
-    final pickedFile = await ImagePicker().pickVideo(
-      source: ImageSource.gallery,
+    // final pickedFile = await ImagePicker().pickVideo(
+    //   source: ImageSource.gallery,
+    //   maxDuration: const Duration(minutes: 1),
+    // );
+    final pickedFile = await ImagesPicker.pick(
+      pickType: PickType.video,
+      maxTime: 180,
+      count: 1,
+      quality: 0.5,
     );
     if (pickedFile == null) return;
-    final file = File(pickedFile.path);
-    // setState(() {
-    //   videos.add(pickedFile);
-    // });
-    log('Picked file size: ${pickedFile.length()}');
+    final file = File(pickedFile.first.path);
+    int sizeInBytes = await file.length();
+    log('Picked file size: $sizeInBytes');
+    double sizeInMb = sizeInBytes / (1024 * 1024);
+    if (sizeInMb > 30) {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('Video size cannot be more than 30 MB'),
+            actions: [
+              Align(
+                alignment: Alignment.bottomRight,
+                child: PrimaryDialogButton(
+                  buttonText: 'Ok',
+                  onTap: () => Navigator.of(context).pop(),
+                  isLoading: false,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     generateThumbnail(file);
-    final size = getVideoSize(file);
-    log('Video size $size');
+    // final size = getVideoSize(file);
+    // log('Video size $size');
     File compressedFile = await compressVideo(file);
+
+    int compressedSizeInBytes = await compressedFile.length();
+    double compressedSizeInMb = compressedSizeInBytes / (1024 * 1024);
+    log('Compressed file size: $compressedSizeInMb');
     final Uint8List videoBytes = await compressedFile.readAsBytes();
     final String base64Video = base64Encode(videoBytes);
     BlocProvider.of<GrievancesBloc>(context)
@@ -509,7 +569,6 @@ class _AllCommentsState extends State<AllComments> {
       fileType: 'video',
       encodedCommentFile: base64Video,
     ));
-    log('Compressed file size: ${compressedFile.length()}');
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -519,24 +578,43 @@ class _AllCommentsState extends State<AllComments> {
     log('Opening recorder');
     final pickedFile = await ImagePicker().pickVideo(
       source: ImageSource.camera,
+      maxDuration: const Duration(minutes: 1),
     );
     if (pickedFile == null) {
       log('No file picked');
       return;
     }
     final file = File(pickedFile.path);
-    // setState(() {
-    //   videos.add(pickedFile);
-    // });
-    log('done recording');
-    log('Picked file size: ${pickedFile.length()}');
+    int sizeInBytes = await file.length();
+    double sizeInMb = sizeInBytes / (1024 * 1024);
+    log('Picked file size: $sizeInMb MB');
+    if (sizeInMb > 30) {
+      ImagesPicker.saveVideoToAlbum(file);
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('Video size cannot be more than 30 MB'),
+            actions: [
+              Align(
+                alignment: Alignment.bottomRight,
+                child: PrimaryDialogButton(
+                  buttonText: 'Ok',
+                  onTap: () => Navigator.of(context).pop(),
+                  isLoading: false,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
     generateThumbnail(file);
-    final videoSize = getVideoSize(file);
     File compressedFile = await compressVideo(file);
-    // setState(() {
-    //   showSpinner = true;
-    // });
-    log('Compressed file size: ${compressedFile.length()}');
+    int compressedSizeInBytes = await compressedFile.length();
+    double compressedSizeInMb = compressedSizeInBytes / (1024 * 1024);
+    log('Compressed file size: $compressedSizeInMb');
     final Uint8List videoBytes = await compressedFile.readAsBytes();
     final String base64Video = base64Encode(videoBytes);
     BlocProvider.of<GrievancesBloc>(context)
@@ -545,9 +623,6 @@ class _AllCommentsState extends State<AllComments> {
       fileType: 'video',
       encodedCommentFile: base64Video,
     ));
-    // setState(() {
-    //   showSpinner = false;
-    // });
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -805,10 +880,35 @@ class _AllCommentsState extends State<AllComments> {
   Future<void> chooseAudio() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.audio,
+      allowCompression: true,
       allowMultiple: false,
     );
 
     if (result != null && result.files.isNotEmpty) {
+      int sizeInBytes = result.files.first.size;
+      double sizeInMb = sizeInBytes / (1024 * 1024);
+      log('Picked file size: $sizeInMb MB');
+      if (sizeInMb > 5) {
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: const Text('Video size cannot be more than 5 MB'),
+              actions: [
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: PrimaryDialogButton(
+                    buttonText: 'Ok',
+                    onTap: () => Navigator.of(context).pop(),
+                    isLoading: false,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
       final file = result.files.single;
       audios.add(
         XFile(
@@ -868,26 +968,26 @@ class _AllCommentsState extends State<AllComments> {
                         ),
                         BlocConsumer<GrievancesBloc, GrievancesState>(
                           listener: (context, state) {
-                            if (state
-                                is AddingGrievanceAudioCommentAssetSuccessState) {
-                              Navigator.of(context).pop();
-                              BlocProvider.of<GrievancesBloc>(context)
-                                  .add(AddGrievanceCommentEvent(
-                                grievanceId: widget.grievanceId,
-                                staffId: AuthBasedRouting
-                                    .afterLogin.userDetails!.staffID!,
-                                name: AuthBasedRouting
-                                    .afterLogin.userDetails!.firstName!,
-                                assets: {
-                                  'Audio': [
-                                    '$CLOUDFRONT_URL/${state.s3uploadResult.uploadResult!.key1}'
-                                  ],
-                                  'Image': const [],
-                                  'Video': const []
-                                },
-                                comment: '',
-                              ));
-                            }
+                            // if (state
+                            //     is AddingGrievanceAudioCommentAssetSuccessState) {
+                            //   Navigator.of(context).pop();
+                            //   BlocProvider.of<GrievancesBloc>(context)
+                            //       .add(AddGrievanceCommentEvent(
+                            //     grievanceId: widget.grievanceId,
+                            //     staffId: AuthBasedRouting
+                            //         .afterLogin.userDetails!.staffID!,
+                            //     name: AuthBasedRouting
+                            //         .afterLogin.userDetails!.firstName!,
+                            //     assets: {
+                            //       'Audio': [
+                            //         '$CLOUDFRONT_URL/${state.s3uploadResult.uploadResult!.key1}'
+                            //       ],
+                            //       'Image': const [],
+                            //       'Video': const []
+                            //     },
+                            //     comment: '',
+                            //   ));
+                            // }
                           },
                           builder: (context, state) {
                             if (state
@@ -929,6 +1029,7 @@ class _AllCommentsState extends State<AllComments> {
                     )
                   : Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
                           height: 20.h,
@@ -957,23 +1058,49 @@ class _AllCommentsState extends State<AllComments> {
                         IconButton(
                           onPressed: () async {
                             if (recorder.isRecording) {
+                              audioDurationSubscription.cancel();
                               dialogState(() {
                                 recordingAudio = false;
                               });
                               audioFile = await stopAudioRecording();
-                              recorder.closeRecorder();
+                              await recorder.closeRecorder();
                               audios.add(XFile(audioFile!.path));
+                              int sizeInBytes = audioFile!.lengthSync();
+                              double sizeInMb = sizeInBytes / (1024 * 1024);
+                              log('Recorded audio file size: $sizeInMb MB');
                             }
                             if (!recorder.isRecording) {
-                              initAudioRecorder();
-                              recorder.startRecorder(
+                              dialogState(() {
+                                recordingAudio = true;
+                              });
+                              await initAudioRecorder();
+                              await recorder.startRecorder(
                                 codec: Codec.aacMP4,
                                 toFile:
                                     await getTemporaryFilePath(audios.length),
                               );
-                              dialogState(() {
-                                recordingAudio = true;
-                              });
+                              audioDurationSubscription =
+                                  recorder.onProgress!.listen(
+                                (event) async {
+                                  if (event.duration >=
+                                      const Duration(seconds: 60)) {
+                                    audioFile = await stopAudioRecording();
+                                    await recorder.closeRecorder();
+                                    audios.add(XFile(audioFile!.path));
+                                    int sizeInBytes = audioFile!.lengthSync();
+                                    double sizeInMb =
+                                        sizeInBytes / (1024 * 1024);
+                                    log('Recorded audio file size: $sizeInMb MB');
+                                    if (mounted) {
+                                      dialogState(() {
+                                        audioDurationSubscription.cancel();
+                                        recordingAudio = false;
+                                      });
+                                    }
+                                    // return;
+                                  }
+                                },
+                              );
                             }
                           },
                           icon: recordingAudio
@@ -995,6 +1122,15 @@ class _AllCommentsState extends State<AllComments> {
                           recordingAudio
                               ? LocaleKeys.addComment_stop.tr()
                               : LocaleKeys.addComment_record.tr(),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Text(
+                          'Max duration allowed = 60 seconds.',
+                          style: AppStyles.listOrderedByTextStyle,
+                          textAlign: TextAlign.center,
                         ),
                         SizedBox(
                           height: 20.h,
@@ -1006,17 +1142,18 @@ class _AllCommentsState extends State<AllComments> {
         );
       },
     );
-    recorder.dispositionStream();
+    // recorder.dispositionStream();
   }
 
   Future<File> stopAudioRecording() async {
+    recorder.dispositionStream();
     final path = await recorder.stopRecorder();
     final audioFile = File(path!);
     log('Recorded audio: $audioFile');
     return audioFile;
   }
 
-  void initAudioRecorder() async {
+  Future<void> initAudioRecorder() async {
     final storageStatus = await Permission.storage.request();
     await Permission.manageExternalStorage.request();
     final status = await Permission.microphone.request();

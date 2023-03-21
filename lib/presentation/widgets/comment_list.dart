@@ -59,21 +59,21 @@ class CommentList extends StatelessWidget {
                     ? const SizedBox()
                     : Stack(
                         children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => FullScreenVideoPlayer(
-                                  url: commentList[index].assets!.video![0],
-                                  file: null,
-                                ),
-                              ));
-                            },
-                            child: Align(
-                              alignment: commentList[index].commentedBy ==
-                                      AuthBasedRouting
-                                          .afterLogin.userDetails!.staffID
-                                  ? Alignment.centerRight
-                                  : Alignment.centerLeft,
+                          Align(
+                            alignment: commentList[index].commentedBy ==
+                                    AuthBasedRouting
+                                        .afterLogin.userDetails!.staffID
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => FullScreenVideoPlayer(
+                                    url: commentList[index].assets!.video![0],
+                                    file: null,
+                                  ),
+                                ));
+                              },
                               child: Container(
                                 width: 200.w,
                                 height: 150.h,

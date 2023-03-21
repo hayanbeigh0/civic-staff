@@ -48,6 +48,12 @@ class GrievancesRepository {
     required String fileType,
     required String grievanceId,
   }) async {
+    // log('S3 request payload: ${jsonEncode({
+    //       "File": encodedCommentFile,
+    //       "FileType": fileType,
+    //       "GrievanceID": grievanceId,
+    //       "Section": 'comments'
+    //     })}');
     final response = await Dio().post(
       '$API_URL/general/upload-assets',
       data: jsonEncode({

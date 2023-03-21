@@ -65,6 +65,11 @@ class _EditUserScreenState extends State<EditUserScreen> {
             element.municipalityID ==
             AuthBasedRouting.afterLogin.userDetails!.municipalityID!)
         .toList();
+    wards.sort(
+      (a, b) => int.parse(a.wardNumber!).compareTo(
+        int.parse(b.wardNumber!),
+      ),
+    );
     wardDropdownValue = wards
         .firstWhere((element) => element.wardNumber == widget.user.wardNumber)
         .wardName;

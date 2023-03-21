@@ -199,6 +199,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           s3uploadResult: s3uploadResult,
         ));
       } on DioError catch (e) {
+        log(e.error.toString());
         emit(AddingGrievanceVideoCommentAssetFailedState());
       }
     });
