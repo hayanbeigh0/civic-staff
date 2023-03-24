@@ -114,8 +114,9 @@ class LocationMapField extends StatelessWidget {
         SizedBox(
           height: 15.h,
         ),
-        BlocBuilder<ReverseGeocodingCubit, ReverseGeocodingState>(
-          builder: (context, state) {
+        BlocConsumer<ReverseGeocodingCubit, ReverseGeocodingState>(
+          buildWhen: (previous, current) => previous != current,
+          listener: (context, state) {
             if (state is ReverseGeocodingLoaded) {
               if (address == null) {
                 addressLine1Controller.text =
@@ -130,7 +131,25 @@ class LocationMapField extends StatelessWidget {
                 addressLine2Controller.text =
                     address!.substring(lastCommaIndex + 2);
               }
-              log('${addressLine1Controller.text}, ${addressLine2Controller.text}');
+            }
+            log('${addressLine1Controller.text}, ${addressLine2Controller.text}');
+          },
+          builder: (context, state) {
+            if (state is ReverseGeocodingLoaded) {
+              // if (address == null) {
+              //   addressLine1Controller.text =
+              //       '${state.street}, ${state.locality}';
+              //   addressLine2Controller.text = state.countryName;
+              // }
+              // if (address != null) {
+              //   log('Address loaded without getting it from location');
+              //   int lastCommaIndex = address!.lastIndexOf(", ");
+              //   addressLine1Controller.text =
+              //       address!.substring(0, lastCommaIndex);
+              //   addressLine2Controller.text =
+              //       address!.substring(lastCommaIndex + 2);
+              // }
+              // log('${addressLine1Controller.text}, ${addressLine2Controller.text}');
 
               return Column(
                 children: [

@@ -152,7 +152,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       PrimaryDisplayField(
                         fillColor: AppColors.colorDisabledTextField,
-                        title: 'Municipality',
+                        title: LocaleKeys.userDetails_municipality.tr(),
                         value: AuthBasedRouting.afterLogin.masterData!
                             .firstWhere((element) =>
                                 element.sK ==

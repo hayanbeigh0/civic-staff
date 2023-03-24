@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/grievances/grievance_detail_model.dart';
 import 'package:civic_staff/models/s3_upload_result.dart';
+import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_list.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,22 +31,28 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
 
     on<LoadGrievancesEvent>((event, emit) async {
       emit(GrievancesLoadingState());
-      try {
-        List<Grievances> updatedGrievanceList = await grievancesRepository
-            .loadGrievancesJson(event.municipalityId, event.staffId);
-        updatedGrievanceList.sort((g1, g2) {
-          DateTime timestamp1 = DateTime.parse(g1.lastModifiedDate.toString());
-          DateTime timestamp2 = DateTime.parse(g2.lastModifiedDate.toString());
-          return timestamp2.compareTo(timestamp1);
-        });
-        emit(
-          GrievancesMarkersLoadedState(grievanceList: updatedGrievanceList),
-        );
-        emit(GrievancesLoadedState(
-            grievanceList: updatedGrievanceList, selectedFilterNumber: 1));
-      } catch (e) {
-        emit(GrievancesLoadingFailedState());
-        emit(NoGrievanceFoundState());
+      if (ShowOnlyOpenSwitchState.showOnlyOpen) {
+        add(ShowOnlyOpenGrievancesEvent());
+      } else {
+        try {
+          List<Grievances> updatedGrievanceList = await grievancesRepository
+              .loadGrievancesJson(event.municipalityId, event.staffId);
+          updatedGrievanceList.sort((g1, g2) {
+            DateTime timestamp1 =
+                DateTime.parse(g1.lastModifiedDate.toString());
+            DateTime timestamp2 =
+                DateTime.parse(g2.lastModifiedDate.toString());
+            return timestamp2.compareTo(timestamp1);
+          });
+          emit(
+            GrievancesMarkersLoadedState(grievanceList: updatedGrievanceList),
+          );
+          emit(GrievancesLoadedState(
+              grievanceList: updatedGrievanceList, selectedFilterNumber: 1));
+        } catch (e) {
+          emit(GrievancesLoadingFailedState());
+          emit(NoGrievanceFoundState());
+        }
       }
     });
 
@@ -203,7 +210,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         emit(AddingGrievanceVideoCommentAssetFailedState());
       }
     });
-    on<SearchGrievanceByTypeEvent>((event, emit) async {
+    on<SearchGrievanceByReporterNameEvent>((event, emit) async {
       emit(GrievancesLoadingState());
       // userRepository.loadUserJson();
       List<Grievances> updatedGrievanceList =
@@ -213,13 +220,13 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
       );
       updatedGrievanceList = updatedGrievanceList
           .where(
-            (element) =>
-                grievanceTypesMap[element.grievanceType!.toLowerCase()]!
-                    .toLowerCase()
-                    .replaceAll(' ', '')
-                    .startsWith(
-                      event.grievanceType.toLowerCase().replaceAll(' ', ''),
-                    ),
+            (element) => element.createdByName!
+                .toLowerCase()
+                .toLowerCase()
+                .replaceAll(' ', '')
+                .startsWith(
+                  event.reporterName.toLowerCase().replaceAll(' ', ''),
+                ),
           )
           .toList();
 
@@ -227,6 +234,29 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         (a, b) => DateTime.parse(a.lastModifiedDate.toString())
             .compareTo(DateTime.parse(b.lastModifiedDate.toString())),
       );
+      if (updatedGrievanceList.isEmpty) {
+        emit(NoGrievanceFoundState());
+      } else {
+        emit(
+          GrievancesLoadedState(
+            grievanceList: updatedGrievanceList,
+            selectedFilterNumber: 1,
+          ),
+        );
+      }
+    });
+    on<ShowOnlyOpenGrievancesEvent>((event, emit) async {
+      emit(GrievancesLoadingState());
+      List<Grievances> updatedGrievanceList =
+          await grievancesRepository.loadGrievancesJson(
+              AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
+              AuthBasedRouting.afterLogin.userDetails!.staffID!);
+      print("UpdatedGrievanceList: ${updatedGrievanceList}");
+      updatedGrievanceList = updatedGrievanceList
+          .where((element) => element.status != '2')
+          .toList();
+
+      // updatedGrievanceList.sort();
       if (updatedGrievanceList.isEmpty) {
         emit(NoGrievanceFoundState());
       } else {

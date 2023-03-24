@@ -2,6 +2,7 @@ import 'package:civic_staff/constants/app_constants.dart';
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/grievances/grievances_bloc.dart';
 import 'package:civic_staff/main.dart';
+import 'package:civic_staff/models/user_details.dart';
 import 'package:civic_staff/presentation/screens/home/monitor_grievance/grievance_detail/grievance_detail.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -38,15 +39,17 @@ class GrievanceList extends StatelessWidget {
     "elect": 'assets/svg/noelectricity.svg',
   };
   final Map<String, String> grievanceTypesMap = {
-    "garb": 'Garbage Collection',
-    "road": 'Road maintenance / Construction',
-    "light": 'Street Lighting',
-    "cert": 'Certificate Request',
-    "house": 'House plan approval',
-    "water": 'Water supply / drainage',
-    "elect": 'Electricity',
-    "other": 'Other',
+    "garb": LocaleKeys.grievanceDetail_garb.tr(),
+    "road": LocaleKeys.grievanceDetail_road.tr(),
+    "light": LocaleKeys.grievanceDetail_light.tr(),
+    "cert": LocaleKeys.grievanceDetail_cert.tr(),
+    "house": LocaleKeys.grievanceDetail_house.tr(),
+    "water": LocaleKeys.grievanceDetail_water.tr(),
+    "elect": LocaleKeys.grievanceDetail_elect.tr(),
+    "other": LocaleKeys.grievanceDetail_otherGrievanceType.tr(),
   };
+  bool openGrievancesOnly = true;
+  late List<MuicipalityGrievances> grievanceTypesList;
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<GrievancesBloc>(context).add(
@@ -56,6 +59,11 @@ class GrievanceList extends StatelessWidget {
             AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
       ),
     );
+    grievanceTypesList = AuthBasedRouting.afterLogin.grievanceTypes!
+        .firstWhere((element) =>
+            element.municipalityID ==
+            AuthBasedRouting.afterLogin.userDetails!.municipalityID)
+        .grievances!;
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: Column(
@@ -188,7 +196,9 @@ class GrievanceList extends StatelessWidget {
                       }
                       if (value.isNotEmpty) {
                         return BlocProvider.of<GrievancesBloc>(context).add(
-                          SearchGrievanceByTypeEvent(grievanceType: value),
+                          SearchGrievanceByReporterNameEvent(
+                            reporterName: value,
+                          ),
                         );
                       }
                     },
@@ -203,6 +213,30 @@ class GrievanceList extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppConstants.screenPadding,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            LocaleKeys.grievancesScreen_openGrievancesOnly.tr(),
+                            style: TextStyle(
+                              color: AppColors.colorPrimary,
+                              fontFamily: 'LexendDeca',
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          ShowOnlyOpenSwitch(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: AppConstants.screenPadding),
@@ -439,11 +473,30 @@ class GrievanceList extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                grievanceTypesMap[state
-                                                        .grievanceList[index]
-                                                        .grievanceType!
-                                                        .toLowerCase()]
-                                                    .toString(),
+                                                grievanceTypesMap.containsKey(
+                                                        state
+                                                            .grievanceList[
+                                                                index]
+                                                            .grievanceType!
+                                                            .toLowerCase())
+                                                    ? grievanceTypesMap[state
+                                                            .grievanceList[
+                                                                index]
+                                                            .grievanceType!
+                                                            .toLowerCase()]
+                                                        .toString()
+                                                    : grievanceTypesList
+                                                        .firstWhere((element) =>
+                                                            element
+                                                                .grievanceType!
+                                                                .toLowerCase() ==
+                                                            state
+                                                                .grievanceList[
+                                                                    index]
+                                                                .grievanceType!
+                                                                .toLowerCase())
+                                                        .grievanceTypeName
+                                                        .toString(),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: AppStyles.cardTextStyle,
@@ -457,6 +510,8 @@ class GrievanceList extends StatelessWidget {
                                                     child: Icon(
                                                       Icons.location_pin,
                                                       size: 16.sp,
+                                                      color: AppColors
+                                                          .colorPrimary,
                                                     ),
                                                   ),
                                                   SizedBox(
@@ -485,6 +540,8 @@ class GrievanceList extends StatelessWidget {
                                                   Icon(
                                                     Icons.person,
                                                     size: 16.sp,
+                                                    color:
+                                                        AppColors.colorPrimary,
                                                   ),
                                                   SizedBox(
                                                     width: 5.w,
@@ -511,6 +568,8 @@ class GrievanceList extends StatelessWidget {
                                                   Icon(
                                                     Icons.calendar_month,
                                                     size: 16.sp,
+                                                    color:
+                                                        AppColors.colorPrimary,
                                                   ),
                                                   SizedBox(
                                                     width: 5.w,
@@ -611,6 +670,46 @@ class GrievanceList extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ShowOnlyOpenSwitch extends StatefulWidget {
+  ShowOnlyOpenSwitch({
+    Key? key,
+  }) : super(key: key);
+
+  // static bool showOnlyOpen = false;
+  @override
+  State<ShowOnlyOpenSwitch> createState() => ShowOnlyOpenSwitchState();
+}
+
+class ShowOnlyOpenSwitchState extends State<ShowOnlyOpenSwitch> {
+  static bool showOnlyOpen = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Switch(
+      activeColor: AppColors.colorPrimary,
+      value: showOnlyOpen,
+      onChanged: (value) {
+        setState(() {
+          showOnlyOpen = value;
+        });
+        if (value) {
+          return BlocProvider.of<GrievancesBloc>(context)
+              .add(ShowOnlyOpenGrievancesEvent());
+        } else {
+          return BlocProvider.of<GrievancesBloc>(context).add(
+            LoadGrievancesEvent(
+              municipalityId: AuthBasedRouting
+                  .afterLogin.userDetails!.municipalityID
+                  .toString(),
+              staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
+            ),
+          );
+        }
+      },
     );
   }
 }

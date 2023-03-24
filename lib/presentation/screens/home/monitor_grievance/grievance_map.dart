@@ -31,14 +31,19 @@ class GrievanceMap extends StatelessWidget {
 
   Set<Marker> grievanceMarkers = {};
   final Map<String, String> grievanceTypesMap = {
-    "garb": 'Garbage Collection',
-    "road": 'Road maintenance / Construction',
-    "light": 'Street Lighting',
-    "cert": 'Certificate Request',
-    "house": 'House plan approval',
-    "water": 'Water supply / drainage',
-    "elect": 'Electricity',
-    "other": 'Other',
+    "garb": LocaleKeys.grievanceDetail_garb.tr(),
+    "road": LocaleKeys.grievanceDetail_road.tr(),
+    "light": LocaleKeys.grievanceDetail_light.tr(),
+    "cert": LocaleKeys.grievanceDetail_cert.tr(),
+    "house": LocaleKeys.grievanceDetail_house.tr(),
+    "water": LocaleKeys.grievanceDetail_water.tr(),
+    "elect": LocaleKeys.grievanceDetail_elect.tr(),
+    "other": LocaleKeys.grievanceDetail_otherGrievanceType.tr(),
+  };
+  final Map<String, String> statusTypesMap = {
+    "in-progress": LocaleKeys.grievanceDetail_inProgress.tr(),
+    "hold": LocaleKeys.grievanceDetail_hold.tr(),
+    "closed": LocaleKeys.grievanceDetail_closed.tr(),
   };
 
   @override
@@ -62,7 +67,7 @@ class GrievanceMap extends StatelessWidget {
                         markerId: MarkerId(e.grievanceID.toString()),
                         infoWindow: InfoWindow(
                           snippet:
-                              'Status: ${AuthBasedRouting.afterLogin.masterData!.firstWhere((element) => element.pK == '#GRIEVANCESTATUS#' && element.sK == e.status).name}',
+                              '${LocaleKeys.grievanceDetail_status.tr()}: ${statusTypesMap[AuthBasedRouting.afterLogin.masterData!.firstWhere((element) => element.pK == '#GRIEVANCESTATUS#' && element.sK == e.status).name!.toLowerCase()]}',
                           title:
                               grievanceTypesMap[e.grievanceType!.toLowerCase()],
                           onTap: () {

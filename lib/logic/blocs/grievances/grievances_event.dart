@@ -30,13 +30,13 @@ class CloseGrievanceEvent extends GrievancesEvent {
   List<Object> get props => [grievanceId];
 }
 
-class SearchGrievanceByTypeEvent extends GrievancesEvent {
-  final String grievanceType;
-  const SearchGrievanceByTypeEvent({
-    required this.grievanceType,
+class SearchGrievanceByReporterNameEvent extends GrievancesEvent {
+  final String reporterName;
+  const SearchGrievanceByReporterNameEvent({
+    required this.reporterName,
   });
   @override
-  List<Object> get props => [grievanceType];
+  List<Object> get props => [reporterName];
 }
 
 class UpdateGrievanceEvent extends GrievancesEvent {
@@ -105,6 +105,11 @@ class AddGrievanceImageCommentAssetsEvent extends GrievancesEvent {
   });
   @override
   List<Object> get props => [grievanceId, fileType, encodedCommentFile];
+}
+
+class ShowOnlyOpenGrievancesEvent extends GrievancesEvent {
+  @override
+  List<Object> get props => [];
 }
 
 class AddGrievanceVideoCommentAssetsEvent extends GrievancesEvent {

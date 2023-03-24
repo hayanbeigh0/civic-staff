@@ -1034,40 +1034,22 @@ class _AllCommentsState extends State<AllComments> {
                         SizedBox(
                           height: 20.h,
                         ),
-                        StreamBuilder<RecordingDisposition>(
-                          stream: recorder.onProgress,
-                          builder: (context, snapshot) {
-                            final duration = snapshot.hasData
-                                ? snapshot.data!.duration
-                                : Duration.zero;
-                            String twoDigits(int n) =>
-                                n.toString().padLeft(2, '0');
-                            final twoDigitMinutes =
-                                twoDigits(duration.inMinutes.remainder(60));
-                            final twoDigitSeconds =
-                                twoDigits(duration.inSeconds.remainder(60));
-
-                            return Text(
-                              '$twoDigitMinutes : $twoDigitSeconds',
-                              style: TextStyle(
-                                fontSize: 28.sp,
-                              ),
-                            );
-                          },
-                        ),
+                        RecorderDurationWidget(recorder: recorder),
                         IconButton(
                           onPressed: () async {
                             if (recorder.isRecording) {
-                              audioDurationSubscription.cancel();
-                              dialogState(() {
-                                recordingAudio = false;
-                              });
                               audioFile = await stopAudioRecording();
-                              await recorder.closeRecorder();
-                              audios.add(XFile(audioFile!.path));
+                              // audios.add(XFile(audioFile!.path));
                               int sizeInBytes = audioFile!.lengthSync();
                               double sizeInMb = sizeInBytes / (1024 * 1024);
                               log('Recorded audio file size: $sizeInMb MB');
+                              await recorder.closeRecorder();
+                              recorder.dispositionStream();
+                              dialogState(() {
+                                audioDurationSubscription.cancel();
+                                recordingAudio = false;
+                              });
+                              return;
                             }
                             if (!recorder.isRecording) {
                               dialogState(() {
@@ -1086,7 +1068,7 @@ class _AllCommentsState extends State<AllComments> {
                                       const Duration(seconds: 60)) {
                                     audioFile = await stopAudioRecording();
                                     await recorder.closeRecorder();
-                                    audios.add(XFile(audioFile!.path));
+                                    // audios.add(XFile(audioFile!.path));
                                     int sizeInBytes = audioFile!.lengthSync();
                                     double sizeInMb =
                                         sizeInBytes / (1024 * 1024);
@@ -1097,7 +1079,7 @@ class _AllCommentsState extends State<AllComments> {
                                         recordingAudio = false;
                                       });
                                     }
-                                    // return;
+                                    return;
                                   }
                                 },
                               );
@@ -1142,7 +1124,9 @@ class _AllCommentsState extends State<AllComments> {
         );
       },
     );
-    // recorder.dispositionStream();
+    await recorder.stopRecorder();
+    await recorder.closeRecorder();
+    recorder.dispositionStream();
   }
 
   Future<File> stopAudioRecording() async {
@@ -1166,6 +1150,46 @@ class _AllCommentsState extends State<AllComments> {
       const Duration(
         milliseconds: 500,
       ),
+    );
+  }
+}
+
+class RecorderDurationWidget extends StatefulWidget {
+  const RecorderDurationWidget({
+    Key? key,
+    required this.recorder,
+  }) : super(key: key);
+
+  final FlutterSoundRecorder recorder;
+
+  @override
+  State<RecorderDurationWidget> createState() => _RecorderDurationWidgetState();
+}
+
+class _RecorderDurationWidgetState extends State<RecorderDurationWidget> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.recorder.onProgress != null) {
+      widget.recorder.onProgress!.listen(
+        (event) => log(event.duration.inSeconds.toString()),
+      );
+    }
+    return StreamBuilder<RecordingDisposition>(
+      stream: widget.recorder.onProgress,
+      builder: (context, snapshot) {
+        final duration =
+            snapshot.hasData ? snapshot.data!.duration : Duration.zero;
+        String twoDigits(int n) => n.toString().padLeft(2, '0');
+        final twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+        final twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+
+        return Text(
+          '$twoDigitMinutes : $twoDigitSeconds',
+          style: TextStyle(
+            fontSize: 28.sp,
+          ),
+        );
+      },
     );
   }
 }

@@ -44,7 +44,7 @@ void main() async {
       path: 'assets/i18n',
       supportedLocales: const [
         Locale('en'),
-        Locale('es'),
+        Locale('ta'),
       ],
       startLocale: Locale(locale.languageCode),
       fallbackLocale: const Locale('en'),

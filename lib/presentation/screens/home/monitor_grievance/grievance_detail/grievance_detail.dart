@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:chewie/chewie.dart';
 import 'package:civic_staff/constants/app_constants.dart';
@@ -58,6 +59,33 @@ class GrievanceDetail extends StatelessWidget {
   bool showDropdownError = false;
   TextEditingController reporterController = TextEditingController();
   TextEditingController commentTextController = TextEditingController();
+  final Map<String, String> grievanceTypesMap = {
+    "garb": LocaleKeys.grievanceDetail_garb.tr(),
+    "road": LocaleKeys.grievanceDetail_road.tr(),
+    "light": LocaleKeys.grievanceDetail_light.tr(),
+    "cert": LocaleKeys.grievanceDetail_cert.tr(),
+    "house": LocaleKeys.grievanceDetail_house.tr(),
+    "water": LocaleKeys.grievanceDetail_water.tr(),
+    "elect": LocaleKeys.grievanceDetail_elect.tr(),
+    "other": LocaleKeys.grievanceDetail_otherGrievanceType.tr(),
+  };
+  final Map<String, String> statusTypesMap = {
+    "in-progress": LocaleKeys.grievanceDetail_inProgress.tr(),
+    "hold": LocaleKeys.grievanceDetail_hold.tr(),
+    "closed": LocaleKeys.grievanceDetail_closed.tr(),
+  };
+  final Map<String, String> expectedCompletionTypesMap = {
+    "1 Day": LocaleKeys.grievanceDetail_expectedCompletionIn1Day.tr(),
+    "2 Days": LocaleKeys.grievanceDetail_expectedCompletionIn2Days.tr(),
+    "3 Days": LocaleKeys.grievanceDetail_expectedCompletionIn3Days.tr(),
+  };
+  final Map<String, String> priorityTypesMap = {
+    "1": LocaleKeys.grievanceDetail_priorityImmidiate.tr(),
+    "2": LocaleKeys.grievanceDetail_priority1WorkingDay.tr(),
+    "3": LocaleKeys.grievanceDetail_priority1Week.tr(),
+    "4": LocaleKeys.grievanceDetail_priority1Month.tr(),
+    "5": LocaleKeys.grievanceDetail_priorityDummy.tr(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +178,10 @@ class GrievanceDetail extends StatelessWidget {
                       .toList()
                       .reversed
                       .toList();
+                  log('Images: ${state.grievanceDetail.assets!.image!.length}');
+                  log('Videos: ${state.grievanceDetail.assets!.video!.length}');
+                  state.grievanceDetail.assets!.video!.map((e) => log(e));
+                  state.grievanceDetail.assets!.image!.map((e) => log(e));
                   return grievanceDetails(context, state);
                 }
                 return const SizedBox();
@@ -200,9 +232,15 @@ class GrievanceDetail extends StatelessWidget {
                       .toList()
                       .map(
                         (item) => DropdownMenuItem<String>(
+                          // value: grievanceTypesMap[
+                          //     item.grievanceType!.toLowerCase()],
                           value: item.grievanceType,
                           child: Text(
-                            item.grievanceTypeName.toString(),
+                            grievanceTypesMap.containsKey(
+                                    item.grievanceType!.toLowerCase())
+                                ? grievanceTypesMap[
+                                    item.grievanceType!.toLowerCase()]!
+                                : item.grievanceTypeName.toString(),
                             maxLines: 1,
                             style: AppStyles.dropdownTextStyle,
                           ),
@@ -265,10 +303,23 @@ class GrievanceDetail extends StatelessWidget {
               ),
               PrimaryDisplayField(
                 title: LocaleKeys.grievanceDetail_status.tr(),
-                value: statusList
-                    .firstWhere((element) => element.sK == statusDropdownValue)
-                    .name
-                    .toString(),
+                value: statusTypesMap.containsKey(statusList
+                        .firstWhere(
+                            (element) => element.sK == statusDropdownValue)
+                        .name!
+                        .toLowerCase()
+                        .toString())
+                    ? statusTypesMap[statusList
+                        .firstWhere(
+                            (element) => element.sK == statusDropdownValue)
+                        .name!
+                        .toLowerCase()
+                        .toString()]!
+                    : statusList
+                        .firstWhere(
+                            (element) => element.sK == statusDropdownValue)
+                        .name
+                        .toString(),
                 suffixIcon: TextButton(
                   onPressed: () {
                     showDialog(
@@ -304,7 +355,15 @@ class GrievanceDetail extends StatelessWidget {
                                       (item) => DropdownMenuItem<String>(
                                         value: item.sK,
                                         child: Text(
-                                          item.name.toString(),
+                                          statusTypesMap.containsKey(item.name!
+                                                  .toLowerCase()
+                                                  .toString())
+                                              ? statusTypesMap[item.name!
+                                                  .toLowerCase()
+                                                  .toString()]!
+                                              : item.name!
+                                                  .toLowerCase()
+                                                  .toString(),
                                           maxLines: 1,
                                           style: AppStyles.dropdownTextStyle,
                                         ),
@@ -486,7 +545,7 @@ class GrievanceDetail extends StatelessWidget {
                         (item) => DropdownMenuItem<String>(
                           value: item,
                           child: Text(
-                            item,
+                            expectedCompletionTypesMap[item]!,
                             maxLines: 1,
                             style: AppStyles.dropdownTextStyle,
                           ),
@@ -557,7 +616,9 @@ class GrievanceDetail extends StatelessWidget {
                         (item) => DropdownMenuItem<String>(
                           value: item.sK,
                           child: Text(
-                            item.name.toString(),
+                            priorityTypesMap.containsKey(item.sK)
+                                ? priorityTypesMap[item.sK]!
+                                : item.name.toString(),
                             maxLines: 1,
                             style: AppStyles.dropdownTextStyle,
                           ),
@@ -601,9 +662,10 @@ class GrievanceDetail extends StatelessWidget {
               SizedBox(
                 height: 12.h,
               ),
-              state.grievanceDetail.assets!.audio == null &&
-                      state.grievanceDetail.assets!.video == null &&
-                      state.grievanceDetail.assets!.image == null
+              state.grievanceDetail.assets!.video == null ||
+                      state.grievanceDetail.assets!.image!.isEmpty &&
+                          state.grievanceDetail.assets!.image == null ||
+                      state.grievanceDetail.assets!.video!.isEmpty
                   ? const SizedBox()
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -647,11 +709,29 @@ class GrievanceDetail extends StatelessWidget {
                                         state.grievanceDetail.assets!
                                             .image![index],
                                         fit: BoxFit.cover,
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                          return const Center(
-                                            child: Icon(Icons.image),
+                                        loadingBuilder: (BuildContext context,
+                                            Widget child,
+                                            ImageChunkEvent? loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          }
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              value: loadingProgress
+                                                          .expectedTotalBytes !=
+                                                      null
+                                                  ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      loadingProgress
+                                                          .expectedTotalBytes!
+                                                  : null,
+                                            ),
                                           );
+                                        },
+                                        errorBuilder: (BuildContext context,
+                                            Object exception,
+                                            StackTrace? stackTrace) {
+                                          return const Icon(Icons.error);
                                         },
                                       ),
                                     );
@@ -879,15 +959,17 @@ class GrievanceDetail extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Text(
-                    LocaleKeys.grievanceDetail_contactByPhoneEnabled.tr(),
-                    style: AppStyles.inputAndDisplayTitleStyle,
+                  Expanded(
+                    child: Text(
+                      LocaleKeys.grievanceDetail_contactByPhoneEnabled.tr(),
+                      style: AppStyles.inputAndDisplayTitleStyle,
+                    ),
                   ),
                   const Spacer(),
                   Text(
                     state.grievanceDetail.mobileContactStatus == true
-                        ? 'Yes'
-                        : 'No',
+                        ? LocaleKeys.grievanceDetail_yes.tr()
+                        : LocaleKeys.grievanceDetail_no.tr(),
                     style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                 ],
@@ -909,18 +991,20 @@ class GrievanceDetail extends StatelessWidget {
                     style: AppStyles.inputAndDisplayTitleStyle,
                   ),
                   const Spacer(),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        AllComments.routeName,
-                        arguments: {
-                          'grievanceId': state.grievanceDetail.grievanceID,
-                        },
-                      );
-                    },
-                    child: Text(
-                      LocaleKeys.grievanceDetail_viewAll.tr(),
-                      style: AppStyles.inputAndDisplayTitleStyle,
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          AllComments.routeName,
+                          arguments: {
+                            'grievanceId': state.grievanceDetail.grievanceID,
+                          },
+                        );
+                      },
+                      child: Text(
+                        LocaleKeys.grievanceDetail_viewAll.tr(),
+                        style: AppStyles.inputAndDisplayTitleStyle,
+                      ),
                     ),
                   ),
                 ],

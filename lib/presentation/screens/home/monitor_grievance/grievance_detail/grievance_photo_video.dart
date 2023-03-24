@@ -144,16 +144,19 @@ class GrievancePhotoVideo extends StatelessWidget {
                                         if (loadingProgress == null) {
                                           return child;
                                         }
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                : null,
+                                        return SizedBox(
+                                          height: 200.h,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: loadingProgress
+                                                          .expectedTotalBytes !=
+                                                      null
+                                                  ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      loadingProgress
+                                                          .expectedTotalBytes!
+                                                  : null,
+                                            ),
                                           ),
                                         );
                                       },
@@ -171,6 +174,10 @@ class GrievancePhotoVideo extends StatelessWidget {
                           child: Image.network(
                             state.grievanceDetail.assets!.image![index],
                             fit: BoxFit.cover,
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace? stackTrace) {
+                              return const Icon(Icons.error);
+                            },
                           ),
                         ),
                       );

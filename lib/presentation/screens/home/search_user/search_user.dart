@@ -61,15 +61,15 @@ class _SearchUserState extends State<SearchUser> {
 
   String getFilterName(int selectedFilterNumber) {
     if (selectedFilterNumber == 1) {
-      return selectedFilter = 'Name';
+      return selectedFilter = LocaleKeys.searchUsers_name.tr();
     }
     if (selectedFilterNumber == 2) {
-      return selectedFilter = 'Mobile Number';
+      return selectedFilter = LocaleKeys.searchUsers_mobileNumber.tr();
     }
     if (selectedFilterNumber == 3) {
-      return selectedFilter = 'Street Name';
+      return selectedFilter = LocaleKeys.searchUsers_streetName.tr();
     }
-    return 'Name';
+    return LocaleKeys.searchUsers_name.tr();
   }
 
   @override
@@ -568,6 +568,7 @@ class _SearchUserState extends State<SearchUser> {
                         child: Icon(
                           Icons.location_pin,
                           size: 16.sp,
+                          color: AppColors.colorPrimary,
                         ),
                       ),
                       SizedBox(
@@ -587,6 +588,7 @@ class _SearchUserState extends State<SearchUser> {
                       Icon(
                         Icons.phone,
                         size: 16.sp,
+                        color: AppColors.colorPrimary,
                       ),
                       SizedBox(
                         width: 5.w,
