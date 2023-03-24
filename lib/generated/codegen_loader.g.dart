@@ -16,6 +16,9 @@ class CodegenLoader extends AssetLoader{
 
   static const Map<String,dynamic> ta = {
   "appName": "பள்ளத்தூர் பணியாளர்கள்",
+  "municipality": {
+    "MUNCI_1": "பள்ளத்தூர்"
+  },
   "loginAndActivationScreen": {
     "login": "உள்நுழைக",
     "mobileNumber": "மொபைல் எண்",
@@ -24,18 +27,21 @@ class CodegenLoader extends AssetLoader{
     "mobileNumberRequiredError": "மொபைல் எண் தேவை",
     "mobileNumberLengthError": "மொபைல் எண் 10 இலக்க நீளமாக இருக்க வேண்டும்",
     "mobileNumberInputTypeError": "மொபைல் எண்ணில் இலக்கங்கள் மட்டுமே இருக்க முடியும்",
-    "welcome": "நல்வரவு",
+    "welcome": "வணக்கம்",
     "enterOtp": "OTPயை உள்ளிடவும்",
     "otpNotRecieved": "OTP வரவில்லையா?",
-    "resendOtp": "OTP ஐ மீண்டும் அனுப்பு",
+    "resendOtp": "மீண்டும் அனுப்பு",
     "timeoutErrorMessage": "இணைப்பு நேரம் முடிந்தது!",
     "unknownErrorMessage": "அறியப்படாத பிழை ஏற்பட்டது!",
     "phoneNotRegistered": "வழங்கப்பட்ட மொபைல் எண் இன்னும் பதிவு செய்யப்படவில்லை!",
-    "exeeded3attemptsError": "நீங்கள் 3 முயற்சிகளைத் தாண்டிவிட்டீர்கள்.\nமீண்டும் முயற்சிக்க, \"ஓடிபியை மீண்டும் அனுப்பு\" ஐப் பயன்படுத்தவும்."
+    "exeeded3attemptsError": "நீங்கள் 3 முயற்சிகளைத் தாண்டிவிட்டீர்கள்.\nமீண்டும் முயற்சிக்க, \"ஓடிபியை மீண்டும் அனுப்பு\" ஐப் பயன்படுத்தவும்.",
+    "otpFieldsEmpty": "OTP புலங்கள் காலியாக இருக்கக்கூடாது!",
+    "invalidOtp": "தவறான Otp",
+    "otpSent": "உங்கள் மொபைல் எண்ணுக்கு Otp அனுப்பப்பட்டுள்ளது"
   },
   "homeScreen": {
     "enrollUser": "பயனர்களைப் பதிவுசெய்க",
-    "monitorGrievances": "குறைகளைக் கண்காணிக்கவும்",
+    "monitorGrievances": "குறைகளைக் கண்காணிக்க",
     "searchUser": "பயனர் தேடு",
     "profile": "சுயவிவரம்",
     "search": "தேடல்"
@@ -50,7 +56,7 @@ class CodegenLoader extends AssetLoader{
     "emailHint": "you@example.com",
     "ward": "வார்டு",
     "wardDropdownInitialValue": "வார்டை தேர்ந்தெடு",
-    "wardDropdownError": "தயவுசெய்து ஒரு மதிப்பைத் தேர்ந்தெடுங்கள்!",
+    "wardDropdownError": "ஒரு மதிப்பைத் தேர்ந்தெடுங்கள்",
     "location": "இருப்பிடம்",
     "submit": "சமர்ப்பிக்கவும்",
     "dialogSucess": "வெற்றி",
@@ -62,7 +68,7 @@ class CodegenLoader extends AssetLoader{
     "firstNameValidationErrorMessage": "முதல் பெயர் தேவை",
     "lastNameValidaitonErrorMessage": "கடைசி பெயர் தேவை",
     "mobileNumberRequiredErrorMessage": "மொபைல் எண் தேவை",
-    "mobileNumberLengthErrorMessage": "மொபைல் எண் 10 இலக்க நீளமாக இருக்க வேண்டும்",
+    "mobileNumberLengthErrorMessage": "மொபைல் எண் 10 இலக்க நீளம் வேண்டும்",
     "mobileNumberTypeErrorMessage": "மொபைல் எண்ணில் இலக்கங்கள் மட்டுமே இருக்க முடியும்"
   },
   "grievancesScreen": {
@@ -132,7 +138,11 @@ class CodegenLoader extends AssetLoader{
   },
   "comments": {
     "screenTitle": "கருத்துகள்",
-    "allComments": "அனைத்து கருத்துகளும்"
+    "allComments": "அனைத்து கருத்துகளும்",
+    "videoSizeLimit": "வீடியோ அளவு 30 எம்பிக்கு மேல் இருக்கக்கூடாது",
+    "audioSizeLimit": "ஆடியோ அளவு 5 எம்பிக்கு மேல் இருக்கக்கூடாது",
+    "maxAudioDuration": "அனுமதிக்கப்பட்ட அதிகபட்ச காலம் = 60 வினாடிகள்.",
+    "ok": "சரி"
   },
   "addComment": {
     "screenTitle": "கருத்தைச் சேர்க்கவும்",
@@ -195,11 +205,11 @@ class CodegenLoader extends AssetLoader{
   },
   "profile": {
     "screenTitle": "சுயவிவரம்",
-    "edit": "தொகு",
+    "edit": "திருத்தி",
     "about": "பற்றி",
     "location": "இருப்பிடம்",
     "allocatedGrievancesAndWards": "ஒதுக்கப்பட்ட குறைகள் மற்றும் வார்டுகள்",
-    "logout": "உள்நுழைவு",
+    "logout": "வெளியேறு",
     "logoutFailed": "வெளியேற முடியவில்லை!"
   },
   "editProfile": {
@@ -221,11 +231,16 @@ class CodegenLoader extends AssetLoader{
     "profileUpdatedSuccessMessage": "✅ சுயவிவரம் வெற்றிகரமாக புதுப்பிக்கப்பட்டது.",
     "mobileNumberRequiredErrorMessage": "மொபைல் எண் தேவை",
     "mobileNumberLengthErrorMessage": "மொபைல் எண் 10 இலக்க நீளமாக இருக்க வேண்டும்",
+    "profileUpdatedSuccessfully": "✅ Profile updated successfully.",
+    "somethingWentWrong": "⚠️Something went wrong!",
     "mobileNumberInputTypeError": "மொபைல் எண்ணில் இலக்கங்கள் மட்டுமே இருக்க முடியும்"
   }
 };
 static const Map<String,dynamic> en = {
   "appName": "Pallathur Staff",
+  "municipality": {
+    "MUNCI_1": "Pallathur"
+  },
   "loginAndActivationScreen": {
     "login": "Login",
     "mobileNumber": "Mobile Number",
@@ -241,7 +256,10 @@ static const Map<String,dynamic> en = {
     "timeoutErrorMessage": "Connection Timeout!",
     "unknownErrorMessage": "Unknown error occurred!",
     "phoneNotRegistered": "Provided mobile number is not yet registered!",
-    "exeeded3attemptsError": "You have exceeded 3 attempts.\nPlease use \"Resend OTP\" to try again."
+    "exeeded3attemptsError": "You have exceeded 3 attempts.\nPlease use \"Resend OTP\" to try again.",
+    "otpFieldsEmpty": "OTP fields cannot be empty!",
+    "invalidOtp": "Invalid Otp",
+    "otpSent": "Otp has been sent to your mobile number"
   },
   "homeScreen": {
     "enrollUser": "Enroll Users",
@@ -342,7 +360,11 @@ static const Map<String,dynamic> en = {
   },
   "comments": {
     "screenTitle": "Comments",
-    "allComments": "All Comments"
+    "allComments": "All Comments",
+    "videoSizeLimit": "Video size cannot be more than 30 MB",
+    "audioSizeLimit": "Video size cannot be more than 5 MB",
+    "maxAudioDuration": "Max duration allowed = 60 seconds.",
+    "ok": "Ok"
   },
   "addComment": {
     "screenTitle": "Add Comment",
@@ -431,6 +453,8 @@ static const Map<String,dynamic> en = {
     "profileUpdatedSuccessMessage": "✅ Profile updated successfully.",
     "mobileNumberRequiredErrorMessage": "Mobile number is required",
     "mobileNumberLengthErrorMessage": "Mobile number must be 10 digits long",
+    "profileUpdatedSuccessfully": "✅ Profile updated successfully.",
+    "somethingWentWrong": "⚠️Something went wrong!",
     "mobileNumberInputTypeError": "Mobile number can only contain digits"
   }
 };

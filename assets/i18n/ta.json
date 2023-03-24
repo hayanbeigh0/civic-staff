@@ -1,5 +1,8 @@
 {
   "appName": "பள்ளத்தூர் பணியாளர்கள்",
+  "municipality": {
+    "MUNCI_1": "பள்ளத்தூர்"
+  },
   "loginAndActivationScreen": {
     "login": "உள்நுழைக",
     "mobileNumber": "மொபைல் எண்",
@@ -8,18 +11,21 @@
     "mobileNumberRequiredError": "மொபைல் எண் தேவை",
     "mobileNumberLengthError": "மொபைல் எண் 10 இலக்க நீளமாக இருக்க வேண்டும்",
     "mobileNumberInputTypeError": "மொபைல் எண்ணில் இலக்கங்கள் மட்டுமே இருக்க முடியும்",
-    "welcome": "நல்வரவு",
+    "welcome": "வணக்கம்",
     "enterOtp": "OTPயை உள்ளிடவும்",
     "otpNotRecieved": "OTP வரவில்லையா?",
     "resendOtp": "மீண்டும் அனுப்பு",
     "timeoutErrorMessage": "இணைப்பு நேரம் முடிந்தது!",
     "unknownErrorMessage": "அறியப்படாத பிழை ஏற்பட்டது!",
     "phoneNotRegistered": "வழங்கப்பட்ட மொபைல் எண் இன்னும் பதிவு செய்யப்படவில்லை!",
-    "exeeded3attemptsError": "நீங்கள் 3 முயற்சிகளைத் தாண்டிவிட்டீர்கள்.\nமீண்டும் முயற்சிக்க, \"ஓடிபியை மீண்டும் அனுப்பு\" ஐப் பயன்படுத்தவும்."
+    "exeeded3attemptsError": "நீங்கள் 3 முயற்சிகளைத் தாண்டிவிட்டீர்கள்.\nமீண்டும் முயற்சிக்க, \"ஓடிபியை மீண்டும் அனுப்பு\" ஐப் பயன்படுத்தவும்.",
+    "otpFieldsEmpty": "OTP புலங்கள் காலியாக இருக்கக்கூடாது!",
+    "invalidOtp": "தவறான Otp",
+    "otpSent": "உங்கள் மொபைல் எண்ணுக்கு Otp அனுப்பப்பட்டுள்ளது"
   },
   "homeScreen": {
     "enrollUser": "பயனர்களைப் பதிவுசெய்க",
-    "monitorGrievances": "குறைகளைக் கண்காணிக்கவும்",
+    "monitorGrievances": "குறைகளைக் கண்காணிக்க",
     "searchUser": "பயனர் தேடு",
     "profile": "சுயவிவரம்",
     "search": "தேடல்"
@@ -34,7 +40,7 @@
     "emailHint": "you@example.com",
     "ward": "வார்டு",
     "wardDropdownInitialValue": "வார்டை தேர்ந்தெடு",
-    "wardDropdownError": "தயவுசெய்து ஒரு மதிப்பைத் தேர்ந்தெடுங்கள்!",
+    "wardDropdownError": "ஒரு மதிப்பைத் தேர்ந்தெடுங்கள்",
     "location": "இருப்பிடம்",
     "submit": "சமர்ப்பிக்கவும்",
     "dialogSucess": "வெற்றி",
@@ -46,7 +52,7 @@
     "firstNameValidationErrorMessage": "முதல் பெயர் தேவை",
     "lastNameValidaitonErrorMessage": "கடைசி பெயர் தேவை",
     "mobileNumberRequiredErrorMessage": "மொபைல் எண் தேவை",
-    "mobileNumberLengthErrorMessage": "மொபைல் எண் 10 இலக்க நீளமாக இருக்க வேண்டும்",
+    "mobileNumberLengthErrorMessage": "மொபைல் எண் 10 இலக்க நீளம் வேண்டும்",
     "mobileNumberTypeErrorMessage": "மொபைல் எண்ணில் இலக்கங்கள் மட்டுமே இருக்க முடியும்"
   },
   "grievancesScreen": {
@@ -116,7 +122,11 @@
   },
   "comments": {
     "screenTitle": "கருத்துகள்",
-    "allComments": "அனைத்து கருத்துகளும்"
+    "allComments": "அனைத்து கருத்துகளும்",
+    "videoSizeLimit": "வீடியோ அளவு 30 எம்பிக்கு மேல் இருக்கக்கூடாது",
+    "audioSizeLimit": "ஆடியோ அளவு 5 எம்பிக்கு மேல் இருக்கக்கூடாது",
+    "maxAudioDuration": "அனுமதிக்கப்பட்ட அதிகபட்ச காலம் = 60 வினாடிகள்.",
+    "ok": "சரி"
   },
   "addComment": {
     "screenTitle": "கருத்தைச் சேர்க்கவும்",
@@ -179,11 +189,11 @@
   },
   "profile": {
     "screenTitle": "சுயவிவரம்",
-    "edit": "தொகு",
+    "edit": "திருத்தி",
     "about": "பற்றி",
     "location": "இருப்பிடம்",
     "allocatedGrievancesAndWards": "ஒதுக்கப்பட்ட குறைகள் மற்றும் வார்டுகள்",
-    "logout": "உள்நுழைவு",
+    "logout": "வெளியேறு",
     "logoutFailed": "வெளியேற முடியவில்லை!"
   },
   "editProfile": {
@@ -205,6 +215,8 @@
     "profileUpdatedSuccessMessage": "✅ சுயவிவரம் வெற்றிகரமாக புதுப்பிக்கப்பட்டது.",
     "mobileNumberRequiredErrorMessage": "மொபைல் எண் தேவை",
     "mobileNumberLengthErrorMessage": "மொபைல் எண் 10 இலக்க நீளமாக இருக்க வேண்டும்",
+    "profileUpdatedSuccessfully": "✅ Profile updated successfully.",
+    "somethingWentWrong": "⚠️Something went wrong!",
     "mobileNumberInputTypeError": "மொபைல் எண்ணில் இலக்கங்கள் மட்டுமே இருக்க முடியும்"
   }
 }

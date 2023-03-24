@@ -2,6 +2,8 @@
 
 abstract class  LocaleKeys {
   static const appName = 'appName';
+  static const municipality_MUNCI_1 = 'municipality.MUNCI_1';
+  static const municipality = 'municipality';
   static const loginAndActivationScreen_login = 'loginAndActivationScreen.login';
   static const loginAndActivationScreen_mobileNumber = 'loginAndActivationScreen.mobileNumber';
   static const loginAndActivationScreen_continue = 'loginAndActivationScreen.continue';
@@ -17,6 +19,9 @@ abstract class  LocaleKeys {
   static const loginAndActivationScreen_unknownErrorMessage = 'loginAndActivationScreen.unknownErrorMessage';
   static const loginAndActivationScreen_phoneNotRegistered = 'loginAndActivationScreen.phoneNotRegistered';
   static const loginAndActivationScreen_exeeded3attemptsError = 'loginAndActivationScreen.exeeded3attemptsError';
+  static const loginAndActivationScreen_otpFieldsEmpty = 'loginAndActivationScreen.otpFieldsEmpty';
+  static const loginAndActivationScreen_invalidOtp = 'loginAndActivationScreen.invalidOtp';
+  static const loginAndActivationScreen_otpSent = 'loginAndActivationScreen.otpSent';
   static const loginAndActivationScreen = 'loginAndActivationScreen';
   static const homeScreen_enrollUser = 'homeScreen.enrollUser';
   static const homeScreen_monitorGrievances = 'homeScreen.monitorGrievances';
@@ -111,6 +116,10 @@ abstract class  LocaleKeys {
   static const myComments = 'myComments';
   static const comments_screenTitle = 'comments.screenTitle';
   static const comments_allComments = 'comments.allComments';
+  static const comments_videoSizeLimit = 'comments.videoSizeLimit';
+  static const comments_audioSizeLimit = 'comments.audioSizeLimit';
+  static const comments_maxAudioDuration = 'comments.maxAudioDuration';
+  static const comments_ok = 'comments.ok';
   static const comments = 'comments';
   static const addComment_screenTitle = 'addComment.screenTitle';
   static const addComment_comment = 'addComment.comment';
@@ -192,6 +201,8 @@ abstract class  LocaleKeys {
   static const editProfile_profileUpdatedSuccessMessage = 'editProfile.profileUpdatedSuccessMessage';
   static const editProfile_mobileNumberRequiredErrorMessage = 'editProfile.mobileNumberRequiredErrorMessage';
   static const editProfile_mobileNumberLengthErrorMessage = 'editProfile.mobileNumberLengthErrorMessage';
+  static const editProfile_profileUpdatedSuccessfully = 'editProfile.profileUpdatedSuccessfully';
+  static const editProfile_somethingWentWrong = 'editProfile.somethingWentWrong';
   static const editProfile_mobileNumberInputTypeError = 'editProfile.mobileNumberInputTypeError';
   static const editProfile = 'editProfile';
 

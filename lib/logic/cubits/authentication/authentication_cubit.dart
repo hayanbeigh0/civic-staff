@@ -108,7 +108,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       final responseBody = response.data;
       if (response.statusCode == 200) {
         if (responseBody['AuthenticationResult'] == null) {
-          emit(const AuthenticationOtpErrorState(error: 'Invalid Otp'));
+          emit(AuthenticationOtpErrorState(
+              error: LocaleKeys.loginAndActivationScreen_invalidOtp.tr()));
           sessionId = responseBody['Session'];
           username = username;
           emit(

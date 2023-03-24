@@ -29,6 +29,9 @@ class UserDetails extends StatelessWidget {
   });
   User user;
   final Completer<GoogleMapController> _controller = Completer();
+  final Map<String, String> municipalitiesTypesMap = {
+    "MUNCI-1": LocaleKeys.municipality_MUNCI_1.tr(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +126,7 @@ class UserDetails extends StatelessWidget {
                           }
                         },
                         child: SizedBox(
-                          width: 40.w,
+                          width: 60.w,
                           child: TextButton(
                             style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 5.sp)),
@@ -371,13 +374,26 @@ class UserDetails extends StatelessWidget {
                   ),
                   PrimaryDisplayField(
                     title: LocaleKeys.userDetails_municipality.tr(),
-                    value: AuthBasedRouting.afterLogin.masterData!
-                        .firstWhere((element) =>
-                            element.sK ==
-                            AuthBasedRouting
-                                .afterLogin.userDetails!.municipalityID)
-                        .name
-                        .toString(),
+                    value: municipalitiesTypesMap.containsKey(AuthBasedRouting
+                            .afterLogin.masterData!
+                            .firstWhere((element) =>
+                                element.sK ==
+                                AuthBasedRouting
+                                    .afterLogin.userDetails!.municipalityID!)
+                            .sK)
+                        ? municipalitiesTypesMap[AuthBasedRouting
+                            .afterLogin.masterData!
+                            .firstWhere((element) =>
+                                element.sK ==
+                                AuthBasedRouting
+                                    .afterLogin.userDetails!.municipalityID!)
+                            .sK]!
+                        : AuthBasedRouting.afterLogin.masterData!
+                            .firstWhere((element) =>
+                                element.sK ==
+                                AuthBasedRouting
+                                    .afterLogin.userDetails!.municipalityID!)
+                            .name!,
                   ),
                   SizedBox(
                     height: 12.h,

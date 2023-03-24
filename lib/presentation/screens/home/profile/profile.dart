@@ -35,16 +35,18 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // final Completer<GoogleMapController> _controller = Completer();
-  final Map grievanceTypeName = {
-    "GARB": "Garbage collection",
-    "ELECT": "Electricity",
-    "CERT": "Certificate request",
-    "DUMM": "Dummy",
-    "HOUSE": "House plan approval",
-    "LIGHT": "Street lighting",
-    "OTHER": "Others",
-    "ROAD": "Road maintenance / Construction",
-    "WATER": "Water supply / drainage",
+  final Map<String, String> grievanceTypesMap = {
+    "garb": LocaleKeys.grievanceDetail_garb.tr(),
+    "road": LocaleKeys.grievanceDetail_road.tr(),
+    "light": LocaleKeys.grievanceDetail_light.tr(),
+    "cert": LocaleKeys.grievanceDetail_cert.tr(),
+    "house": LocaleKeys.grievanceDetail_house.tr(),
+    "water": LocaleKeys.grievanceDetail_water.tr(),
+    "elect": LocaleKeys.grievanceDetail_elect.tr(),
+    "other": LocaleKeys.grievanceDetail_otherGrievanceType.tr(),
+  };
+  final Map<String, String> municipalitiesTypesMap = {
+    "MUNCI-1": LocaleKeys.municipality_MUNCI_1.tr(),
   };
 
   @override
@@ -83,11 +85,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 AuthBasedRouting.afterLogin.userDetails!.staffID.toString());
           }
           if (state is MyProfileEditingDoneState) {
-            SnackBars.sucessMessageSnackbar(
-                context, '✅ Profile updated successfully.');
+            SnackBars.sucessMessageSnackbar(context,
+                LocaleKeys.editProfile_profileUpdatedSuccessfully.tr());
           }
           if (state is MyProfileEditingFailedState) {
-            SnackBars.errorMessageSnackbar(context, '⚠️Something went wrong!');
+            SnackBars.errorMessageSnackbar(
+                context, LocaleKeys.editProfile_somethingWentWrong.tr());
           }
         },
         builder: (context, state) {
@@ -350,14 +353,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           PrimaryDisplayField(
-                            title: 'Municipality',
-                            value: AuthBasedRouting.afterLogin.masterData!
-                                .firstWhere((element) =>
-                                    element.sK ==
-                                    AuthBasedRouting
-                                        .afterLogin.userDetails!.municipalityID)
-                                .name
-                                .toString(),
+                            title: LocaleKeys.userDetails_municipality.tr(),
+                            value: municipalitiesTypesMap.containsKey(
+                                    AuthBasedRouting.afterLogin.masterData!
+                                        .firstWhere((element) =>
+                                            element.sK ==
+                                            AuthBasedRouting.afterLogin
+                                                .userDetails!.municipalityID!)
+                                        .sK)
+                                ? municipalitiesTypesMap[AuthBasedRouting
+                                    .afterLogin.masterData!
+                                    .firstWhere((element) =>
+                                        element.sK ==
+                                        AuthBasedRouting.afterLogin.userDetails!
+                                            .municipalityID!)
+                                    .sK]!
+                                : AuthBasedRouting.afterLogin.masterData!
+                                    .firstWhere((element) =>
+                                        element.sK ==
+                                        AuthBasedRouting.afterLogin.userDetails!.municipalityID!)
+                                    .name!,
                           ),
                           SizedBox(
                             height: 12.h,
@@ -402,7 +417,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       AppColors.colorGreyLight,
                                                 ),
                                           Text(
-                                            '${grievanceTypeName[e.grievanceType]}: ',
+                                            '${grievanceTypesMap[e.grievanceType!.toLowerCase()]}: ',
                                             style: AppStyles
                                                 .inputAndDisplayTitleStyle,
                                           ),

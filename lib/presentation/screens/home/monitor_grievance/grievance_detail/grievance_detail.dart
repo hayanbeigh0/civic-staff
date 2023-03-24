@@ -958,6 +958,7 @@ class GrievanceDetail extends StatelessWidget {
                 height: 12.h,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
@@ -965,7 +966,6 @@ class GrievanceDetail extends StatelessWidget {
                       style: AppStyles.inputAndDisplayTitleStyle,
                     ),
                   ),
-                  const Spacer(),
                   Text(
                     state.grievanceDetail.mobileContactStatus == true
                         ? LocaleKeys.grievanceDetail_yes.tr()

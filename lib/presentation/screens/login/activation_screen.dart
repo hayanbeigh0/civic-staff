@@ -490,7 +490,8 @@ class _ActivationState extends State<Activation> {
                               if (state is OtpSentSucessfully) {
                                 SnackBars.sucessMessageSnackbar(
                                   context,
-                                  'Otp has been sent to your mobile number',
+                                  LocaleKeys.loginAndActivationScreen_otpSent
+                                      .tr(),
                                 );
                               }
                             },
@@ -572,8 +573,8 @@ class _ActivationState extends State<Activation> {
                   otpController4.text,
             );
           } else {
-            SnackBars.errorMessageSnackbar(
-                context, 'OTP fields cannot be empty!');
+            SnackBars.errorMessageSnackbar(context,
+                LocaleKeys.loginAndActivationScreen_otpFieldsEmpty.tr());
             WidgetsBinding.instance.addPostFrameCallback((_) {
               FocusScope.of(context).requestFocus(focusNode1);
             });

@@ -1,5 +1,8 @@
 {
   "appName": "Pallathur Staff",
+  "municipality": {
+    "MUNCI_1": "Pallathur"
+  },
   "loginAndActivationScreen": {
     "login": "Login",
     "mobileNumber": "Mobile Number",
@@ -15,7 +18,10 @@
     "timeoutErrorMessage": "Connection Timeout!",
     "unknownErrorMessage": "Unknown error occurred!",
     "phoneNotRegistered": "Provided mobile number is not yet registered!",
-    "exeeded3attemptsError": "You have exceeded 3 attempts.\nPlease use \"Resend OTP\" to try again."
+    "exeeded3attemptsError": "You have exceeded 3 attempts.\nPlease use \"Resend OTP\" to try again.",
+    "otpFieldsEmpty": "OTP fields cannot be empty!",
+    "invalidOtp": "Invalid Otp",
+    "otpSent": "Otp has been sent to your mobile number"
   },
   "homeScreen": {
     "enrollUser": "Enroll Users",
@@ -116,7 +122,11 @@
   },
   "comments": {
     "screenTitle": "Comments",
-    "allComments": "All Comments"
+    "allComments": "All Comments",
+    "videoSizeLimit": "Video size cannot be more than 30 MB",
+    "audioSizeLimit": "Video size cannot be more than 5 MB",
+    "maxAudioDuration": "Max duration allowed = 60 seconds.",
+    "ok": "Ok"
   },
   "addComment": {
     "screenTitle": "Add Comment",
@@ -205,6 +215,8 @@
     "profileUpdatedSuccessMessage": "✅ Profile updated successfully.",
     "mobileNumberRequiredErrorMessage": "Mobile number is required",
     "mobileNumberLengthErrorMessage": "Mobile number must be 10 digits long",
+    "profileUpdatedSuccessfully": "✅ Profile updated successfully.",
+    "somethingWentWrong": "⚠️Something went wrong!",
     "mobileNumberInputTypeError": "Mobile number can only contain digits"
   }
 }

@@ -22,6 +22,9 @@ import 'package:civic_staff/presentation/utils/colors/app_colors.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';
+  final Map<String, String> municipalitiesTypesMap = {
+    "MUNCI-1": LocaleKeys.municipality_MUNCI_1.tr(),
+  };
   HomeScreen({super.key});
   final List<HomeGridTile> gridItems = [
     HomeGridTile(
@@ -93,11 +96,26 @@ class HomeScreen extends StatelessWidget {
                     builder: (context, state) {
                       if (state is LocalStorageFetchingDoneState) {
                         return Text(
-                          state.afterLogin.masterData!
-                              .firstWhere((element) =>
-                                  element.sK ==
-                                  state.afterLogin.userDetails!.municipalityID!)
-                              .name!,
+                          municipalitiesTypesMap.containsKey(state
+                                  .afterLogin.masterData!
+                                  .firstWhere((element) =>
+                                      element.sK ==
+                                      state.afterLogin.userDetails!
+                                          .municipalityID!)
+                                  .sK)
+                              ? municipalitiesTypesMap[state
+                                  .afterLogin.masterData!
+                                  .firstWhere((element) =>
+                                      element.sK ==
+                                      state.afterLogin.userDetails!
+                                          .municipalityID!)
+                                  .sK]!
+                              : state.afterLogin.masterData!
+                                  .firstWhere((element) =>
+                                      element.sK ==
+                                      state.afterLogin.userDetails!
+                                          .municipalityID!)
+                                  .name!,
                           style: AppStyles.dashboardAppNameStyle
                               .copyWith(fontSize: 18.sp),
                         );

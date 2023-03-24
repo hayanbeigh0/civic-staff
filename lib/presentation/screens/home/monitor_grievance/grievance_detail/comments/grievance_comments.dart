@@ -516,18 +516,18 @@ class _AllCommentsState extends State<AllComments> {
   }
 
   Future<void> pickVideo() async {
-    // final pickedFile = await ImagePicker().pickVideo(
-    //   source: ImageSource.gallery,
-    //   maxDuration: const Duration(minutes: 1),
-    // );
-    final pickedFile = await ImagesPicker.pick(
-      pickType: PickType.video,
-      maxTime: 180,
-      count: 1,
-      quality: 0.5,
+    final pickedFile = await ImagePicker().pickVideo(
+      source: ImageSource.gallery,
+      maxDuration: const Duration(minutes: 1),
     );
+    // final pickedFile = await ImagesPicker.pick(
+    //   pickType: PickType.video,
+    //   maxTime: 180,
+    //   count: 1,
+    //   quality: 0.5,
+    // );
     if (pickedFile == null) return;
-    final file = File(pickedFile.first.path);
+    final file = File(pickedFile.path);
     int sizeInBytes = await file.length();
     log('Picked file size: $sizeInBytes');
     double sizeInMb = sizeInBytes / (1024 * 1024);
@@ -536,12 +536,12 @@ class _AllCommentsState extends State<AllComments> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            content: const Text('Video size cannot be more than 30 MB'),
+            content: Text(LocaleKeys.comments_videoSizeLimit.tr()),
             actions: [
               Align(
                 alignment: Alignment.bottomRight,
                 child: PrimaryDialogButton(
-                  buttonText: 'Ok',
+                  buttonText: LocaleKeys.comments_ok.tr(),
                   onTap: () => Navigator.of(context).pop(),
                   isLoading: false,
                 ),
@@ -594,12 +594,12 @@ class _AllCommentsState extends State<AllComments> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            content: const Text('Video size cannot be more than 30 MB'),
+            content: Text(LocaleKeys.comments_videoSizeLimit.tr()),
             actions: [
               Align(
                 alignment: Alignment.bottomRight,
                 child: PrimaryDialogButton(
-                  buttonText: 'Ok',
+                  buttonText: LocaleKeys.comments_ok.tr(),
                   onTap: () => Navigator.of(context).pop(),
                   isLoading: false,
                 ),
@@ -893,7 +893,7 @@ class _AllCommentsState extends State<AllComments> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              content: const Text('Video size cannot be more than 5 MB'),
+              content: Text(LocaleKeys.comments_audioSizeLimit.tr()),
               actions: [
                 Align(
                   alignment: Alignment.bottomRight,
@@ -996,7 +996,8 @@ class _AllCommentsState extends State<AllComments> {
                                 alignment: Alignment.bottomRight,
                                 child: PrimaryDialogButton(
                                   onTap: () {},
-                                  buttonText: 'Upload',
+                                  buttonText:
+                                      LocaleKeys.addComment_uploadRecoding.tr(),
                                   isLoading: true,
                                 ),
                               );
@@ -1110,7 +1111,7 @@ class _AllCommentsState extends State<AllComments> {
                           height: 20.h,
                         ),
                         Text(
-                          'Max duration allowed = 60 seconds.',
+                          LocaleKeys.comments_maxAudioDuration.tr(),
                           style: AppStyles.listOrderedByTextStyle,
                           textAlign: TextAlign.center,
                         ),
