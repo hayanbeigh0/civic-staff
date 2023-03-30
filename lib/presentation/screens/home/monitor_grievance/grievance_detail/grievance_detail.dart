@@ -81,6 +81,8 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
 
   TextEditingController reporterController = TextEditingController();
 
+  TextEditingController wardNumberController = TextEditingController();
+
   TextEditingController commentTextController = TextEditingController();
 
   final Map<String, String> grievanceTypesMap = {
@@ -231,6 +233,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
 
   grievanceDetails(BuildContext context, GrievanceByIdLoadedState state) {
     reporterController.text = state.grievanceDetail.createdByName.toString();
+    wardNumberController.text = state.grievanceDetail.wardNumber.toString();
     statusDropdownValue = state.grievanceDetail.status.toString();
     expectedCompletionDropdownValue =
         state.grievanceDetail.expectedCompletion.toString();
@@ -357,8 +360,24 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                         .name
                         .toString(),
                 suffixIcon: TextButton(
-                  onPressed: () {
-                    showDialog(
+                  onPressed: () async {
+                    Position position =
+                                  await Geolocator.getCurrentPosition();
+                              log("Position is: ${position.latitude}, ${position.longitude}");
+                              double distanceInMeters =
+                                  Geolocator.distanceBetween(
+                                      position.latitude,
+                                      position.longitude,
+                                      double.parse(state
+                                          .grievanceDetail.locationLat
+                                          .toString()),
+                                      double.parse(state
+                                          .grievanceDetail.locationLong
+                                          .toString()));
+                              log(distanceInMeters.toString());
+                    if (state.grievanceDetail.createdBy == "SYSTEM") {
+                      if (distanceInMeters <= 200) {
+                        showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         content: Column(
@@ -542,6 +561,226 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                         ),
                       ),
                     );
+                      } else {
+                        showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  height: 12.h,
+                                                ),
+                                                Text(
+                                                  "You should be near this site to change the status of this grievance!",
+                                                  style: TextStyle(
+                                                      fontSize: 14.sp),
+                                                ),
+                                                SizedBox(height: 12.h),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  child: PrimaryDialogButton(
+                                                    buttonText: "OK",
+                                                    isLoading: false,
+                                                    onTap: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ));
+                      }
+                    } else {
+                      showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              LocaleKeys.grievanceDetail_status.tr(),
+                              style: AppStyles.inputAndDisplayTitleStyle,
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.colorPrimaryLight,
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                              child: DropdownButtonFormField(
+                                isExpanded: true,
+                                iconSize: 24.sp,
+                                value: statusDropdownValue,
+                                decoration: InputDecoration(
+                                  labelStyle: AppStyles.dropdownTextStyle,
+                                  border: InputBorder.none,
+                                ),
+                                items: statusList
+                                    .map(
+                                      (item) => DropdownMenuItem<String>(
+                                        value: item.sK,
+                                        child: Text(
+                                          statusTypesMap.containsKey(item.name!
+                                                  .toLowerCase()
+                                                  .toString())
+                                              ? statusTypesMap[item.name!
+                                                  .toLowerCase()
+                                                  .toString()]!
+                                              : item.name!
+                                                  .toLowerCase()
+                                                  .toString(),
+                                          maxLines: 1,
+                                          style: AppStyles.dropdownTextStyle,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) {
+                                  statusDropdownValue = value.toString();
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 12.h,
+                            ),
+                            PrimaryTextField(
+                              title: LocaleKeys.grievanceDetail_comment.tr(),
+                              hintText: 'The status has been changed.',
+                              textEditingController: commentTextController,
+                            ),
+                            SizedBox(
+                              height: 24.h,
+                            ),
+                            BlocConsumer<GrievancesBloc, GrievancesState>(
+                              listener: (context, state) {
+                                if (state
+                                    is AddingGrievanceCommentSuccessState) {
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is GrievanceByIdLoadedState) {
+                                  return Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: PrimaryDialogButton(
+                                      buttonText: LocaleKeys
+                                          .grievanceDetail_submitCommentButton
+                                          .tr(),
+                                      isLoading: false,
+                                      onTap: () {
+                                        BlocProvider.of<GrievancesBloc>(context)
+                                            .add(
+                                          AddGrievanceCommentEvent(
+                                            grievanceId: widget.grievanceId,
+                                            staffId: AuthBasedRouting
+                                                .afterLogin.userDetails!.staffID
+                                                .toString(),
+                                            name: AuthBasedRouting.afterLogin
+                                                .userDetails!.firstName
+                                                .toString(),
+                                            assets: const {},
+                                            comment: commentTextController
+                                                    .text.isEmpty
+                                                ? statusDropdownValue == '1'
+                                                    ? 'Status of your grievance was updated to "In Progress".'
+                                                    : statusDropdownValue == '2'
+                                                        ? 'Your grievance was closed.'
+                                                        : statusDropdownValue ==
+                                                                '3'
+                                                            ? 'Status of your grievance was updated to "Hold".'
+                                                            : commentTextController
+                                                                .text
+                                                : commentTextController.text,
+                                          ),
+                                        );
+                                        final grievance = state.grievanceDetail;
+                                        BlocProvider.of<GrievancesBloc>(context)
+                                            .add(
+                                          UpdateGrievanceEvent(
+                                            grievanceId: state
+                                                .grievanceDetail.grievanceID
+                                                .toString(),
+                                            municipalityId: AuthBasedRouting
+                                                .afterLogin
+                                                .userDetails!
+                                                .municipalityID!,
+                                            newGrievance: Grievances(
+                                              grievanceID:
+                                                  grievance.grievanceID,
+                                              assets: state
+                                                  .grievanceDetail.assets!
+                                                  .toJson(),
+                                              description:
+                                                  grievance.description,
+                                              expectedCompletion:
+                                                  expectedCompletionDropdownValue,
+                                              grievanceType:
+                                                  grievanceTypeDropdownValue,
+                                              locationLat:
+                                                  grievance.locationLat,
+                                              locationLong:
+                                                  grievance.locationLong,
+                                              address: grievance.address,
+                                              priority: priorityDropdownValue,
+                                              createdBy: grievance.createdBy,
+                                              status: statusDropdownValue,
+                                              wardNumber: grievance.wardNumber,
+                                              contactNumber:
+                                                  grievance.contactNumber,
+                                              createdByName:
+                                                  grievance.createdByName,
+                                              lastModifiedDate:
+                                                  DateTime.now().toString(),
+                                              location: grievance.location,
+                                              mobileContactStatus:
+                                                  grievance.mobileContactStatus,
+                                              municipalityID:
+                                                  grievance.municipalityID,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
+                                if (state is AddGrievanceCommentEvent) {
+                                  return Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: PrimaryDialogButton(
+                                      buttonText: LocaleKeys
+                                          .grievanceDetail_submitCommentButton
+                                          .tr(),
+                                      isLoading: true,
+                                      onTap: () {},
+                                    ),
+                                  );
+                                }
+                                return Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: PrimaryDialogButton(
+                                    buttonText: LocaleKeys
+                                        .grievanceDetail_submitCommentButton
+                                        .tr(),
+                                    isLoading: false,
+                                    onTap: () {},
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                    }
                   },
                   child: Text(
                     LocaleKeys.grievanceDetail_changeStatus.tr(),
@@ -967,6 +1206,16 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                 longitude: double.parse(
                   state.grievanceDetail.locationLong.toString(),
                 ),
+              ),
+              SizedBox(
+                height: 12.h,
+              ),
+              PrimaryTextField(
+                enabled: false,
+                onFieldSubmitted: (value) {},
+                title: "Ward Number",
+                textEditingController: wardNumberController,
+                hintText: '',
               ),
               SizedBox(
                 height: 12.h,
