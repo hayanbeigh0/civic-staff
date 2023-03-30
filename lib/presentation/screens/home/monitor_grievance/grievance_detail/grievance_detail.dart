@@ -79,6 +79,8 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
 
   bool showDropdownError = false;
 
+  Position? _userPosition;
+
   TextEditingController reporterController = TextEditingController();
 
   TextEditingController wardNumberController = TextEditingController();
@@ -117,6 +119,17 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
   };
 
   @override
+  initState() {
+    _getUserLocation();
+    super.initState();
+  }
+
+      Future<void> _getUserLocation() async {
+      _userPosition = await Geolocator.getCurrentPosition();
+      log("in func ${_userPosition!.latitude}, ${_userPosition!.longitude}");
+    }
+
+  @override
   Widget build(BuildContext context) {
     priorityList = AuthBasedRouting.afterLogin.masterData!
         .where(
@@ -139,7 +152,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
         grievanceId: widget.grievanceId,
       ),
     );
-
+    
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: WillPopScope(
@@ -361,19 +374,36 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                         .toString(),
                 suffixIcon: TextButton(
                   onPressed: () async {
-                    Position position =
-                                  await Geolocator.getCurrentPosition();
-                              log("Position is: ${position.latitude}, ${position.longitude}");
-                              double distanceInMeters =
-                                  Geolocator.distanceBetween(
-                                      position.latitude,
-                                      position.longitude,
-                                      double.parse(state
+                    // if (_userPosition != null) {
+                    //   double distanceInMeters =
+                    //               Geolocator.distanceBetween(
+                    //                   _userPosition!.latitude,
+                    //                   _userPosition!.longitude,
+                    //                   double.parse(state
+                    //                       .grievanceDetail.locationLat
+                    //                       .toString()),
+                    //                   double.parse(state
+                    //                       .grievanceDetail.locationLong
+                    //                       .toString()));
+                    // }
+                    double distanceInMeters = Geolocator.distanceBetween(_userPosition!.latitude, _userPosition!.longitude, double.parse(state
                                           .grievanceDetail.locationLat
-                                          .toString()),
-                                      double.parse(state
+                                          .toString()),  double.parse(state
                                           .grievanceDetail.locationLong
                                           .toString()));
+                    // Position position =
+                    //               await Geolocator.getCurrentPosition();
+                              log("Position is: ${_userPosition!.latitude}, ${_userPosition!.longitude}");
+                              // double distanceInMeters =
+                              //     Geolocator.distanceBetween(
+                              //         _userPosition!.latitude,
+                              //         _userPosition!.longitude,
+                              //         double.parse(state
+                              //             .grievanceDetail.locationLat
+                              //             .toString()),
+                              //         double.parse(state
+                              //             .grievanceDetail.locationLong
+                              //             .toString()));
                               log(distanceInMeters.toString());
                     if (state.grievanceDetail.createdBy == "SYSTEM") {
                       if (distanceInMeters <= 200) {
@@ -1634,17 +1664,22 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                 LocaleKeys.grievanceDetail_closeGrievance.tr(),
                             isLoading: false,
                             onTap: () async {
-                              Position position =
-                                  await Geolocator.getCurrentPosition();
-                              log("Position is: ${position.latitude}, ${position.longitude}");
-                              double distanceInMeters =
-                                  Geolocator.distanceBetween(
-                                      position.latitude,
-                                      position.longitude,
-                                      double.parse(state
+                              // Position position =
+                              //     await Geolocator.getCurrentPosition();
+                              // log("Position is: ${position.latitude}, ${position.longitude}");
+                              // double distanceInMeters =
+                              //     Geolocator.distanceBetween(
+                              //         position.latitude,
+                              //         position.longitude,
+                              //         double.parse(state
+                              //             .grievanceDetail.locationLat
+                              //             .toString()),
+                              //         double.parse(state
+                              //             .grievanceDetail.locationLong
+                              //             .toString()));
+                               double distanceInMeters = Geolocator.distanceBetween(_userPosition!.latitude, _userPosition!.longitude, double.parse(state
                                           .grievanceDetail.locationLat
-                                          .toString()),
-                                      double.parse(state
+                                          .toString()),  double.parse(state
                                           .grievanceDetail.locationLong
                                           .toString()));
                               log(distanceInMeters.toString());
