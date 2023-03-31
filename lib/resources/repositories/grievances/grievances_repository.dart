@@ -117,6 +117,41 @@ class GrievancesRepository {
     return response;
   }
 
+  Future<Response> modifyGrievance(
+      String grievanceId, Grievances newGrievance) async {
+        print("In post modify-grievance function");
+    final response = await Dio().post(
+      '$API_URL/grievances/modify-grievance',
+      data: jsonEncode({
+        "grievanceId": newGrievance.grievanceID,
+        "expectedCompletion": newGrievance.expectedCompletion,
+        "municipalityId": newGrievance.municipalityID,
+        "userId": newGrievance.createdBy,
+        "createdByName": newGrievance.createdByName,
+        "grievanceType": newGrievance.grievanceType,
+        "priority": newGrievance.priority,
+        "status": newGrievance.status,
+        "wardNumber": newGrievance.wardNumber,
+        "description": newGrievance.description,
+        "contactNumber": newGrievance.contactNumber,
+        "latitude": newGrievance.locationLat,
+        "longitude": newGrievance.locationLong,
+        "address": newGrievance.address,
+        "contactByPhoneEnabled": newGrievance.mobileContactStatus,
+        "lastModifiedDate": newGrievance.lastModifiedDate,
+        "location": newGrievance.location,
+        "assets": newGrievance.assets
+      }),
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    print("Response from post method: ${response.data}");
+    return response;
+  }
+
   Future<Response> modifyGrieance(
       String grievanceId, Grievances newGrievance) async {
     final response = await Dio().put(

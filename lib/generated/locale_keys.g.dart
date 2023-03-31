@@ -107,6 +107,7 @@ abstract class  LocaleKeys {
   static const grievanceDetail_priority1Week = 'grievanceDetail.priority1Week';
   static const grievanceDetail_priority1Month = 'grievanceDetail.priority1Month';
   static const grievanceDetail_priorityDummy = 'grievanceDetail.priorityDummy';
+  static const grievanceDetail_nearClosing = 'grievanceDetail.nearClosing';
   static const grievanceDetail = 'grievanceDetail';
   static const reporterComments_screenTitle = 'reporterComments.screenTitle';
   static const reporterComments_allComments = 'reporterComments.allComments';
@@ -180,8 +181,8 @@ abstract class  LocaleKeys {
   static const profile_about = 'profile.about';
   static const profile_location = 'profile.location';
   static const profile_allocatedGrievancesAndWards = 'profile.allocatedGrievancesAndWards';
-  static const profile_logout = 'profile.logout';
   static const profile_logoutFailed = 'profile.logoutFailed';
+  static const profile_logout = 'profile.logout';
   static const profile = 'profile';
   static const editProfile_screenTitle = 'editProfile.screenTitle';
   static const editProfile_firstName = 'editProfile.firstName';

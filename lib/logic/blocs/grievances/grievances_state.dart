@@ -185,3 +185,4 @@ class GrievanceTypeUpdatedState extends GrievancesState {
   @override
   List<Object> get props => [];
 }
+

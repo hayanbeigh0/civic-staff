@@ -87,6 +87,30 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
       }
     });
 
+    on<UpdateGrievanceStatusEvent>(((event, emit) async {
+      emit(UpdatingGrievanceStatusState());
+      try {
+        final response = await grievancesRepository.modifyGrievance(
+            event.grievanceId, event.newGrievance);
+        if (response.statusCode == 200) {
+          emit(const GrievanceUpdatedState(grievanceUpdated: true));
+        } else {
+          emit(UpdatingGrievanceStatusFailedState());
+        }
+        add(GetGrievanceByIdEvent(
+            municipalityId: event.municipalityId,
+            grievanceId: event.municipalityId));
+      } on DioError catch (e) {
+        emit(UpdatingGrievanceStatusFailedState());
+        add(
+          GetGrievanceByIdEvent(
+            municipalityId: event.municipalityId,
+            grievanceId: event.grievanceId,
+          ),
+        );
+      }
+    }));
+
     on<UpdateGrievanceEvent>((event, emit) async {
       emit(UpdatingGrievanceStatusState());
       try {

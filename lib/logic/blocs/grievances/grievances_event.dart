@@ -52,6 +52,19 @@ class UpdateGrievanceEvent extends GrievancesEvent {
   List<Object> get props => [grievanceId, newGrievance];
 }
 
+class UpdateGrievanceStatusEvent extends GrievancesEvent {
+  final Grievances newGrievance;
+  final String grievanceId;
+  final String municipalityId;
+  const UpdateGrievanceStatusEvent({
+    required this.grievanceId,
+    required this.newGrievance,
+    required this.municipalityId
+  });
+  @override
+  List<Object> get props => [grievanceId, newGrievance];
+}
+
 class UpdateGrievanceTypeEvent extends GrievancesEvent {
   final Grievances newGrievance;
   final String grievanceId;

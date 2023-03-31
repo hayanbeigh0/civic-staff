@@ -110,7 +110,8 @@
     "priority1WorkingDay": "1 வேலை நாள்",
     "priority1Week": "1 வாரம்",
     "priority1Month": "1 மாதம்",
-    "priorityDummy": "போலி"
+    "priorityDummy": "போலி",
+    "nearClosing": "இந்த பிரச்சனையின் நிலையை மாற்ற நீங்கள் இந்த இடத்தில் அருகிலுள்ள வேண்டும்!"
   },
   "reporterComments": {
     "screenTitle": "நிருபர் கருத்துக்கள்",

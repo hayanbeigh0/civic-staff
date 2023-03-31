@@ -81,6 +81,8 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
 
   Position? _userPosition;
 
+  bool _isLoading = true;
+
   TextEditingController reporterController = TextEditingController();
 
   TextEditingController wardNumberController = TextEditingController();
@@ -127,6 +129,9 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
       Future<void> _getUserLocation() async {
       _userPosition = await Geolocator.getCurrentPosition();
       log("in func ${_userPosition!.latitude}, ${_userPosition!.longitude}");
+      setState(() {
+        _isLoading = false;
+      });
     }
 
   @override
@@ -210,7 +215,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                     ),
                   );
                 }
-                if (state is GrievanceByIdLoadedState) {
+                if (state is GrievanceByIdLoadedState && _isLoading == false) {
                   // BlocListener<CurrentLocationCubit, CurrentLocationState>(
                   //   listener: (context, locationState) {
                   //     if (locationState is CurrentLocationLoaded) {
@@ -404,7 +409,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                               //         double.parse(state
                               //             .grievanceDetail.locationLong
                               //             .toString()));
-                              log(distanceInMeters.toString());
+                              log("Distance In Meters is: ${distanceInMeters.toString()}");
                     if (state.grievanceDetail.createdBy == "SYSTEM") {
                       if (distanceInMeters <= 200) {
                         showDialog(
@@ -604,7 +609,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                   height: 12.h,
                                                 ),
                                                 Text(
-                                                  "You should be near this site to change the status of this grievance!",
+                                                  LocaleKeys.grievanceDetail_nearClosing.tr(),
                                                   style: TextStyle(
                                                       fontSize: 14.sp),
                                                 ),
@@ -613,7 +618,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                   alignment:
                                                       Alignment.bottomRight,
                                                   child: PrimaryDialogButton(
-                                                    buttonText: "OK",
+                                                    buttonText: LocaleKeys.comments_ok.tr(),
                                                     isLoading: false,
                                                     onTap: () {
                                                       Navigator.of(context)
@@ -1564,7 +1569,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                                 GrievancesBloc>(
                                                             context)
                                                         .add(
-                                                      UpdateGrievanceEvent(
+                                                      UpdateGrievanceStatusEvent(
                                                         grievanceId: state
                                                             .grievanceDetail
                                                             .grievanceID
@@ -1664,19 +1669,6 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                 LocaleKeys.grievanceDetail_closeGrievance.tr(),
                             isLoading: false,
                             onTap: () async {
-                              // Position position =
-                              //     await Geolocator.getCurrentPosition();
-                              // log("Position is: ${position.latitude}, ${position.longitude}");
-                              // double distanceInMeters =
-                              //     Geolocator.distanceBetween(
-                              //         position.latitude,
-                              //         position.longitude,
-                              //         double.parse(state
-                              //             .grievanceDetail.locationLat
-                              //             .toString()),
-                              //         double.parse(state
-                              //             .grievanceDetail.locationLong
-                              //             .toString()));
                                double distanceInMeters = Geolocator.distanceBetween(_userPosition!.latitude, _userPosition!.longitude, double.parse(state
                                           .grievanceDetail.locationLat
                                           .toString()),  double.parse(state
@@ -1760,7 +1752,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                                   GrievancesBloc>(
                                                               context)
                                                           .add(
-                                                        UpdateGrievanceEvent(
+                                                        UpdateGrievanceStatusEvent(
                                                           grievanceId: state
                                                               .grievanceDetail
                                                               .grievanceID
@@ -1870,7 +1862,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                   height: 12.h,
                                                 ),
                                                 Text(
-                                                  "You should be near this site to close this grievance!",
+                                                  LocaleKeys.grievanceDetail_nearClosing.tr(),
                                                   style: TextStyle(
                                                       fontSize: 14.sp),
                                                 ),
@@ -1879,7 +1871,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                   alignment:
                                                       Alignment.bottomRight,
                                                   child: PrimaryDialogButton(
-                                                    buttonText: "OK",
+                                                    buttonText: LocaleKeys.comments_ok.tr(),
                                                     isLoading: false,
                                                     onTap: () {
                                                       Navigator.of(context)
@@ -1966,7 +1958,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                                 GrievancesBloc>(
                                                             context)
                                                         .add(
-                                                      UpdateGrievanceEvent(
+                                                      UpdateGrievanceStatusEvent(
                                                         grievanceId: state
                                                             .grievanceDetail
                                                             .grievanceID

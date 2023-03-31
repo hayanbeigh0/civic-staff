@@ -110,7 +110,8 @@
     "priority1WorkingDay": "1 working day",
     "priority1Week": "1 week",
     "priority1Month": "1 month",
-    "priorityDummy": "Dummy"
+    "priorityDummy": "Dummy",
+    "nearClosing": "You should be near this site to change the status of this grievance!"
   },
   "reporterComments": {
     "screenTitle": "Reporter Comments",
