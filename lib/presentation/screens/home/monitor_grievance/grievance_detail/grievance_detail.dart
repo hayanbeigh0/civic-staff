@@ -197,7 +197,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                 }
               },
               builder: (context, state) {
-                if (state is UpdatingGrievanceStatusState) {
+                if (state is UpdatingGrievanceStatusState && _isLoading == false) {
                   return const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
@@ -206,7 +206,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                     ),
                   );
                 }
-                if (state is LoadingGrievanceByIdState) {
+                if (state is LoadingGrievanceByIdState && _isLoading == false) {
                   return const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
@@ -216,15 +216,6 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                   );
                 }
                 if (state is GrievanceByIdLoadedState && _isLoading == false) {
-                  // BlocListener<CurrentLocationCubit, CurrentLocationState>(
-                  //   listener: (context, locationState) {
-                  //     if (locationState is CurrentLocationLoaded) {
-                  //       latitude = locationState.latitude;
-                  //       longitude = locationState.longitude;
-                  //       log("Current Location: ${latitude}, ${longitude}");
-                  //     }
-                  //   },
-                  // );
                   grievanceComments = state.grievanceDetail.comments;
                   grievanceComments!.sort((a, b) =>
                       DateTime.parse(a.createdDate.toString())
@@ -379,36 +370,13 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                         .toString(),
                 suffixIcon: TextButton(
                   onPressed: () async {
-                    // if (_userPosition != null) {
-                    //   double distanceInMeters =
-                    //               Geolocator.distanceBetween(
-                    //                   _userPosition!.latitude,
-                    //                   _userPosition!.longitude,
-                    //                   double.parse(state
-                    //                       .grievanceDetail.locationLat
-                    //                       .toString()),
-                    //                   double.parse(state
-                    //                       .grievanceDetail.locationLong
-                    //                       .toString()));
-                    // }
                     double distanceInMeters = Geolocator.distanceBetween(_userPosition!.latitude, _userPosition!.longitude, double.parse(state
                                           .grievanceDetail.locationLat
                                           .toString()),  double.parse(state
                                           .grievanceDetail.locationLong
                                           .toString()));
-                    // Position position =
-                    //               await Geolocator.getCurrentPosition();
                               log("Position is: ${_userPosition!.latitude}, ${_userPosition!.longitude}");
-                              // double distanceInMeters =
-                              //     Geolocator.distanceBetween(
-                              //         _userPosition!.latitude,
-                              //         _userPosition!.longitude,
-                              //         double.parse(state
-                              //             .grievanceDetail.locationLat
-                              //             .toString()),
-                              //         double.parse(state
-                              //             .grievanceDetail.locationLong
-                              //             .toString()));
+
                               log("Distance In Meters is: ${distanceInMeters.toString()}");
                     if (state.grievanceDetail.createdBy == "SYSTEM") {
                       if (distanceInMeters <= 200) {
@@ -740,7 +708,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                         final grievance = state.grievanceDetail;
                                         BlocProvider.of<GrievancesBloc>(context)
                                             .add(
-                                          UpdateGrievanceEvent(
+                                          UpdateGrievanceStatusEvent(
                                             grievanceId: state
                                                 .grievanceDetail.grievanceID
                                                 .toString(),
@@ -1569,7 +1537,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                                 GrievancesBloc>(
                                                             context)
                                                         .add(
-                                                      UpdateGrievanceStatusEvent(
+                                                      UpdateGrievanceEvent(
                                                         grievanceId: state
                                                             .grievanceDetail
                                                             .grievanceID
@@ -1752,7 +1720,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                                   GrievancesBloc>(
                                                               context)
                                                           .add(
-                                                        UpdateGrievanceStatusEvent(
+                                                        UpdateGrievanceEvent(
                                                           grievanceId: state
                                                               .grievanceDetail
                                                               .grievanceID

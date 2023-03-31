@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:dio/dio.dart';
-
+import 'dart:developer';
 import 'package:civic_staff/constants/env_variable.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
 
@@ -119,7 +120,7 @@ class GrievancesRepository {
 
   Future<Response> modifyGrievance(
       String grievanceId, Grievances newGrievance) async {
-        print("In post modify-grievance function");
+        print("In modify grievance post function");
     final response = await Dio().post(
       '$API_URL/grievances/modify-grievance',
       data: jsonEncode({
@@ -148,7 +149,7 @@ class GrievancesRepository {
         },
       ),
     );
-    print("Response from post method: ${response.data}");
+    print("Response from post method: ${response.statusCode}");
     return response;
   }
 

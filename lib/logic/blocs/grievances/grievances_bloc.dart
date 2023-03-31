@@ -86,20 +86,24 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         emit(LoadingGrievanceByIdFailedState());
       }
     });
-
-    on<UpdateGrievanceStatusEvent>(((event, emit) async {
+     on<UpdateGrievanceStatusEvent>((event, emit) async {
       emit(UpdatingGrievanceStatusState());
       try {
         final response = await grievancesRepository.modifyGrievance(
-            event.grievanceId, event.newGrievance);
+          event.grievanceId,
+          event.newGrievance,
+        );
         if (response.statusCode == 200) {
           emit(const GrievanceUpdatedState(grievanceUpdated: true));
         } else {
           emit(UpdatingGrievanceStatusFailedState());
         }
-        add(GetGrievanceByIdEvent(
+        add(
+          GetGrievanceByIdEvent(
             municipalityId: event.municipalityId,
-            grievanceId: event.municipalityId));
+            grievanceId: event.grievanceId,
+          ),
+        );
       } on DioError catch (e) {
         emit(UpdatingGrievanceStatusFailedState());
         add(
@@ -109,7 +113,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           ),
         );
       }
-    }));
+    });
 
     on<UpdateGrievanceEvent>((event, emit) async {
       emit(UpdatingGrievanceStatusState());
