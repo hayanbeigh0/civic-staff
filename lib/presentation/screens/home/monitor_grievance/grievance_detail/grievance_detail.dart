@@ -174,7 +174,13 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
         child: Column(
           children: [
             const GrievanceDetailAppBar(),
-            BlocConsumer<GrievancesBloc, GrievancesState>(
+            _isLoading ? const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorPrimary,
+                      ),
+                    ),
+                  ) : BlocConsumer<GrievancesBloc, GrievancesState>(
               listener: (context, state) {
                 if (state is GrievanceTypeUpdatedState) {
                   Navigator.of(context).maybePop();
@@ -197,7 +203,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                 }
               },
               builder: (context, state) {
-                if (state is UpdatingGrievanceStatusState && _isLoading == false) {
+                if (state is UpdatingGrievanceStatusState) {
                   return const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
@@ -206,7 +212,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                     ),
                   );
                 }
-                if (state is LoadingGrievanceByIdState && _isLoading == false) {
+                if (state is LoadingGrievanceByIdState) {
                   return const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
@@ -215,7 +221,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                     ),
                   );
                 }
-                if (state is GrievanceByIdLoadedState && _isLoading == false) {
+                if (state is GrievanceByIdLoadedState) {
                   grievanceComments = state.grievanceDetail.comments;
                   grievanceComments!.sort((a, b) =>
                       DateTime.parse(a.createdDate.toString())
