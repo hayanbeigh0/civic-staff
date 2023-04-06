@@ -11,9 +11,9 @@ class GrievancesRepository {
       String municipalityId, String staffId) async {
     final response = await Dio()
         .get(
-          '$API_URL/staff/allotted-grievances',
-          data: jsonEncode(
-              {"MunicipalityID": municipalityId, "StaffID": staffId}),
+          '$API_URL/staff/allotted-grievances?MunicipalityID=$municipalityId&StaffID=$staffId',
+          // data: jsonEncode(
+          //     {"MunicipalityID": municipalityId, "StaffID": staffId}),
           options: Options(
             headers: {
               'Content-Type': 'application/json',
@@ -23,6 +23,7 @@ class GrievancesRepository {
         .timeout(
           const Duration(seconds: 10),
         );
+        print(jsonEncode(response.data));
     return jsonEncode(response.data);
   }
 
@@ -103,11 +104,12 @@ class GrievancesRepository {
     required String grievanceId,
   }) async {
     final response = await Dio().get(
-      '$API_URL/grievances/grievance-comments',
-      data: jsonEncode({
-        "MunicipalityID": municipalityId,
-        "GrievanceID": grievanceId,
-      }),
+      '$API_URL/grievances/grievance-comments-web?MunicipalityID=$municipalityId&GrievanceID=$grievanceId',
+      // '$API_URL/grievances/grievance-comments', 
+      // data: jsonEncode({
+      //   "MunicipalityID": municipalityId,
+      //   "GrievanceID": grievanceId,
+      // }),
       options: Options(
         headers: {
           'Content-Type': 'application/json',
