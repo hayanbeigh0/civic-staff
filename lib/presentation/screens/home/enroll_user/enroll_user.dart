@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:civic_staff/generated/locale_keys.g.dart';
 import 'package:civic_staff/logic/blocs/users_bloc/users_bloc.dart';
 import 'package:civic_staff/logic/cubits/current_location/current_location_cubit.dart';
@@ -16,6 +15,7 @@ import 'package:civic_staff/presentation/widgets/location_map_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_text_field.dart';
 import 'package:civic_staff/presentation/widgets/primary_top_shape.dart';
+import 'package:civic_staff/resources/repositories/Users/user_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,13 +46,20 @@ class _EnrollUserState extends State<EnrollUser> {
   final Completer<GoogleMapController> _controller = Completer();
 
   final _formKey = GlobalKey<FormState>();
+  
+  final GlobalKey _dropdownKey = GlobalKey();
 
   final FocusNode firstNameNode = FocusNode();
+
+  bool _isLoading = true;
+
+  List<String> numberList = [];
 
   @override
   initState() {
     BlocProvider.of<LocalStorageCubit>(context).getUserDataFromLocalStorage();
     BlocProvider.of<CurrentLocationCubit>(context).getCurrentLocation();
+    BlocProvider.of<UsersBloc>(context).add(const LoadAllUsersEvent(1));
     wards = AuthBasedRouting.afterLogin.wardDetails!
         .where((element) =>
             element.municipalityID ==
@@ -75,73 +82,80 @@ class _EnrollUserState extends State<EnrollUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          PrimaryTopShape(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: 18.0.w,
-              ),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  SafeArea(
-                    bottom: false,
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/arrowleft.svg',
-                                color: AppColors.colorWhite,
-                                height: 18.sp,
-                              ),
-                              SizedBox(
-                                width: 10.w,
-                              ),
-                              Text(
-                                LocaleKeys.enrollUsers_screenTitle.tr(),
-                                style: AppStyles.screenTitleStyle,
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+      body: BlocListener<UsersBloc, SearchUsersState>(
+        listener: (context, state) {
+          if (state is EnrollingAUserFailedState) {
+            SnackBars.errorMessageSnackbar(context, "Enrolling user failed!");
+          }
+        },
+        child: Column(
+          children: [
+            PrimaryTopShape(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 18.0.w,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20.h,
                     ),
-                  ),
-                  SizedBox(
-                    height: 60.h,
-                  ),
-                ],
+                    SafeArea(
+                      bottom: false,
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/arrowleft.svg',
+                                  color: AppColors.colorWhite,
+                                  height: 18.sp,
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Text(
+                                  LocaleKeys.enrollUsers_screenTitle.tr(),
+                                  style: AppStyles.screenTitleStyle,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 60.h,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: BlocBuilder<LocalStorageCubit, LocalStorageState>(
-              builder: (context, state) {
-                if (state is LocalStorageFetchingDoneState) {
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
-                      child: enrollUserForm(state),
+            Expanded(
+              child: BlocBuilder<LocalStorageCubit, LocalStorageState>(
+                builder: (context, state) {
+                  if (state is LocalStorageFetchingDoneState) {
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18.0.sp),
+                        child: enrollUserForm(state),
+                      ),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.colorPrimary,
                     ),
                   );
-                }
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.colorPrimary,
-                  ),
-                );
-              },
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -218,6 +232,7 @@ class _EnrollUserState extends State<EnrollUser> {
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 15.sp),
                 child: DropdownButtonFormField(
+                  key: _dropdownKey,
                   value: wardDropdownValue,
                   isExpanded: true,
                   iconSize: 24.sp,
@@ -359,6 +374,11 @@ class _EnrollUserState extends State<EnrollUser> {
                               emailController.text = '';
                               contactNumberController.text = '';
                               wardNumberController.text = '';
+                              // wardDropdownValue = "";
+                              setState(() {
+                                wardDropdownValue = null;
+                              });
+                              (_dropdownKey.currentState as dynamic).reset();
                             }
                             if (state is EnrollingAUserFailedState) {
                               SnackBars.errorMessageSnackbar(

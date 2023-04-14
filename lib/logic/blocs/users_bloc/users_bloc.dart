@@ -176,6 +176,14 @@ class UsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
     on<EnrollAUserEvent>((event, emit) async {
       emit(const EnrollingAUserState(loading: true));
       try {
+        final response = await userRepository.getAllUsers();
+        for (var i = 0; i < response.data.length; i++) {
+          if (event.user.mobileNumber == response.data[i]['MobileNumber']) {
+            emit(EnrollingAUserFailedState());
+            throw (Exception("error"));
+          }
+        }
+        log("This is logged");
         await userRepository.addUser(event.user);
         emit(UserEnrolledState(user: event.user));
       } on DioError catch (e) {
@@ -184,6 +192,9 @@ class UsersBloc extends Bloc<SearchUsersEvent, SearchUsersState> {
             e.type == DioErrorType.sendTimeout) {
           emit(EnrollingAUserFailedState());
         }
+      } catch (e) {
+        emit(EnrollingAUserFailedState());
+        log("Emitted");
       }
     });
     on<EditUserEvent>((event, emit) async {
