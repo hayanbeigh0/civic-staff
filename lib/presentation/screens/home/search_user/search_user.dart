@@ -200,7 +200,7 @@ class _SearchUserState extends State<SearchUser> {
                             Row(
                               children: [
                                 Text(
-                                  '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(state.selectedFilterNumber)}',
+                                  '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(selectedFilterNumber!)}',
                                   style: AppStyles.listOrderedByTextStyle,
                                 ),
                                 const Spacer(),
@@ -230,7 +230,7 @@ class _SearchUserState extends State<SearchUser> {
                             Row(
                               children: [
                                 Text(
-                                  '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(state.selectedFilterNumber)}',
+                                  '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(selectedFilterNumber!)}',
                                   style: AppStyles.listOrderedByTextStyle,
                                 ),
                                 const Spacer(),
@@ -364,7 +364,7 @@ class _SearchUserState extends State<SearchUser> {
                             Row(
                               children: [
                                 Text(
-                                  '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(state.selectedFilterNumber)}',
+                                  '${LocaleKeys.searchUsers_resultsBasedOn.tr()} ${getFilterName(selectedFilterNumber!)}',
                                   style: AppStyles.listOrderedByTextStyle,
                                 ),
                                 const Spacer(),
@@ -759,6 +759,7 @@ class _SearchUserState extends State<SearchUser> {
                         alignment: Alignment.bottomRight,
                         child: PrimaryButton(
                           onTap: () {
+                            _searchController.clear();
                             selectedFilterNumber = _selectedRadio;
                             if (selectedFilterNumber == 1) {
                               BlocProvider.of<UsersBloc>(context)

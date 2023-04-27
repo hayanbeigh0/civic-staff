@@ -368,146 +368,170 @@ class _AllCommentsState extends State<AllComments> {
                 },
               ),
             ),
-            Container(
-              height: 70.h,
-              decoration: const BoxDecoration(
-                color: AppColors.colorWhite,
-              ),
-              child: Center(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.colorPrimaryLight,
-                          borderRadius: BorderRadius.circular(10.r),
-                          boxShadow: const [
-                            BoxShadow(
-                              offset: Offset(2, 2),
-                              blurRadius: 4,
-                              color: AppColors.cardShadowColor,
-                            ),
-                            BoxShadow(
-                              offset: Offset(-2, -2),
-                              blurRadius: 4,
-                              color: AppColors.colorWhite,
-                            ),
-                          ],
-                        ),
-                        child: TextField(
-                          controller: commentTextController,
-                          textInputAction: TextInputAction.go,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: AppColors.colorPrimaryExtraLight,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.sp,
-                              vertical: 10.sp,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText:
-                                LocaleKeys.addComment_commentTexthint.tr(),
-                            hintStyle: TextStyle(
-                              color: AppColors.textColorLight,
-                              fontFamily: 'LexendDeca',
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              height: 1.1,
-                            ),
-                            suffixIcon:
-                                BlocConsumer<GrievancesBloc, GrievancesState>(
-                              listener: (context, state) {
-                                if (mounted) {
-                                  commentTextController.clear();
-                                }
-                              },
-                              builder: (context, state) {
-                                if (state is GrievanceByIdLoadedState) {
-                                  return IconButton(
-                                    onPressed: () {
-                                      if (commentTextController
-                                          .text.isNotEmpty) {
-                                        BlocProvider.of<GrievancesBloc>(context)
-                                            .add(
-                                          AddGrievanceCommentEvent(
-                                            grievanceId: widget.grievanceId,
-                                            staffId: AuthBasedRouting
-                                                .afterLogin.userDetails!.staffID
-                                                .toString(),
-                                            name: AuthBasedRouting.afterLogin
-                                                .userDetails!.firstName
-                                                .toString(),
-                                            assets: const {},
-                                            comment: commentTextController.text,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    icon: const Icon(
-                                      Icons.send,
-                                      color: AppColors.colorPrimary,
+            BlocBuilder<GrievancesBloc, GrievancesState>(
+              builder: (context, state) {
+                if (state is GrievanceByIdLoadedState) {
+                  return state.grievanceDetail.status == '2'
+                      ? const SizedBox()
+                      : Container(
+                          height: 70.h,
+                          decoration: const BoxDecoration(
+                            color: AppColors.colorWhite,
+                          ),
+                          child: Center(
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.colorPrimaryLight,
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          offset: Offset(2, 2),
+                                          blurRadius: 4,
+                                          color: AppColors.cardShadowColor,
+                                        ),
+                                        BoxShadow(
+                                          offset: Offset(-2, -2),
+                                          blurRadius: 4,
+                                          color: AppColors.colorWhite,
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                }
-                                return IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.send,
-                                    color: AppColors.colorDisabledTextField,
+                                    child: TextField(
+                                      controller: commentTextController,
+                                      textInputAction: TextInputAction.go,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor:
+                                            AppColors.colorPrimaryExtraLight,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 16.sp,
+                                          vertical: 10.sp,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        hintText: LocaleKeys
+                                            .addComment_commentTexthint
+                                            .tr(),
+                                        hintStyle: TextStyle(
+                                          color: AppColors.textColorLight,
+                                          fontFamily: 'LexendDeca',
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.1,
+                                        ),
+                                        suffixIcon: BlocConsumer<GrievancesBloc,
+                                            GrievancesState>(
+                                          listener: (context, state) {
+                                            if (mounted) {
+                                              commentTextController.clear();
+                                            }
+                                          },
+                                          builder: (context, state) {
+                                            if (state
+                                                is GrievanceByIdLoadedState) {
+                                              return IconButton(
+                                                onPressed: () {
+                                                  if (commentTextController
+                                                      .text.isNotEmpty) {
+                                                    BlocProvider.of<
+                                                                GrievancesBloc>(
+                                                            context)
+                                                        .add(
+                                                      AddGrievanceCommentEvent(
+                                                        grievanceId:
+                                                            widget.grievanceId,
+                                                        staffId:
+                                                            AuthBasedRouting
+                                                                .afterLogin
+                                                                .userDetails!
+                                                                .staffID
+                                                                .toString(),
+                                                        name: AuthBasedRouting
+                                                            .afterLogin
+                                                            .userDetails!
+                                                            .firstName
+                                                            .toString(),
+                                                        assets: const {},
+                                                        comment:
+                                                            commentTextController
+                                                                .text,
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                                icon: const Icon(
+                                                  Icons.send,
+                                                  color: AppColors.colorPrimary,
+                                                ),
+                                              );
+                                            }
+                                            return IconButton(
+                                              onPressed: () {},
+                                              icon: const Icon(
+                                                Icons.send,
+                                                color: AppColors
+                                                    .colorDisabledTextField,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                );
-                              },
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    InkWell(
+                                      enableFeedback: true,
+                                      onTap: () {
+                                        _showPicker(context);
+                                      },
+                                      child: const Icon(
+                                        Icons.attach_file,
+                                        color: AppColors.colorGreyLight,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10.w,
+                                    ),
+                                    InkWell(
+                                      enableFeedback: true,
+                                      onTap: () {
+                                        _showAudioPicker(context);
+                                      },
+                                      child: const Icon(
+                                        Icons.mic,
+                                        color: AppColors.colorGreyLight,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10.w,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 10.w,
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        InkWell(
-                          enableFeedback: true,
-                          onTap: () {
-                            _showPicker(context);
-                          },
-                          child: const Icon(
-                            Icons.attach_file,
-                            color: AppColors.colorGreyLight,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        InkWell(
-                          enableFeedback: true,
-                          onTap: () {
-                            _showAudioPicker(context);
-                          },
-                          child: const Icon(
-                            Icons.mic,
-                            color: AppColors.colorGreyLight,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                  ],
-                ),
-              ),
+                        );
+                }
+                return const SizedBox();
+              },
             ),
           ],
         ),
@@ -865,6 +889,7 @@ class _AllCommentsState extends State<AllComments> {
                       title: Text(LocaleKeys.addComment_recordAudio.tr()),
                       onTap: () async {
                         await recordAudio();
+                        Navigator.of(context).pop();
                       },
                     ),
                   ],

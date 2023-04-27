@@ -108,6 +108,11 @@ abstract class  LocaleKeys {
   static const grievanceDetail_priority1Month = 'grievanceDetail.priority1Month';
   static const grievanceDetail_priorityDummy = 'grievanceDetail.priorityDummy';
   static const grievanceDetail_nearClosing = 'grievanceDetail.nearClosing';
+  static const grievanceDetail_cannotChangeGrievanceTypeErrorMessage = 'grievanceDetail.cannotChangeGrievanceTypeErrorMessage';
+  static const grievanceDetail_newHouseAddress = 'grievanceDetail.newHouseAddress';
+  static const grievanceDetail_planDetails = 'grievanceDetail.planDetails';
+  static const grievanceDetail_deceasedName = 'grievanceDetail.deceasedName';
+  static const grievanceDetail_relation = 'grievanceDetail.relation';
   static const grievanceDetail = 'grievanceDetail';
   static const reporterComments_screenTitle = 'reporterComments.screenTitle';
   static const reporterComments_allComments = 'reporterComments.allComments';
@@ -181,8 +186,8 @@ abstract class  LocaleKeys {
   static const profile_about = 'profile.about';
   static const profile_location = 'profile.location';
   static const profile_allocatedGrievancesAndWards = 'profile.allocatedGrievancesAndWards';
-  static const profile_logoutFailed = 'profile.logoutFailed';
   static const profile_logout = 'profile.logout';
+  static const profile_logoutFailed = 'profile.logoutFailed';
   static const profile = 'profile';
   static const editProfile_screenTitle = 'editProfile.screenTitle';
   static const editProfile_firstName = 'editProfile.firstName';

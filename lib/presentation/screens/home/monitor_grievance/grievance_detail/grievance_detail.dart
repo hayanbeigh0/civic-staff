@@ -8,6 +8,7 @@ import 'package:civic_staff/main.dart';
 import 'package:civic_staff/models/grievances/grievance_detail_model.dart';
 import 'package:civic_staff/models/grievances/grievances_model.dart';
 import 'package:civic_staff/models/user_details.dart';
+import 'package:civic_staff/presentation/utils/functions/snackbars.dart';
 import 'package:civic_staff/presentation/utils/styles/app_styles.dart';
 import 'package:civic_staff/presentation/widgets/primary_dialog_button.dart';
 import 'package:civic_staff/presentation/widgets/primary_display_field.dart';
@@ -85,7 +86,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
 
   TextEditingController reporterController = TextEditingController();
 
-  TextEditingController wardNumberController = TextEditingController();
+  TextEditingController wardNameController = TextEditingController();
 
   TextEditingController commentTextController = TextEditingController();
 
@@ -119,20 +120,29 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
     "4": LocaleKeys.grievanceDetail_priority1Month.tr(),
     "5": LocaleKeys.grievanceDetail_priorityDummy.tr(),
   };
+  late List<WardDetails> wards;
 
   @override
   initState() {
     _getUserLocation();
+    wards = AuthBasedRouting.afterLogin.wardDetails!
+        .where((element) =>
+            element.municipalityID ==
+            AuthBasedRouting.afterLogin.userDetails!.municipalityID!)
+        .toList();
+    wards.sort(
+      (a, b) => int.parse(a.wardNumber!).compareTo(int.parse(b.wardNumber!)),
+    );
     super.initState();
   }
 
-      Future<void> _getUserLocation() async {
-      _userPosition = await Geolocator.getCurrentPosition();
-      log("in func ${_userPosition!.latitude}, ${_userPosition!.longitude}");
-      setState(() {
-        _isLoading = false;
-      });
-    }
+  Future<void> _getUserLocation() async {
+    _userPosition = await Geolocator.getCurrentPosition();
+    log("in func ${_userPosition!.latitude}, ${_userPosition!.longitude}");
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +167,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
         grievanceId: widget.grievanceId,
       ),
     );
-    
+
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       body: WillPopScope(
@@ -174,72 +184,77 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
         child: Column(
           children: [
             const GrievanceDetailAppBar(),
-            _isLoading ? const Expanded(
+            _isLoading
+                ? const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
                         color: AppColors.colorPrimary,
                       ),
                     ),
-                  ) : BlocConsumer<GrievancesBloc, GrievancesState>(
-              listener: (context, state) {
-                if (state is GrievanceTypeUpdatedState) {
-                  Navigator.of(context).maybePop();
-                }
-                if (state is GrievancesLoadedState) {
-                  BlocProvider.of<GrievancesBloc>(context)
-                      .add(GetGrievanceByIdEvent(
-                    municipalityId: AuthBasedRouting
-                        .afterLogin.userDetails!.municipalityID!,
-                    grievanceId: widget.grievanceId,
-                  ));
-                }
-                if (state is LoadingGrievanceByIdFailedState) {
-                  BlocProvider.of<GrievancesBloc>(context)
-                      .add(GetGrievanceByIdEvent(
-                    municipalityId: AuthBasedRouting
-                        .afterLogin.userDetails!.municipalityID!,
-                    grievanceId: widget.grievanceId,
-                  ));
-                }
-              },
-              builder: (context, state) {
-                if (state is UpdatingGrievanceStatusState) {
-                  return const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.colorPrimary,
-                      ),
-                    ),
-                  );
-                }
-                if (state is LoadingGrievanceByIdState) {
-                  return const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.colorPrimary,
-                      ),
-                    ),
-                  );
-                }
-                if (state is GrievanceByIdLoadedState) {
-                  grievanceComments = state.grievanceDetail.comments;
-                  grievanceComments!.sort((a, b) =>
-                      DateTime.parse(a.createdDate.toString())
-                          .compareTo(DateTime.parse(b.createdDate.toString())));
-                  grievanceComments = grievanceComments!.reversed
-                      .take(6)
-                      .toList()
-                      .reversed
-                      .toList();
-                  log('Images: ${state.grievanceDetail.assets!.image!.length}');
-                  log('Videos: ${state.grievanceDetail.assets!.video!.length}');
-                  state.grievanceDetail.assets!.video!.map((e) => log(e));
-                  state.grievanceDetail.assets!.image!.map((e) => log(e));
-                  return grievanceDetails(context, state);
-                }
-                return const SizedBox();
-              },
-            ),
+                  )
+                : BlocConsumer<GrievancesBloc, GrievancesState>(
+                    listener: (context, state) {
+                      if (state is GrievanceTypeUpdatedState) {
+                        Navigator.of(context).maybePop();
+                      }
+                      if (state is GrievancesLoadedState) {
+                        BlocProvider.of<GrievancesBloc>(context)
+                            .add(GetGrievanceByIdEvent(
+                          municipalityId: AuthBasedRouting
+                              .afterLogin.userDetails!.municipalityID!,
+                          grievanceId: widget.grievanceId,
+                        ));
+                      }
+                      if (state is LoadingGrievanceByIdFailedState) {
+                        BlocProvider.of<GrievancesBloc>(context)
+                            .add(GetGrievanceByIdEvent(
+                          municipalityId: AuthBasedRouting
+                              .afterLogin.userDetails!.municipalityID!,
+                          grievanceId: widget.grievanceId,
+                        ));
+                      }
+                      if (state is GrievanceClosedState) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is UpdatingGrievanceStatusState) {
+                        return const Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.colorPrimary,
+                            ),
+                          ),
+                        );
+                      }
+                      if (state is LoadingGrievanceByIdState) {
+                        return const Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.colorPrimary,
+                            ),
+                          ),
+                        );
+                      }
+                      if (state is GrievanceByIdLoadedState) {
+                        grievanceComments = state.grievanceDetail.comments;
+                        grievanceComments!.sort((a, b) =>
+                            DateTime.parse(a.createdDate.toString()).compareTo(
+                                DateTime.parse(b.createdDate.toString())));
+                        grievanceComments = grievanceComments!.reversed
+                            .take(6)
+                            .toList()
+                            .reversed
+                            .toList();
+                        log('Images: ${state.grievanceDetail.assets!.image!.length}');
+                        log('Videos: ${state.grievanceDetail.assets!.video!.length}');
+                        state.grievanceDetail.assets!.video!.map((e) => log(e));
+                        state.grievanceDetail.assets!.image!.map((e) => log(e));
+                        return grievanceDetails(context, state);
+                      }
+                      return const SizedBox();
+                    },
+                  ),
           ],
         ),
       ),
@@ -248,7 +263,10 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
 
   grievanceDetails(BuildContext context, GrievanceByIdLoadedState state) {
     reporterController.text = state.grievanceDetail.createdByName.toString();
-    wardNumberController.text = state.grievanceDetail.wardNumber.toString();
+    wardNameController.text = AuthBasedRouting.afterLogin.wardDetails!
+        .firstWhere((element) =>
+            element.wardNumber == state.grievanceDetail.wardNumber.toString())
+        .wardName!;
     statusDropdownValue = state.grievanceDetail.status.toString();
     expectedCompletionDropdownValue =
         state.grievanceDetail.expectedCompletion.toString();
@@ -270,69 +288,88 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.colorPrimaryLight,
+                  color: state.grievanceDetail.createdBy == "SYSTEM" ||
+                          state.grievanceDetail.grievanceType == 'HOUSE' ||
+                          state.grievanceDetail.grievanceType == 'CERT'
+                      ? AppColors.colorDisabledTextField
+                      : AppColors.colorPrimaryLight,
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 15.sp),
-                child: DropdownButtonFormField(
-                  isExpanded: true,
-                  iconSize: 24.sp,
-                  value: grievanceTypeDropdownValue,
-                  decoration: InputDecoration(
-                    labelStyle: AppStyles.dropdownTextStyle,
-                    border: InputBorder.none,
-                  ),
-                  items: grievanceTypesList
-                      .toList()
-                      .map(
-                        (item) => DropdownMenuItem<String>(
-                          // value: grievanceTypesMap[
-                          //     item.grievanceType!.toLowerCase()],
-                          value: item.grievanceType,
-                          child: Text(
-                            grievanceTypesMap.containsKey(
-                                    item.grievanceType!.toLowerCase())
-                                ? grievanceTypesMap[
-                                    item.grievanceType!.toLowerCase()]!
-                                : item.grievanceTypeName.toString(),
-                            maxLines: 1,
-                            style: AppStyles.dropdownTextStyle,
+                child: IgnorePointer(
+                  ignoring: state.grievanceDetail.grievanceType == 'HOUSE' ||
+                      state.grievanceDetail.grievanceType == 'CERT' ||
+                      state.grievanceDetail.createdBy == "SYSTEM",
+                  child: DropdownButtonFormField(
+                    isExpanded: true,
+                    iconSize: 24.sp,
+                    value: grievanceTypeDropdownValue,
+                    decoration: InputDecoration(
+                      labelStyle: AppStyles.dropdownTextStyle,
+                      border: InputBorder.none,
+                    ),
+                    items: grievanceTypesList
+                        .toList()
+                        .map(
+                          (item) => DropdownMenuItem<String>(
+                            // value: grievanceTypesMap[
+                            //     item.grievanceType!.toLowerCase()],
+                            value: item.grievanceType,
+                            child: Text(
+                              grievanceTypesMap.containsKey(
+                                      item.grievanceType!.toLowerCase())
+                                  ? grievanceTypesMap[
+                                      item.grievanceType!.toLowerCase()]!
+                                  : item.grievanceTypeName.toString(),
+                              maxLines: 1,
+                              style: AppStyles.dropdownTextStyle,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      if (value == 'HOUSE' || value == 'CERT') {
+                        setState(() {
+                          grievanceTypeDropdownValue;
+                        });
+                        SnackBars.errorMessageSnackbar(
+                          context,
+                          '${LocaleKeys.grievanceDetail_cannotChangeGrievanceTypeErrorMessage.tr()} ${grievanceTypesMap[value.toString().toLowerCase()]}',
+                        );
+                        return;
+                      }
+                      final grievance = state.grievanceDetail;
+                      grievanceTypeDropdownValue = value.toString();
+                      BlocProvider.of<GrievancesBloc>(context).add(
+                        UpdateGrievanceTypeEvent(
+                          grievanceId:
+                              state.grievanceDetail.grievanceID.toString(),
+                          municipalityId: AuthBasedRouting
+                              .afterLogin.userDetails!.municipalityID!,
+                          newGrievance: Grievances(
+                            grievanceID: grievance.grievanceID,
+                            assets: state.grievanceDetail.assets!.toJson(),
+                            description: grievance.description,
+                            expectedCompletion: expectedCompletionDropdownValue,
+                            grievanceType: grievanceTypeDropdownValue,
+                            locationLat: grievance.locationLat,
+                            locationLong: grievance.locationLong,
+                            address: grievance.address,
+                            priority: priorityDropdownValue,
+                            createdBy: grievance.createdBy,
+                            status: statusDropdownValue,
+                            wardNumber: grievance.wardNumber,
+                            contactNumber: grievance.contactNumber,
+                            createdByName: grievance.createdByName,
+                            lastModifiedDate: DateTime.now().toString(),
+                            location: grievance.location,
+                            mobileContactStatus: grievance.mobileContactStatus,
+                            municipalityID: grievance.municipalityID,
                           ),
                         ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    final grievance = state.grievanceDetail;
-                    grievanceTypeDropdownValue = value.toString();
-                    BlocProvider.of<GrievancesBloc>(context).add(
-                      UpdateGrievanceTypeEvent(
-                        grievanceId:
-                            state.grievanceDetail.grievanceID.toString(),
-                        municipalityId: AuthBasedRouting
-                            .afterLogin.userDetails!.municipalityID!,
-                        newGrievance: Grievances(
-                          grievanceID: grievance.grievanceID,
-                          assets: state.grievanceDetail.assets!.toJson(),
-                          description: grievance.description,
-                          expectedCompletion: expectedCompletionDropdownValue,
-                          grievanceType: grievanceTypeDropdownValue,
-                          locationLat: grievance.locationLat,
-                          locationLong: grievance.locationLong,
-                          address: grievance.address,
-                          priority: priorityDropdownValue,
-                          createdBy: grievance.createdBy,
-                          status: statusDropdownValue,
-                          wardNumber: grievance.wardNumber,
-                          contactNumber: grievance.contactNumber,
-                          createdByName: grievance.createdByName,
-                          lastModifiedDate: DateTime.now().toString(),
-                          location: grievance.location,
-                          mobileContactStatus: grievance.mobileContactStatus,
-                          municipalityID: grievance.municipalityID,
-                        ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
               SizedBox(
@@ -376,308 +413,439 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                         .toString(),
                 suffixIcon: TextButton(
                   onPressed: () async {
-                    double distanceInMeters = Geolocator.distanceBetween(_userPosition!.latitude, _userPosition!.longitude, double.parse(state
-                                          .grievanceDetail.locationLat
-                                          .toString()),  double.parse(state
-                                          .grievanceDetail.locationLong
-                                          .toString()));
-                              log("Position is: ${_userPosition!.latitude}, ${_userPosition!.longitude}");
+                    double distanceInMeters = Geolocator.distanceBetween(
+                        _userPosition!.latitude,
+                        _userPosition!.longitude,
+                        double.parse(
+                            state.grievanceDetail.locationLat.toString()),
+                        double.parse(
+                            state.grievanceDetail.locationLong.toString()));
+                    log("Position is: ${_userPosition!.latitude}, ${_userPosition!.longitude}");
 
-                              log("Distance In Meters is: ${distanceInMeters.toString()}");
+                    log("Distance In Meters is: ${distanceInMeters.toString()}");
                     if (state.grievanceDetail.createdBy == "SYSTEM") {
                       if (distanceInMeters <= 200) {
                         showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              LocaleKeys.grievanceDetail_status.tr(),
-                              style: AppStyles.inputAndDisplayTitleStyle,
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.colorPrimaryLight,
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 15.sp),
-                              child: DropdownButtonFormField(
-                                isExpanded: true,
-                                iconSize: 24.sp,
-                                value: statusDropdownValue,
-                                decoration: InputDecoration(
-                                  labelStyle: AppStyles.dropdownTextStyle,
-                                  border: InputBorder.none,
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  LocaleKeys.grievanceDetail_status.tr(),
+                                  style: AppStyles.inputAndDisplayTitleStyle,
                                 ),
-                                items: statusList
-                                    .map(
-                                      (item) => DropdownMenuItem<String>(
-                                        value: item.sK,
-                                        child: Text(
-                                          statusTypesMap.containsKey(item.name!
-                                                  .toLowerCase()
-                                                  .toString())
-                                              ? statusTypesMap[item.name!
-                                                  .toLowerCase()
-                                                  .toString()]!
-                                              : item.name!
-                                                  .toLowerCase()
-                                                  .toString(),
-                                          maxLines: 1,
-                                          style: AppStyles.dropdownTextStyle,
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                                onChanged: (value) {
-                                  statusDropdownValue = value.toString();
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            PrimaryTextField(
-                              title: LocaleKeys.grievanceDetail_comment.tr(),
-                              hintText: 'The status has been changed.',
-                              textEditingController: commentTextController,
-                            ),
-                            SizedBox(
-                              height: 24.h,
-                            ),
-                            BlocConsumer<GrievancesBloc, GrievancesState>(
-                              listener: (context, state) {
-                                if (state
-                                    is AddingGrievanceCommentSuccessState) {
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              builder: (context, state) {
-                                if (state is GrievanceByIdLoadedState) {
-                                  return Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: PrimaryDialogButton(
-                                      buttonText: LocaleKeys
-                                          .grievanceDetail_submitCommentButton
-                                          .tr(),
-                                      isLoading: false,
-                                      onTap: () {
-                                        BlocProvider.of<GrievancesBloc>(context)
-                                            .add(
-                                          AddGrievanceCommentEvent(
-                                            grievanceId: widget.grievanceId,
-                                            staffId: AuthBasedRouting
-                                                .afterLogin.userDetails!.staffID
-                                                .toString(),
-                                            name: AuthBasedRouting.afterLogin
-                                                .userDetails!.firstName
-                                                .toString(),
-                                            assets: const {},
-                                            comment: commentTextController
-                                                    .text.isEmpty
-                                                ? statusDropdownValue == '1'
-                                                    ? 'Status of your grievance was updated to "In Progress".'
-                                                    : statusDropdownValue == '2'
-                                                        ? 'Your grievance was closed.'
-                                                        : statusDropdownValue ==
-                                                                '3'
-                                                            ? 'Status of your grievance was updated to "Hold".'
-                                                            : commentTextController
-                                                                .text
-                                                : commentTextController.text,
-                                          ),
-                                        );
-                                        final grievance = state.grievanceDetail;
-                                        BlocProvider.of<GrievancesBloc>(context)
-                                            .add(
-                                          UpdateGrievanceEvent(
-                                            grievanceId: state
-                                                .grievanceDetail.grievanceID
-                                                .toString(),
-                                            municipalityId: AuthBasedRouting
-                                                .afterLogin
-                                                .userDetails!
-                                                .municipalityID!,
-                                            newGrievance: Grievances(
-                                              grievanceID:
-                                                  grievance.grievanceID,
-                                              assets: state
-                                                  .grievanceDetail.assets!
-                                                  .toJson(),
-                                              description:
-                                                  grievance.description,
-                                              expectedCompletion:
-                                                  expectedCompletionDropdownValue,
-                                              grievanceType:
-                                                  grievanceTypeDropdownValue,
-                                              locationLat:
-                                                  grievance.locationLat,
-                                              locationLong:
-                                                  grievance.locationLong,
-                                              address: grievance.address,
-                                              priority: priorityDropdownValue,
-                                              createdBy: grievance.createdBy,
-                                              status: statusDropdownValue,
-                                              wardNumber: grievance.wardNumber,
-                                              contactNumber:
-                                                  grievance.contactNumber,
-                                              createdByName:
-                                                  grievance.createdByName,
-                                              lastModifiedDate:
-                                                  DateTime.now().toString(),
-                                              location: grievance.location,
-                                              mobileContactStatus:
-                                                  grievance.mobileContactStatus,
-                                              municipalityID:
-                                                  grievance.municipalityID,
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.colorPrimaryLight,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 15.sp),
+                                  child: DropdownButtonFormField(
+                                    isExpanded: true,
+                                    iconSize: 24.sp,
+                                    value: statusDropdownValue,
+                                    decoration: InputDecoration(
+                                      labelStyle: AppStyles.dropdownTextStyle,
+                                      border: InputBorder.none,
+                                    ),
+                                    items: statusList
+                                        .map(
+                                          (item) => DropdownMenuItem<String>(
+                                            value: item.sK,
+                                            child: Text(
+                                              statusTypesMap.containsKey(item
+                                                      .name!
+                                                      .toLowerCase()
+                                                      .toString())
+                                                  ? statusTypesMap[item.name!
+                                                      .toLowerCase()
+                                                      .toString()]!
+                                                  : item.name!
+                                                      .toLowerCase()
+                                                      .toString(),
+                                              maxLines: 1,
+                                              style:
+                                                  AppStyles.dropdownTextStyle,
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                }
-                                if (state is AddGrievanceCommentEvent) {
-                                  return Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: PrimaryDialogButton(
-                                      buttonText: LocaleKeys
-                                          .grievanceDetail_submitCommentButton
-                                          .tr(),
-                                      isLoading: true,
-                                      onTap: () {},
-                                    ),
-                                  );
-                                }
-                                return Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: PrimaryDialogButton(
-                                    buttonText: LocaleKeys
-                                        .grievanceDetail_submitCommentButton
-                                        .tr(),
-                                    isLoading: false,
-                                    onTap: () {},
+                                        )
+                                        .toList(),
+                                    onChanged: (value) {
+                                      statusDropdownValue = value.toString();
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                                SizedBox(
+                                  height: 12.h,
+                                ),
+                                PrimaryTextField(
+                                  title:
+                                      LocaleKeys.grievanceDetail_comment.tr(),
+                                  hintText: 'The status has been changed.',
+                                  textEditingController: commentTextController,
+                                ),
+                                SizedBox(
+                                  height: 24.h,
+                                ),
+                                BlocConsumer<GrievancesBloc, GrievancesState>(
+                                  listener: (context, state) {
+                                    if (state
+                                        is AddingGrievanceCommentSuccessState) {
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                  builder: (context, state) {
+                                    if (state is GrievanceByIdLoadedState) {
+                                      return Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: PrimaryDialogButton(
+                                          buttonText: LocaleKeys
+                                              .grievanceDetail_submitCommentButton
+                                              .tr(),
+                                          isLoading: false,
+                                          onTap: () {
+                                            BlocProvider.of<GrievancesBloc>(
+                                                    context)
+                                                .add(
+                                              AddGrievanceCommentEvent(
+                                                grievanceId: widget.grievanceId,
+                                                staffId: AuthBasedRouting
+                                                    .afterLogin
+                                                    .userDetails!
+                                                    .staffID
+                                                    .toString(),
+                                                name: AuthBasedRouting
+                                                    .afterLogin
+                                                    .userDetails!
+                                                    .firstName
+                                                    .toString(),
+                                                assets: const {},
+                                                comment: commentTextController
+                                                        .text.isEmpty
+                                                    ? statusDropdownValue == '1'
+                                                        ? 'Status of your grievance was updated to "In Progress".'
+                                                        : statusDropdownValue ==
+                                                                '2'
+                                                            ? 'Your grievance was closed.'
+                                                            : statusDropdownValue ==
+                                                                    '3'
+                                                                ? 'Status of your grievance was updated to "Hold".'
+                                                                : commentTextController
+                                                                    .text
+                                                    : commentTextController
+                                                        .text,
+                                              ),
+                                            );
+                                            final grievance =
+                                                state.grievanceDetail;
+                                            BlocProvider.of<GrievancesBloc>(
+                                                    context)
+                                                .add(
+                                              UpdateGrievanceEvent(
+                                                closing:
+                                                    statusDropdownValue == '2'
+                                                        ? true
+                                                        : null,
+                                                grievanceId: state
+                                                    .grievanceDetail.grievanceID
+                                                    .toString(),
+                                                municipalityId: AuthBasedRouting
+                                                    .afterLogin
+                                                    .userDetails!
+                                                    .municipalityID!,
+                                                newGrievance: Grievances(
+                                                  grievanceID:
+                                                      grievance.grievanceID,
+                                                  createdDate:
+                                                      grievance.createdDate,
+                                                  deceasedName:
+                                                      grievance.deceasedName,
+                                                  newHouseAddress:
+                                                      grievance.newHouseAddress,
+                                                  planDetails:
+                                                      grievance.planDetails,
+                                                  relation: grievance.relation,
+                                                  assets: state
+                                                      .grievanceDetail.assets!
+                                                      .toJson(),
+                                                  description:
+                                                      grievance.description,
+                                                  expectedCompletion:
+                                                      expectedCompletionDropdownValue,
+                                                  grievanceType:
+                                                      grievanceTypeDropdownValue,
+                                                  locationLat:
+                                                      grievance.locationLat,
+                                                  locationLong:
+                                                      grievance.locationLong,
+                                                  address: grievance.address,
+                                                  priority:
+                                                      priorityDropdownValue,
+                                                  createdBy:
+                                                      grievance.createdBy,
+                                                  status: statusDropdownValue,
+                                                  wardNumber:
+                                                      grievance.wardNumber,
+                                                  contactNumber:
+                                                      grievance.contactNumber,
+                                                  createdByName:
+                                                      grievance.createdByName,
+                                                  lastModifiedDate:
+                                                      DateTime.now().toString(),
+                                                  location: grievance.location,
+                                                  mobileContactStatus: grievance
+                                                      .mobileContactStatus,
+                                                  municipalityID:
+                                                      grievance.municipalityID,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    if (state is AddGrievanceCommentEvent) {
+                                      return Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: PrimaryDialogButton(
+                                          buttonText: LocaleKeys
+                                              .grievanceDetail_submitCommentButton
+                                              .tr(),
+                                          isLoading: true,
+                                          onTap: () {},
+                                        ),
+                                      );
+                                    }
+                                    return Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: PrimaryDialogButton(
+                                        buttonText: LocaleKeys
+                                            .grievanceDetail_submitCommentButton
+                                            .tr(),
+                                        isLoading: false,
+                                        onTap: () {},
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
+                          ),
+                        );
                       } else {
                         showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 12.h,
-                                                ),
-                                                Text(
-                                                  LocaleKeys.grievanceDetail_nearClosing.tr(),
-                                                  style: TextStyle(
-                                                      fontSize: 14.sp),
-                                                ),
-                                                SizedBox(height: 12.h),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  child: PrimaryDialogButton(
-                                                    buttonText: LocaleKeys.comments_ok.tr(),
-                                                    isLoading: false,
-                                                    onTap: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ));
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 12.h,
+                                      ),
+                                      Text(
+                                        LocaleKeys.grievanceDetail_nearClosing
+                                            .tr(),
+                                        style: TextStyle(fontSize: 14.sp),
+                                      ),
+                                      SizedBox(height: 12.h),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: PrimaryDialogButton(
+                                          buttonText:
+                                              LocaleKeys.comments_ok.tr(),
+                                          isLoading: false,
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ));
                       }
                     } else {
                       showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              LocaleKeys.grievanceDetail_status.tr(),
-                              style: AppStyles.inputAndDisplayTitleStyle,
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.colorPrimaryLight,
-                                borderRadius: BorderRadius.circular(10.r),
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                LocaleKeys.grievanceDetail_status.tr(),
+                                style: AppStyles.inputAndDisplayTitleStyle,
                               ),
-                              padding: EdgeInsets.symmetric(horizontal: 15.sp),
-                              child: DropdownButtonFormField(
-                                isExpanded: true,
-                                iconSize: 24.sp,
-                                value: statusDropdownValue,
-                                decoration: InputDecoration(
-                                  labelStyle: AppStyles.dropdownTextStyle,
-                                  border: InputBorder.none,
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.colorPrimaryLight,
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
-                                items: statusList
-                                    .map(
-                                      (item) => DropdownMenuItem<String>(
-                                        value: item.sK,
-                                        child: Text(
-                                          statusTypesMap.containsKey(item.name!
-                                                  .toLowerCase()
-                                                  .toString())
-                                              ? statusTypesMap[item.name!
-                                                  .toLowerCase()
-                                                  .toString()]!
-                                              : item.name!
-                                                  .toLowerCase()
-                                                  .toString(),
-                                          maxLines: 1,
-                                          style: AppStyles.dropdownTextStyle,
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 15.sp),
+                                child: DropdownButtonFormField(
+                                  isExpanded: true,
+                                  iconSize: 24.sp,
+                                  value: statusDropdownValue,
+                                  decoration: InputDecoration(
+                                    labelStyle: AppStyles.dropdownTextStyle,
+                                    border: InputBorder.none,
+                                  ),
+                                  items: statusList
+                                      .map(
+                                        (item) => DropdownMenuItem<String>(
+                                          value: item.sK,
+                                          child: Text(
+                                            statusTypesMap.containsKey(item
+                                                    .name!
+                                                    .toLowerCase()
+                                                    .toString())
+                                                ? statusTypesMap[item.name!
+                                                    .toLowerCase()
+                                                    .toString()]!
+                                                : item.name!
+                                                    .toLowerCase()
+                                                    .toString(),
+                                            maxLines: 1,
+                                            style: AppStyles.dropdownTextStyle,
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (value) {
+                                    statusDropdownValue = value.toString();
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 12.h,
+                              ),
+                              PrimaryTextField(
+                                title: LocaleKeys.grievanceDetail_comment.tr(),
+                                hintText: 'The status has been changed.',
+                                textEditingController: commentTextController,
+                              ),
+                              SizedBox(
+                                height: 24.h,
+                              ),
+                              BlocConsumer<GrievancesBloc, GrievancesState>(
+                                listener: (context, state) {
+                                  if (state
+                                      is AddingGrievanceCommentSuccessState) {
+                                    Navigator.of(context).pop();
+                                    final grievance = state.grievanceDetail;
+                                    BlocProvider.of<GrievancesBloc>(context)
+                                        .add(
+                                      UpdateGrievanceStatusEvent(
+                                        closing: statusDropdownValue == '2'
+                                            ? true
+                                            : null,
+                                        grievanceId: state
+                                            .grievanceDetail.grievanceID
+                                            .toString(),
+                                        municipalityId: AuthBasedRouting
+                                            .afterLogin
+                                            .userDetails!
+                                            .municipalityID!,
+                                        newGrievance: Grievances(
+                                          grievanceID: grievance.grievanceID,
+                                          assets: state.grievanceDetail.assets!
+                                              .toJson(),
+                                          description: grievance.description,
+                                          expectedCompletion:
+                                              expectedCompletionDropdownValue,
+                                          grievanceType:
+                                              grievanceTypeDropdownValue,
+                                          locationLat: grievance.locationLat,
+                                          locationLong: grievance.locationLong,
+                                          address: grievance.address,
+                                          priority: priorityDropdownValue,
+                                          createdBy: grievance.createdBy,
+                                          status: statusDropdownValue,
+                                          wardNumber: grievance.wardNumber,
+                                          contactNumber:
+                                              grievance.contactNumber,
+                                          createdByName:
+                                              grievance.createdByName,
+                                          lastModifiedDate:
+                                              DateTime.now().toString(),
+                                          location: grievance.location,
+                                          mobileContactStatus:
+                                              grievance.mobileContactStatus,
+                                          municipalityID:
+                                              grievance.municipalityID,
                                         ),
                                       ),
-                                    )
-                                    .toList(),
-                                onChanged: (value) {
-                                  statusDropdownValue = value.toString();
+                                    );
+                                  }
                                 },
-                              ),
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            PrimaryTextField(
-                              title: LocaleKeys.grievanceDetail_comment.tr(),
-                              hintText: 'The status has been changed.',
-                              textEditingController: commentTextController,
-                            ),
-                            SizedBox(
-                              height: 24.h,
-                            ),
-                            BlocConsumer<GrievancesBloc, GrievancesState>(
-                              listener: (context, state) {
-                                if (state
-                                    is AddingGrievanceCommentSuccessState) {
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              builder: (context, state) {
-                                if (state is GrievanceByIdLoadedState) {
+                                builder: (context, state) {
+                                  if (state is GrievanceByIdLoadedState) {
+                                    return Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: PrimaryDialogButton(
+                                        buttonText: LocaleKeys
+                                            .grievanceDetail_submitCommentButton
+                                            .tr(),
+                                        isLoading: false,
+                                        onTap: () {
+                                          BlocProvider.of<GrievancesBloc>(
+                                                  context)
+                                              .add(
+                                            AddGrievanceCommentEvent(
+                                              grievanceDetail:
+                                                  state.grievanceDetail,
+                                              grievanceId: widget.grievanceId,
+                                              staffId: AuthBasedRouting
+                                                  .afterLogin
+                                                  .userDetails!
+                                                  .staffID
+                                                  .toString(),
+                                              name: AuthBasedRouting.afterLogin
+                                                  .userDetails!.firstName
+                                                  .toString(),
+                                              assets: const {},
+                                              comment: commentTextController
+                                                      .text.isEmpty
+                                                  ? statusDropdownValue == '1'
+                                                      ? 'Status of your grievance was updated to "In Progress".'
+                                                      : statusDropdownValue ==
+                                                              '2'
+                                                          ? 'Your grievance was closed.'
+                                                          : statusDropdownValue ==
+                                                                  '3'
+                                                              ? 'Status of your grievance was updated to "Hold".'
+                                                              : commentTextController
+                                                                  .text
+                                                  : commentTextController.text,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }
+                                  if (state is AddingGrievanceCommentState) {
+                                    return Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: PrimaryDialogButton(
+                                        buttonText: LocaleKeys
+                                            .grievanceDetail_submitCommentButton
+                                            .tr(),
+                                        isLoading: true,
+                                        onTap: () {},
+                                      ),
+                                    );
+                                  }
                                   return Align(
                                     alignment: Alignment.bottomRight,
                                     child: PrimaryDialogButton(
@@ -685,110 +853,15 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                           .grievanceDetail_submitCommentButton
                                           .tr(),
                                       isLoading: false,
-                                      onTap: () {
-                                        BlocProvider.of<GrievancesBloc>(context)
-                                            .add(
-                                          AddGrievanceCommentEvent(
-                                            grievanceId: widget.grievanceId,
-                                            staffId: AuthBasedRouting
-                                                .afterLogin.userDetails!.staffID
-                                                .toString(),
-                                            name: AuthBasedRouting.afterLogin
-                                                .userDetails!.firstName
-                                                .toString(),
-                                            assets: const {},
-                                            comment: commentTextController
-                                                    .text.isEmpty
-                                                ? statusDropdownValue == '1'
-                                                    ? 'Status of your grievance was updated to "In Progress".'
-                                                    : statusDropdownValue == '2'
-                                                        ? 'Your grievance was closed.'
-                                                        : statusDropdownValue ==
-                                                                '3'
-                                                            ? 'Status of your grievance was updated to "Hold".'
-                                                            : commentTextController
-                                                                .text
-                                                : commentTextController.text,
-                                          ),
-                                        );
-                                        final grievance = state.grievanceDetail;
-                                        BlocProvider.of<GrievancesBloc>(context)
-                                            .add(
-                                          UpdateGrievanceStatusEvent(
-                                            grievanceId: state
-                                                .grievanceDetail.grievanceID
-                                                .toString(),
-                                            municipalityId: AuthBasedRouting
-                                                .afterLogin
-                                                .userDetails!
-                                                .municipalityID!,
-                                            newGrievance: Grievances(
-                                              grievanceID:
-                                                  grievance.grievanceID,
-                                              assets: state
-                                                  .grievanceDetail.assets!
-                                                  .toJson(),
-                                              description:
-                                                  grievance.description,
-                                              expectedCompletion:
-                                                  expectedCompletionDropdownValue,
-                                              grievanceType:
-                                                  grievanceTypeDropdownValue,
-                                              locationLat:
-                                                  grievance.locationLat,
-                                              locationLong:
-                                                  grievance.locationLong,
-                                              address: grievance.address,
-                                              priority: priorityDropdownValue,
-                                              createdBy: grievance.createdBy,
-                                              status: statusDropdownValue,
-                                              wardNumber: grievance.wardNumber,
-                                              contactNumber:
-                                                  grievance.contactNumber,
-                                              createdByName:
-                                                  grievance.createdByName,
-                                              lastModifiedDate:
-                                                  DateTime.now().toString(),
-                                              location: grievance.location,
-                                              mobileContactStatus:
-                                                  grievance.mobileContactStatus,
-                                              municipalityID:
-                                                  grievance.municipalityID,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                }
-                                if (state is AddGrievanceCommentEvent) {
-                                  return Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: PrimaryDialogButton(
-                                      buttonText: LocaleKeys
-                                          .grievanceDetail_submitCommentButton
-                                          .tr(),
-                                      isLoading: true,
                                       onTap: () {},
                                     ),
                                   );
-                                }
-                                return Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: PrimaryDialogButton(
-                                    buttonText: LocaleKeys
-                                        .grievanceDetail_submitCommentButton
-                                        .tr(),
-                                    isLoading: false,
-                                    onTap: () {},
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
+                      );
                     }
                   },
                   child: Text(
@@ -848,6 +921,11 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                             .afterLogin.userDetails!.municipalityID!,
                         newGrievance: Grievances(
                           grievanceID: grievance.grievanceID,
+                          createdDate: grievance.createdDate,
+                          deceasedName: grievance.deceasedName,
+                          newHouseAddress: grievance.newHouseAddress,
+                          planDetails: grievance.planDetails,
+                          relation: grievance.relation,
                           assets: state.grievanceDetail.assets!.toJson(),
                           description: grievance.description,
                           expectedCompletion: expectedCompletionDropdownValue,
@@ -920,6 +998,11 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                             .afterLogin.userDetails!.municipalityID!,
                         newGrievance: Grievances(
                           grievanceID: grievance.grievanceID,
+                          createdDate: grievance.createdDate,
+                          deceasedName: grievance.deceasedName,
+                          newHouseAddress: grievance.newHouseAddress,
+                          planDetails: grievance.planDetails,
+                          relation: grievance.relation,
                           assets: state.grievanceDetail.assets!.toJson(),
                           description: grievance.description,
                           expectedCompletion: expectedCompletionDropdownValue,
@@ -943,8 +1026,51 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                   },
                 ),
               ),
-              SizedBox(
-                height: 12.h,
+              Visibility(
+                visible: state.grievanceDetail.grievanceType == 'HOUSE' &&
+                    state.grievanceDetail.newHouseAddress != null,
+                replacement: const SizedBox(),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    PrimaryDisplayField(
+                      title: LocaleKeys.grievanceDetail_newHouseAddress.tr(),
+                      value: state.grievanceDetail.newHouseAddress.toString(),
+                    ),
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    PrimaryDisplayField(
+                      title: LocaleKeys.grievanceDetail_planDetails.tr(),
+                      value: state.grievanceDetail.planDetails.toString(),
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: state.grievanceDetail.grievanceType == 'CERT' &&
+                    state.grievanceDetail.deceasedName != null,
+                replacement: const SizedBox(),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    PrimaryDisplayField(
+                      title: LocaleKeys.grievanceDetail_deceasedName.tr(),
+                      value: state.grievanceDetail.deceasedName.toString(),
+                    ),
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    PrimaryDisplayField(
+                      title: LocaleKeys.grievanceDetail_relation.tr(),
+                      value: state.grievanceDetail.relation.toString(),
+                    ),
+                  ],
+                ),
               ),
               state.grievanceDetail.assets!.video == null ||
                       state.grievanceDetail.assets!.image!.isEmpty &&
@@ -954,6 +1080,9 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(
+                          height: 12.h,
+                        ),
                         Text(
                           LocaleKeys.grievanceDetail_photosAndVideos.tr(),
                           style: AppStyles.inputAndDisplayTitleStyle,
@@ -1222,8 +1351,8 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
               PrimaryTextField(
                 enabled: false,
                 onFieldSubmitted: (value) {},
-                title: "Ward Number",
-                textEditingController: wardNumberController,
+                title: "Ward",
+                textEditingController: wardNameController,
                 hintText: '',
               ),
               SizedBox(
@@ -1497,6 +1626,72 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                             if (state
                                                 is AddingGrievanceCommentSuccessState) {
                                               Navigator.of(context).pop();
+                                              final grievance =
+                                                  state.grievanceDetail;
+                                              BlocProvider.of<GrievancesBloc>(
+                                                      context)
+                                                  .add(
+                                                UpdateGrievanceEvent(
+                                                  grievanceId: state
+                                                      .grievanceDetail
+                                                      .grievanceID
+                                                      .toString(),
+                                                  municipalityId:
+                                                      AuthBasedRouting
+                                                          .afterLogin
+                                                          .userDetails!
+                                                          .municipalityID!,
+                                                  newGrievance: Grievances(
+                                                    grievanceID:
+                                                        grievance.grievanceID,
+                                                    createdDate:
+                                                        grievance.createdDate,
+                                                    deceasedName:
+                                                        grievance.deceasedName,
+                                                    newHouseAddress: grievance
+                                                        .newHouseAddress,
+                                                    planDetails:
+                                                        grievance.planDetails,
+                                                    relation:
+                                                        grievance.relation,
+                                                    assets: state
+                                                        .grievanceDetail.assets!
+                                                        .toJson(),
+                                                    description:
+                                                        grievance.description,
+                                                    expectedCompletion:
+                                                        expectedCompletionDropdownValue,
+                                                    grievanceType:
+                                                        grievanceTypeDropdownValue,
+                                                    locationLat:
+                                                        grievance.locationLat,
+                                                    locationLong:
+                                                        grievance.locationLong,
+                                                    address: grievance.address,
+                                                    priority:
+                                                        priorityDropdownValue,
+                                                    createdBy:
+                                                        grievance.createdBy,
+                                                    status: '2',
+                                                    wardNumber:
+                                                        grievance.wardNumber,
+                                                    contactNumber:
+                                                        grievance.contactNumber,
+                                                    createdByName:
+                                                        grievance.createdByName,
+                                                    lastModifiedDate:
+                                                        DateTime.now()
+                                                            .toString(),
+                                                    location:
+                                                        grievance.location,
+                                                    mobileContactStatus:
+                                                        grievance
+                                                            .mobileContactStatus,
+                                                    municipalityID: grievance
+                                                        .municipalityID,
+                                                  ),
+                                                ),
+                                              );
                                             }
                                           },
                                           builder: (context, state) {
@@ -1516,6 +1711,8 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                             context)
                                                         .add(
                                                       AddGrievanceCommentEvent(
+                                                        grievanceDetail: state
+                                                            .grievanceDetail,
                                                         grievanceId:
                                                             widget.grievanceId,
                                                         staffId:
@@ -1537,76 +1734,13 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                                 .text,
                                                       ),
                                                     );
-                                                    final grievance =
-                                                        state.grievanceDetail;
-                                                    BlocProvider.of<
-                                                                GrievancesBloc>(
-                                                            context)
-                                                        .add(
-                                                      UpdateGrievanceEvent(
-                                                        grievanceId: state
-                                                            .grievanceDetail
-                                                            .grievanceID
-                                                            .toString(),
-                                                        municipalityId:
-                                                            AuthBasedRouting
-                                                                .afterLogin
-                                                                .userDetails!
-                                                                .municipalityID!,
-                                                        newGrievance:
-                                                            Grievances(
-                                                          grievanceID: grievance
-                                                              .grievanceID,
-                                                          assets: state
-                                                              .grievanceDetail
-                                                              .assets!
-                                                              .toJson(),
-                                                          description: grievance
-                                                              .description,
-                                                          expectedCompletion:
-                                                              expectedCompletionDropdownValue,
-                                                          grievanceType:
-                                                              grievanceTypeDropdownValue,
-                                                          locationLat: grievance
-                                                              .locationLat,
-                                                          locationLong:
-                                                              grievance
-                                                                  .locationLong,
-                                                          address:
-                                                              grievance.address,
-                                                          priority:
-                                                              priorityDropdownValue,
-                                                          createdBy: grievance
-                                                              .createdBy,
-                                                          status: '2',
-                                                          wardNumber: grievance
-                                                              .wardNumber,
-                                                          contactNumber:
-                                                              grievance
-                                                                  .contactNumber,
-                                                          createdByName:
-                                                              grievance
-                                                                  .createdByName,
-                                                          lastModifiedDate:
-                                                              DateTime.now()
-                                                                  .toString(),
-                                                          location: grievance
-                                                              .location,
-                                                          mobileContactStatus:
-                                                              grievance
-                                                                  .mobileContactStatus,
-                                                          municipalityID:
-                                                              grievance
-                                                                  .municipalityID,
-                                                        ),
-                                                      ),
-                                                    );
                                                   },
                                                 ),
                                               );
                                             }
                                             if (state
-                                                is AddGrievanceCommentEvent) {
+                                                is AddingGrievanceCommentState) {
+                                              log('adding grievance comment state');
                                               return Align(
                                                 alignment:
                                                     Alignment.bottomRight,
@@ -1625,7 +1759,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                 buttonText: LocaleKeys
                                                     .grievanceDetail_submitCommentButton
                                                     .tr(),
-                                                isLoading: false,
+                                                isLoading: true,
                                                 onTap: () {},
                                               ),
                                             );
@@ -1643,9 +1777,14 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                 LocaleKeys.grievanceDetail_closeGrievance.tr(),
                             isLoading: false,
                             onTap: () async {
-                               double distanceInMeters = Geolocator.distanceBetween(_userPosition!.latitude, _userPosition!.longitude, double.parse(state
+                              double distanceInMeters =
+                                  Geolocator.distanceBetween(
+                                      _userPosition!.latitude,
+                                      _userPosition!.longitude,
+                                      double.parse(state
                                           .grievanceDetail.locationLat
-                                          .toString()),  double.parse(state
+                                          .toString()),
+                                      double.parse(state
                                           .grievanceDetail.locationLong
                                           .toString()));
                               log(distanceInMeters.toString());
@@ -1680,6 +1819,75 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                               if (state
                                                   is AddingGrievanceCommentSuccessState) {
                                                 Navigator.of(context).pop();
+                                                final grievance =
+                                                    state.grievanceDetail;
+                                                BlocProvider.of<GrievancesBloc>(
+                                                        context)
+                                                    .add(
+                                                  UpdateGrievanceEvent(
+                                                    closing: true,
+                                                    grievanceId: state
+                                                        .grievanceDetail
+                                                        .grievanceID
+                                                        .toString(),
+                                                    municipalityId:
+                                                        AuthBasedRouting
+                                                            .afterLogin
+                                                            .userDetails!
+                                                            .municipalityID!,
+                                                    newGrievance: Grievances(
+                                                      grievanceID:
+                                                          grievance.grievanceID,
+                                                      createdDate:
+                                                          grievance.createdDate,
+                                                      deceasedName: grievance
+                                                          .deceasedName,
+                                                      newHouseAddress: grievance
+                                                          .newHouseAddress,
+                                                      planDetails:
+                                                          grievance.planDetails,
+                                                      relation:
+                                                          grievance.relation,
+                                                      assets: state
+                                                          .grievanceDetail
+                                                          .assets!
+                                                          .toJson(),
+                                                      description:
+                                                          grievance.description,
+                                                      expectedCompletion:
+                                                          expectedCompletionDropdownValue,
+                                                      grievanceType:
+                                                          grievanceTypeDropdownValue,
+                                                      locationLat:
+                                                          grievance.locationLat,
+                                                      locationLong: grievance
+                                                          .locationLong,
+                                                      address:
+                                                          grievance.address,
+                                                      priority:
+                                                          priorityDropdownValue,
+                                                      createdBy:
+                                                          grievance.createdBy,
+                                                      status: '2',
+                                                      wardNumber:
+                                                          grievance.wardNumber,
+                                                      contactNumber: grievance
+                                                          .contactNumber,
+                                                      createdByName: grievance
+                                                          .createdByName,
+                                                      lastModifiedDate:
+                                                          DateTime.now()
+                                                              .toString(),
+                                                      location:
+                                                          grievance.location,
+                                                      mobileContactStatus:
+                                                          grievance
+                                                              .mobileContactStatus,
+                                                      municipalityID: grievance
+                                                          .municipalityID,
+                                                    ),
+                                                  ),
+                                                );
                                               }
                                             },
                                             builder: (context, state) {
@@ -1699,6 +1907,8 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                               context)
                                                           .add(
                                                         AddGrievanceCommentEvent(
+                                                          grievanceDetail: state
+                                                              .grievanceDetail,
                                                           grievanceId: widget
                                                               .grievanceId,
                                                           staffId:
@@ -1718,74 +1928,6 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                               ? 'Your grievance is closed.'
                                                               : commentTextController
                                                                   .text,
-                                                        ),
-                                                      );
-                                                      final grievance =
-                                                          state.grievanceDetail;
-                                                      BlocProvider.of<
-                                                                  GrievancesBloc>(
-                                                              context)
-                                                          .add(
-                                                        UpdateGrievanceEvent(
-                                                          grievanceId: state
-                                                              .grievanceDetail
-                                                              .grievanceID
-                                                              .toString(),
-                                                          municipalityId:
-                                                              AuthBasedRouting
-                                                                  .afterLogin
-                                                                  .userDetails!
-                                                                  .municipalityID!,
-                                                          newGrievance:
-                                                              Grievances(
-                                                            grievanceID:
-                                                                grievance
-                                                                    .grievanceID,
-                                                            assets: state
-                                                                .grievanceDetail
-                                                                .assets!
-                                                                .toJson(),
-                                                            description:
-                                                                grievance
-                                                                    .description,
-                                                            expectedCompletion:
-                                                                expectedCompletionDropdownValue,
-                                                            grievanceType:
-                                                                grievanceTypeDropdownValue,
-                                                            locationLat:
-                                                                grievance
-                                                                    .locationLat,
-                                                            locationLong:
-                                                                grievance
-                                                                    .locationLong,
-                                                            address: grievance
-                                                                .address,
-                                                            priority:
-                                                                priorityDropdownValue,
-                                                            createdBy: grievance
-                                                                .createdBy,
-                                                            status: '2',
-                                                            wardNumber:
-                                                                grievance
-                                                                    .wardNumber,
-                                                            contactNumber:
-                                                                grievance
-                                                                    .contactNumber,
-                                                            createdByName:
-                                                                grievance
-                                                                    .createdByName,
-                                                            lastModifiedDate:
-                                                                DateTime.now()
-                                                                    .toString(),
-                                                            location: grievance
-                                                                .location,
-                                                            mobileContactStatus:
-                                                                grievance
-                                                                    .mobileContactStatus,
-                                                            municipalityID:
-                                                                grievance
-                                                                    .municipalityID,
-                                                          ),
                                                         ),
                                                       );
                                                     },
@@ -1836,7 +1978,9 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                   height: 12.h,
                                                 ),
                                                 Text(
-                                                  LocaleKeys.grievanceDetail_nearClosing.tr(),
+                                                  LocaleKeys
+                                                      .grievanceDetail_nearClosing
+                                                      .tr(),
                                                   style: TextStyle(
                                                       fontSize: 14.sp),
                                                 ),
@@ -1845,7 +1989,9 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                   alignment:
                                                       Alignment.bottomRight,
                                                   child: PrimaryDialogButton(
-                                                    buttonText: LocaleKeys.comments_ok.tr(),
+                                                    buttonText: LocaleKeys
+                                                        .comments_ok
+                                                        .tr(),
                                                     isLoading: false,
                                                     onTap: () {
                                                       Navigator.of(context)
@@ -1886,6 +2032,66 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                             if (state
                                                 is AddingGrievanceCommentSuccessState) {
                                               Navigator.of(context).pop();
+                                              final grievance =
+                                                  state.grievanceDetail;
+                                              BlocProvider.of<GrievancesBloc>(
+                                                      context)
+                                                  .add(
+                                                UpdateGrievanceStatusEvent(
+                                                  closing: true,
+                                                  grievanceId: state
+                                                      .grievanceDetail
+                                                      .grievanceID
+                                                      .toString(),
+                                                  municipalityId:
+                                                      AuthBasedRouting
+                                                          .afterLogin
+                                                          .userDetails!
+                                                          .municipalityID!,
+                                                  newGrievance: Grievances(
+                                                    grievanceID:
+                                                        grievance.grievanceID,
+                                                    assets: state
+                                                        .grievanceDetail.assets!
+                                                        .toJson(),
+                                                    description:
+                                                        grievance.description,
+                                                    expectedCompletion:
+                                                        expectedCompletionDropdownValue,
+                                                    grievanceType:
+                                                        grievanceTypeDropdownValue,
+                                                    locationLat:
+                                                        grievance.locationLat,
+                                                    locationLong:
+                                                        grievance.locationLong,
+                                                    address: grievance.address,
+                                                    priority:
+                                                        priorityDropdownValue,
+                                                    createdBy:
+                                                        grievance.createdBy,
+                                                    status: '2',
+                                                    wardNumber:
+                                                        grievance.wardNumber,
+                                                    contactNumber:
+                                                        grievance.contactNumber,
+                                                    createdByName:
+                                                        grievance.createdByName,
+                                                    lastModifiedDate:
+                                                        DateTime.now()
+                                                            .toString(),
+                                                    location:
+                                                        grievance.location,
+                                                    mobileContactStatus:
+                                                        grievance
+                                                            .mobileContactStatus,
+                                                    municipalityID: grievance
+                                                        .municipalityID,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                            if (state is GrievanceClosedState) {
+                                              Navigator.of(context).pop();
                                             }
                                           },
                                           builder: (context, state) {
@@ -1905,6 +2111,8 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                             context)
                                                         .add(
                                                       AddGrievanceCommentEvent(
+                                                        grievanceDetail: state
+                                                            .grievanceDetail,
                                                         grievanceId:
                                                             widget.grievanceId,
                                                         staffId:
@@ -1926,76 +2134,13 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                                 .text,
                                                       ),
                                                     );
-                                                    final grievance =
-                                                        state.grievanceDetail;
-                                                    BlocProvider.of<
-                                                                GrievancesBloc>(
-                                                            context)
-                                                        .add(
-                                                      UpdateGrievanceStatusEvent(
-                                                        grievanceId: state
-                                                            .grievanceDetail
-                                                            .grievanceID
-                                                            .toString(),
-                                                        municipalityId:
-                                                            AuthBasedRouting
-                                                                .afterLogin
-                                                                .userDetails!
-                                                                .municipalityID!,
-                                                        newGrievance:
-                                                            Grievances(
-                                                          grievanceID: grievance
-                                                              .grievanceID,
-                                                          assets: state
-                                                              .grievanceDetail
-                                                              .assets!
-                                                              .toJson(),
-                                                          description: grievance
-                                                              .description,
-                                                          expectedCompletion:
-                                                              expectedCompletionDropdownValue,
-                                                          grievanceType:
-                                                              grievanceTypeDropdownValue,
-                                                          locationLat: grievance
-                                                              .locationLat,
-                                                          locationLong:
-                                                              grievance
-                                                                  .locationLong,
-                                                          address:
-                                                              grievance.address,
-                                                          priority:
-                                                              priorityDropdownValue,
-                                                          createdBy: grievance
-                                                              .createdBy,
-                                                          status: '2',
-                                                          wardNumber: grievance
-                                                              .wardNumber,
-                                                          contactNumber:
-                                                              grievance
-                                                                  .contactNumber,
-                                                          createdByName:
-                                                              grievance
-                                                                  .createdByName,
-                                                          lastModifiedDate:
-                                                              DateTime.now()
-                                                                  .toString(),
-                                                          location: grievance
-                                                              .location,
-                                                          mobileContactStatus:
-                                                              grievance
-                                                                  .mobileContactStatus,
-                                                          municipalityID:
-                                                              grievance
-                                                                  .municipalityID,
-                                                        ),
-                                                      ),
-                                                    );
                                                   },
                                                 ),
                                               );
                                             }
+
                                             if (state
-                                                is AddGrievanceCommentEvent) {
+                                                is AddingGrievanceCommentState) {
                                               return Align(
                                                 alignment:
                                                     Alignment.bottomRight,
@@ -2014,7 +2159,7 @@ class _GrievanceDetailState extends State<GrievanceDetail> {
                                                 buttonText: LocaleKeys
                                                     .grievanceDetail_submitCommentButton
                                                     .tr(),
-                                                isLoading: false,
+                                                isLoading: true,
                                                 onTap: () {},
                                               ),
                                             );

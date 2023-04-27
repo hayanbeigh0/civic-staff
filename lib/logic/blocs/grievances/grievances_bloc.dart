@@ -86,7 +86,7 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         emit(LoadingGrievanceByIdFailedState());
       }
     });
-     on<UpdateGrievanceStatusEvent>((event, emit) async {
+    on<UpdateGrievanceStatusEvent>((event, emit) async {
       emit(UpdatingGrievanceStatusState());
       try {
         final response = await grievancesRepository.modifyGrievance(
@@ -98,12 +98,21 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         } else {
           emit(UpdatingGrievanceStatusFailedState());
         }
-        add(
-          GetGrievanceByIdEvent(
-            municipalityId: event.municipalityId,
-            grievanceId: event.grievanceId,
-          ),
-        );
+        if (event.closing != null && event.closing == true) {
+          emit(GrievanceClosedState());
+          add(LoadGrievancesEvent(
+            municipalityId:
+                AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
+            staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
+          ));
+        } else {
+          add(
+            GetGrievanceByIdEvent(
+              municipalityId: event.municipalityId,
+              grievanceId: event.grievanceId,
+            ),
+          );
+        }
       } on DioError catch (e) {
         emit(UpdatingGrievanceStatusFailedState());
         add(
@@ -127,12 +136,21 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
         } else {
           emit(UpdatingGrievanceStatusFailedState());
         }
-        add(
-          GetGrievanceByIdEvent(
-            municipalityId: event.municipalityId,
-            grievanceId: event.grievanceId,
-          ),
-        );
+        if (event.closing != null && event.closing == true) {
+          emit(GrievanceClosedState());
+          add(LoadGrievancesEvent(
+            municipalityId:
+                AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
+            staffId: AuthBasedRouting.afterLogin.userDetails!.staffID!,
+          ));
+        } else {
+          add(
+            GetGrievanceByIdEvent(
+              municipalityId: event.municipalityId,
+              grievanceId: event.grievanceId,
+            ),
+          );
+        }
       } on DioError catch (e) {
         emit(UpdatingGrievanceStatusFailedState());
         add(
@@ -176,15 +194,22 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           staffId: event.staffId,
           comment: event.comment,
         );
-        emit(AddingGrievanceCommentSuccessState());
-        add(
-          GetGrievanceByIdEvent(
-            municipalityId: AuthBasedRouting
-                .afterLogin.userDetails!.municipalityID
-                .toString(),
-            grievanceId: event.grievanceId,
-          ),
-        );
+        if (event.grievanceDetail != null) {
+          emit(
+            AddingGrievanceCommentSuccessState(
+              grievanceDetail: event.grievanceDetail!,
+            ),
+          );
+        } else {
+          add(
+            GetGrievanceByIdEvent(
+              municipalityId: AuthBasedRouting
+                  .afterLogin.userDetails!.municipalityID
+                  .toString(),
+              grievanceId: event.grievanceId,
+            ),
+          );
+        }
       } on DioError catch (e) {
         emit(AddingGrievanceCommentFailedState());
       }
@@ -279,7 +304,6 @@ class GrievancesBloc extends Bloc<GrievancesEvent, GrievancesState> {
           await grievancesRepository.loadGrievancesJson(
               AuthBasedRouting.afterLogin.userDetails!.municipalityID!,
               AuthBasedRouting.afterLogin.userDetails!.staffID!);
-      print("UpdatedGrievanceList: ${updatedGrievanceList}");
       updatedGrievanceList = updatedGrievanceList
           .where((element) => element.status != '2')
           .toList();

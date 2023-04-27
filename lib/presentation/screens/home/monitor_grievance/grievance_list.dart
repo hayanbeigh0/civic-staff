@@ -231,7 +231,7 @@ class GrievanceList extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          ShowOnlyOpenSwitch(),
+                          const ShowOnlyOpenSwitch(),
                         ],
                       ),
                     ],
@@ -675,7 +675,7 @@ class GrievanceList extends StatelessWidget {
 }
 
 class ShowOnlyOpenSwitch extends StatefulWidget {
-  ShowOnlyOpenSwitch({
+  const ShowOnlyOpenSwitch({
     Key? key,
   }) : super(key: key);
 

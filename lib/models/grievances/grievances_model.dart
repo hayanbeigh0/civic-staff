@@ -11,12 +11,17 @@ class Grievances {
   String? municipalityID;
   String? locationLat;
   String? assignedTo;
+  String? createdDate;
   String? lastModifiedDate;
   String? location;
   bool? mobileContactStatus;
   String? createdBy;
   String? wardNumber;
   String? grievanceType;
+  String? newHouseAddress;
+  String? planDetails;
+  String? deceasedName;
+  String? relation;
   Map? assets;
 
   Grievances({
@@ -39,6 +44,11 @@ class Grievances {
     this.wardNumber,
     this.grievanceType,
     this.assets,
+    this.newHouseAddress,
+    this.planDetails,
+    this.deceasedName,
+    this.relation,
+    this.createdDate,
   });
 
   Grievances.fromJson(Map<String, dynamic> json) {
@@ -58,9 +68,14 @@ class Grievances {
     location = json['Location'];
     mobileContactStatus = json['MobileContactStatus'];
     createdBy = json['CreatedBy'];
+    createdDate = json['CreatedDate'];
     wardNumber = json['WardNumber'];
     grievanceType = json['GrievanceType'];
     assets = json['Assets'];
+    newHouseAddress = json['NewHouseAddress'];
+    planDetails = json['PlanDetails'];
+    deceasedName = json['DeceasedName'];
+    relation = json['Relation'];
   }
 
   Map<String, dynamic> toJson() {
@@ -81,9 +96,14 @@ class Grievances {
     data['Location'] = location;
     data['MobileContactStatus'] = mobileContactStatus;
     data['CreatedBy'] = createdBy;
+    data['CreatedDate'] = createdDate;
     data['WardNumber'] = wardNumber;
     data['GrievanceType'] = grievanceType;
     data['Assets'] = assets;
+    data['NewHouseAddress'] = newHouseAddress;
+    data['PlanDetails'] = planDetails;
+    data['DeceasedName'] = deceasedName;
+    data['Relation'] = relation;
     return data;
   }
 }

@@ -177,12 +177,15 @@ class AddingGrievanceVideoCommentAssetFailedState extends GrievancesState {
 }
 
 class AddingGrievanceCommentSuccessState extends GrievancesState {
+  final GrievanceDetail grievanceDetail;
+  const AddingGrievanceCommentSuccessState({
+    required this.grievanceDetail,
+  });
   @override
-  List<Object> get props => [];
+  List<Object> get props => [grievanceDetail];
 }
 
 class GrievanceTypeUpdatedState extends GrievancesState {
   @override
   List<Object> get props => [];
 }
-

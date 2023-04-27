@@ -89,7 +89,9 @@ class LocationMapField extends StatelessWidget {
               myLocationEnabled: myLocationEnabled,
               myLocationButtonEnabled: myLocationEnabled,
               onMapCreated: (controller) async {
-                mapController.complete(controller);
+                if (!mapController.isCompleted) {
+                  mapController.complete(controller);
+                }
                 BlocProvider.of<ReverseGeocodingCubit>(context)
                     .loadReverseGeocodedAddress(
                   latitude,

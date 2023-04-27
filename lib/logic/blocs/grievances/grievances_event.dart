@@ -43,10 +43,12 @@ class UpdateGrievanceEvent extends GrievancesEvent {
   final Grievances newGrievance;
   final String grievanceId;
   final String municipalityId;
+  final bool? closing;
   const UpdateGrievanceEvent({
     required this.grievanceId,
     required this.newGrievance,
     required this.municipalityId,
+    this.closing,
   });
   @override
   List<Object> get props => [grievanceId, newGrievance];
@@ -56,10 +58,12 @@ class UpdateGrievanceStatusEvent extends GrievancesEvent {
   final Grievances newGrievance;
   final String grievanceId;
   final String municipalityId;
+  final bool? closing;
   const UpdateGrievanceStatusEvent({
     required this.grievanceId,
     required this.newGrievance,
-    required this.municipalityId
+    required this.municipalityId,
+    this.closing,
   });
   @override
   List<Object> get props => [grievanceId, newGrievance];
@@ -83,13 +87,23 @@ class AddGrievanceCommentEvent extends GrievancesEvent {
   final String staffId;
   final String name;
   final String comment;
+  final String? expectedCompletionDropdownValue;
+  final String? priorityDropdownValue;
+  final String? grievanceTypeDropdownValue;
   final Map assets;
-  const AddGrievanceCommentEvent(
-      {required this.grievanceId,
-      required this.staffId,
-      required this.name,
-      required this.assets,
-      required this.comment});
+  final GrievanceDetail? grievanceDetail;
+
+  const AddGrievanceCommentEvent({
+    required this.grievanceId,
+    required this.staffId,
+    required this.name,
+    required this.assets,
+    required this.comment,
+    this.grievanceDetail,
+    this.expectedCompletionDropdownValue,
+    this.grievanceTypeDropdownValue,
+    this.priorityDropdownValue,
+  });
   @override
   List<Object> get props => [grievanceId, staffId, name, assets, comment];
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:dio/dio.dart';
 import 'dart:developer';
 import 'package:civic_staff/constants/env_variable.dart';
@@ -23,7 +22,7 @@ class GrievancesRepository {
         .timeout(
           const Duration(seconds: 10),
         );
-        print(jsonEncode(response.data));
+    print(jsonEncode(response.data));
     return jsonEncode(response.data);
   }
 
@@ -80,23 +79,28 @@ class GrievancesRepository {
     required String comment,
     required Map? assets,
   }) async {
-    try {
-      final response = Dio().post(
-        '$API_URL/grievances/grievance-comments',
-        data: jsonEncode(
-          {
-            "GrievanceID": grievanceId,
-            "CommentedBy": staffId,
-            "CommentedByName": name,
-            "Assets": assets,
-            "Comment": comment,
-            "CreatedDate": DateTime.now().toString(),
-          },
-        ),
-      );
-    } catch (e) {
-      print(e.toString());
-    }
+    log({
+      "GrievanceID": grievanceId,
+      "CommentedBy": staffId,
+      "CommentedByName": name,
+      "Assets": assets,
+      "Comment": comment,
+      "CreatedDate": DateTime.now().toString(),
+    }.toString());
+    final response = await Dio().post(
+      '$API_URL/grievances/grievance-comments',
+      data: jsonEncode(
+        {
+          "GrievanceID": grievanceId,
+          "CommentedBy": staffId,
+          "CommentedByName": name,
+          "Assets": assets,
+          "Comment": comment,
+          "CreatedDate": DateTime.now().toString(),
+        },
+      ),
+    );
+    // log(response.data.toString());
   }
 
   Future<Response> getGrievanceById({
@@ -105,7 +109,7 @@ class GrievancesRepository {
   }) async {
     final response = await Dio().get(
       '$API_URL/grievances/grievance-comments-web?MunicipalityID=$municipalityId&GrievanceID=$grievanceId',
-      // '$API_URL/grievances/grievance-comments', 
+      // '$API_URL/grievances/grievance-comments',
       // data: jsonEncode({
       //   "MunicipalityID": municipalityId,
       //   "GrievanceID": grievanceId,
@@ -122,7 +126,7 @@ class GrievancesRepository {
 
   Future<Response> modifyGrievance(
       String grievanceId, Grievances newGrievance) async {
-        print("In modify grievance post function");
+    print("In modify grievance post function");
     final response = await Dio().post(
       '$API_URL/grievances/modify-grievance',
       data: jsonEncode({
@@ -143,6 +147,11 @@ class GrievancesRepository {
         "contactByPhoneEnabled": newGrievance.mobileContactStatus,
         "lastModifiedDate": newGrievance.lastModifiedDate,
         "location": newGrievance.location,
+        "newHouseAddress": newGrievance.newHouseAddress,
+        "planDetails": newGrievance.planDetails,
+        "deceasedName": newGrievance.deceasedName,
+        "relation": newGrievance.relation,
+        "createdDate": newGrievance.createdDate,
         "assets": newGrievance.assets
       }),
       options: Options(
@@ -151,7 +160,7 @@ class GrievancesRepository {
         },
       ),
     );
-    print("Response from post method: ${response.statusCode}");
+    print("Response from post method: ${response.data.toString()}");
     return response;
   }
 
@@ -177,6 +186,11 @@ class GrievancesRepository {
         "contactByPhoneEnabled": newGrievance.mobileContactStatus,
         "lastModifiedDate": newGrievance.lastModifiedDate,
         "location": newGrievance.location,
+        "newHouseAddress": newGrievance.newHouseAddress,
+        "planDetails": newGrievance.planDetails,
+        "deceasedName": newGrievance.deceasedName,
+        "relation": newGrievance.relation,
+        "createdDate": newGrievance.createdDate,
         "assets": newGrievance.assets
       }),
       options: Options(

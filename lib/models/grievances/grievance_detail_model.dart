@@ -10,6 +10,7 @@ class GrievanceDetail {
   String? status;
   String? locationLat;
   String? municipalityID;
+  String? createdDate;
   String? lastModifiedDate;
   String? location;
   String? createdBy;
@@ -17,28 +18,38 @@ class GrievanceDetail {
   String? wardNumber;
   Assets? assets;
   String? grievanceType;
+  String? newHouseAddress;
+  String? planDetails;
+  String? deceasedName;
+  String? relation;
   List<Comments>? comments;
 
-  GrievanceDetail(
-      {this.createdByName,
-      this.address,
-      this.priority,
-      this.locationLong,
-      this.grievanceID,
-      this.contactNumber,
-      this.description,
-      this.expectedCompletion,
-      this.status,
-      this.locationLat,
-      this.municipalityID,
-      this.lastModifiedDate,
-      this.location,
-      this.createdBy,
-      this.mobileContactStatus,
-      this.wardNumber,
-      this.assets,
-      this.grievanceType,
-      this.comments});
+  GrievanceDetail({
+    this.createdByName,
+    this.address,
+    this.priority,
+    this.locationLong,
+    this.grievanceID,
+    this.contactNumber,
+    this.description,
+    this.expectedCompletion,
+    this.status,
+    this.locationLat,
+    this.municipalityID,
+    this.lastModifiedDate,
+    this.location,
+    this.createdBy,
+    this.mobileContactStatus,
+    this.wardNumber,
+    this.assets,
+    this.grievanceType,
+    this.comments,
+    this.newHouseAddress,
+    this.planDetails,
+    this.deceasedName,
+    this.relation,
+    this.createdDate,
+  });
 
   GrievanceDetail.fromJson(Map<String, dynamic> json) {
     createdByName = json['CreatedByName'];
@@ -55,10 +66,15 @@ class GrievanceDetail {
     lastModifiedDate = json['LastModifiedDate'];
     location = json['Location'];
     createdBy = json['CreatedBy'];
+    createdDate = json['CreatedDate'];
     mobileContactStatus = json['MobileContactStatus'];
     wardNumber = json['WardNumber'];
     assets = json['Assets'] != null ? Assets.fromJson(json['Assets']) : null;
     grievanceType = json['GrievanceType'];
+    newHouseAddress = json['NewHouseAddress'];
+    planDetails = json['PlanDetails'];
+    deceasedName = json['DeceasedName'];
+    relation = json['Relation'];
     if (json['Comments'] != null) {
       comments = <Comments>[];
       json['Comments'].forEach((v) {
@@ -83,8 +99,13 @@ class GrievanceDetail {
     data['LastModifiedDate'] = lastModifiedDate;
     data['Location'] = location;
     data['CreatedBy'] = createdBy;
+    data['CreatedDate'] = createdDate;
     data['MobileContactStatus'] = mobileContactStatus;
     data['WardNumber'] = wardNumber;
+    data['NewHouseAddress'] = newHouseAddress;
+    data['PlanDetails'] = planDetails;
+    data['DeceasedName'] = deceasedName;
+    data['Relation'] = relation;
     if (assets != null) {
       data['Assets'] = assets!.toJson();
     }

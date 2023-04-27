@@ -21,15 +21,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // ignore: must_be_immutable
-class GrievanceMap extends StatelessWidget {
+class GrievanceMap extends StatefulWidget {
   static const routeName = 'grievanceMap';
-  GrievanceMap({super.key});
+  const GrievanceMap({super.key});
 
+  @override
+  State<GrievanceMap> createState() => _GrievanceMapState();
+}
+
+class _GrievanceMapState extends State<GrievanceMap> {
   final Completer<GoogleMapController> _mapController = Completer();
 
-  BitmapDescriptor busLocationMarker = BitmapDescriptor.defaultMarker;
-
   Set<Marker> grievanceMarkers = {};
+
   final Map<String, String> grievanceTypesMap = {
     "garb": LocaleKeys.grievanceDetail_garb.tr(),
     "road": LocaleKeys.grievanceDetail_road.tr(),
@@ -40,11 +44,39 @@ class GrievanceMap extends StatelessWidget {
     "elect": LocaleKeys.grievanceDetail_elect.tr(),
     "other": LocaleKeys.grievanceDetail_otherGrievanceType.tr(),
   };
+
   final Map<String, String> statusTypesMap = {
     "in-progress": LocaleKeys.grievanceDetail_inProgress.tr(),
     "hold": LocaleKeys.grievanceDetail_hold.tr(),
     "closed": LocaleKeys.grievanceDetail_closed.tr(),
   };
+  BitmapDescriptor markerIcon = BitmapDescriptor.defaultMarker;
+  @override
+  void initState() {
+    addCustomIcon();
+    super.initState();
+  }
+
+  void addCustomIcon() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(), "assets/images/circle.png")
+        .then(
+      (icon) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          if (mounted) {
+            setState(() {
+              markerIcon = icon;
+            });
+          }
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,71 +112,71 @@ class GrievanceMap extends StatelessWidget {
                             );
                           },
                         ),
-                        icon: e.grievanceType.toString().toLowerCase().replaceAll(' ', '') ==
-                                'garb'
-                            ? BitmapDescriptor.defaultMarkerWithHue(
-                                BitmapDescriptor.hueRose,
-                              )
-                            : e.grievanceType
-                                        .toString()
-                                        .toLowerCase()
-                                        .replaceAll(' ', '') ==
-                                    'light'
+                        icon: e.grievanceType.toString().toLowerCase().replaceAll(' ', '') == 'garb' &&
+                                e.createdByName.toString() == 'SYSTEM'
+                            ? markerIcon
+                            : e.grievanceType.toString().toLowerCase().replaceAll(' ', '') ==
+                                    'garb'
                                 ? BitmapDescriptor.defaultMarkerWithHue(
-                                    BitmapDescriptor.hueBlue,
+                                    BitmapDescriptor.hueRose,
                                   )
                                 : e.grievanceType
                                             .toString()
                                             .toLowerCase()
                                             .replaceAll(' ', '') ==
-                                        'road'
+                                        'light'
                                     ? BitmapDescriptor.defaultMarkerWithHue(
-                                        BitmapDescriptor.hueGreen,
+                                        BitmapDescriptor.hueBlue,
                                       )
                                     : e.grievanceType
                                                 .toString()
                                                 .toLowerCase()
                                                 .replaceAll(' ', '') ==
-                                            'water'
+                                            'road'
                                         ? BitmapDescriptor.defaultMarkerWithHue(
-                                            BitmapDescriptor.hueYellow,
+                                            BitmapDescriptor.hueGreen,
                                           )
                                         : e.grievanceType
                                                     .toString()
                                                     .toLowerCase()
                                                     .replaceAll(' ', '') ==
-                                                'cert'
+                                                'water'
                                             ? BitmapDescriptor
                                                 .defaultMarkerWithHue(
-                                                BitmapDescriptor.hueCyan,
+                                                BitmapDescriptor.hueYellow,
                                               )
                                             : e.grievanceType
                                                         .toString()
                                                         .toLowerCase()
                                                         .replaceAll(' ', '') ==
-                                                    'house'
+                                                    'cert'
                                                 ? BitmapDescriptor
                                                     .defaultMarkerWithHue(
-                                                    BitmapDescriptor.hueOrange,
+                                                    BitmapDescriptor.hueCyan,
                                                   )
                                                 : e.grievanceType
                                                             .toString()
                                                             .toLowerCase()
                                                             .replaceAll(' ', '') ==
-                                                        'other'
+                                                        'house'
                                                     ? BitmapDescriptor.defaultMarkerWithHue(
                                                         BitmapDescriptor
-                                                            .hueViolet,
+                                                            .hueOrange,
                                                       )
-                                                    : e.grievanceType.toString().toLowerCase().replaceAll(' ', '') == 'elect'
+                                                    : e.grievanceType.toString().toLowerCase().replaceAll(' ', '') == 'other'
                                                         ? BitmapDescriptor.defaultMarkerWithHue(
                                                             BitmapDescriptor
-                                                                .hueMagenta,
-                                                          )
-                                                        : BitmapDescriptor.defaultMarkerWithHue(
-                                                            BitmapDescriptor
                                                                 .hueViolet,
-                                                          ),
+                                                          )
+                                                        : e.grievanceType.toString().toLowerCase().replaceAll(' ', '') == 'elect'
+                                                            ? BitmapDescriptor.defaultMarkerWithHue(
+                                                                BitmapDescriptor
+                                                                    .hueMagenta,
+                                                              )
+                                                            : BitmapDescriptor.defaultMarkerWithHue(
+                                                                BitmapDescriptor
+                                                                    .hueViolet,
+                                                              ),
                         position: LatLng(
                           double.parse(e.locationLat.toString()),
                           double.parse(e.locationLong.toString()),
@@ -182,11 +214,11 @@ class GrievanceMap extends StatelessWidget {
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   onMapCreated: (controller) async {
-                    // if (mounted) {
-                    _mapController.complete(controller);
-                    // }
+                    if (mounted) {
+                      _mapController.complete(controller);
+                    }
                   },
-                  mapType: MapType.terrain,
+                  mapType: MapType.normal,
                 );
               }
               return const CircularProgressIndicator(
@@ -242,9 +274,9 @@ class GrievanceMap extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 60.h,
-                    ),
+                    // SizedBox(
+                    //   height: 60.h,
+                    // ),
                   ],
                 ),
               ),
@@ -254,22 +286,4 @@ class GrievanceMap extends StatelessWidget {
       ),
     );
   }
-  // void _currentLocation() async {
-  //  final GoogleMapController controller = await _controller.future;
-  //  LocationData currentLocation;
-  //  var location = new Location();
-  //  try {
-  //    currentLocation = await location.getLocation();
-  //    } on Exception {
-  //      currentLocation = null;
-  //      }
-
-  //   controller.animateCamera(CameraUpdate.newCameraPosition(
-  //     CameraPosition(
-  //       bearing: 0,
-  //       target: LatLng(currentLocation.latitude, currentLocation.longitude),
-  //       zoom: 17.0,
-  //     ),
-  //   ));
-  // }
 }

@@ -111,7 +111,12 @@
     "priority1Week": "1 week",
     "priority1Month": "1 month",
     "priorityDummy": "Dummy",
-    "nearClosing": "You should be near this site to change the status of this grievance!"
+    "nearClosing": "You should be near this site to change the status of this grievance!",
+    "cannotChangeGrievanceTypeErrorMessage": "Cannot change grievance type to",
+    "newHouseAddress": "New house address",
+    "planDetails": "Plan details",
+    "deceasedName": "Deceased name",
+    "relation": "Relation"
   },
   "reporterComments": {
     "screenTitle": "Reporter Comments",

@@ -111,7 +111,12 @@
     "priority1Week": "1 வாரம்",
     "priority1Month": "1 மாதம்",
     "priorityDummy": "போலி",
-    "nearClosing": "இந்த பிரச்சனையின் நிலையை மாற்ற நீங்கள் இந்த இடத்தில் அருகிலுள்ள வேண்டும்!"
+    "nearClosing": "இந்த பிரச்சனையின் நிலையை மாற்ற நீங்கள் இந்த இடத்தில் அருகிலுள்ள வேண்டும்!",
+    "cannotChangeGrievanceTypeErrorMessage": "புகார் வகையை மாற்ற முடியாது",
+    "newHouseAddress": "புதிய வீட்டு முகவரி",
+    "planDetails": "திட்ட விவரங்கள்",
+    "deceasedName": "இறந்த பெயர்",
+    "relation": "உறவு"
   },
   "reporterComments": {
     "screenTitle": "நிருபர் கருத்துக்கள்",
